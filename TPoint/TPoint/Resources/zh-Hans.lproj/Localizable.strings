@@ -1,0 +1,39 @@
+/*
+  Localizable.strings
+  TPoint - Simplified Chinese
+*/
+
+// Team
+"team_a" = "A队";
+"team_b" = "B队";
+"points_suffix" = "分";
+
+// Round Input
+"round_input_title" = "回合输入";
+"tichu_section_title" = "地主 (S:小地主 L:大地主)";
+"one_two_finish" = "一二名";
+"none" = "无";
+"card_score" = "牌分";
+"add_round" = "添加回合";
+
+// Score History
+"round_history" = "回合记录";
+"no_records" = "暂无记录";
+"round_prefix" = "R";
+
+// Tichu
+"small_tichu" = "小";
+"large_tichu" = "大";
+"one_two" = "一二";
+
+// Game
+"new_game" = "新游戏";
+"game_over" = "游戏结束！";
+"winner_message" = "%@ 获胜！";
+"final_score" = "最终得分";
+"confirm" = "确定";
+"cancel" = "取消";
+"new_game_confirm" = "重置当前游戏并开始新游戏？";
+
+// Player
+"player_format" = "%@ %d";

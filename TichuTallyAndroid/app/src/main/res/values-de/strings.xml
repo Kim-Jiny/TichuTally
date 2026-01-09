@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Tichu Tally</string>
+
+    <!-- Team -->
+    <string name="team_a">Team A</string>
+    <string name="team_b">Team B</string>
+    <string name="points_suffix">Pkt</string>
+
+    <!-- Round Input -->
+    <string name="round_input_title">Rundeneingabe</string>
+    <string name="tichu_section_title">Tichu (S:Klein L:Groß)</string>
+    <string name="one_two_finish">Doppelsieg</string>
+    <string name="none">Keiner</string>
+    <string name="card_score">Kartenpunkte</string>
+    <string name="add_round">Runde hinzufügen</string>
+
+    <!-- Score History -->
+    <string name="round_history">Rundenverlauf</string>
+    <string name="no_records">Noch keine Einträge</string>
+    <string name="round_prefix">R</string>
+
+    <!-- Game -->
+    <string name="new_game">Neues Spiel</string>
+    <string name="game_over">Spiel beendet!</string>
+    <string name="winner_message">%s gewinnt!</string>
+    <string name="final_score">Endergebnis</string>
+    <string name="confirm">OK</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="new_game_confirm">Aktuelles Spiel zurücksetzen und ein neues starten?</string>
+</resources>

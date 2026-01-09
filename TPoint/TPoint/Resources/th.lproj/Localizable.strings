@@ -1,0 +1,39 @@
+/*
+  Localizable.strings
+  TPoint - Thai
+*/
+
+// Team
+"team_a" = "ทีม A";
+"team_b" = "ทีม B";
+"points_suffix" = "คะแนน";
+
+// Round Input
+"round_input_title" = "บันทึกรอบ";
+"tichu_section_title" = "ทิชู (S:เล็ก L:ใหญ่)";
+"one_two_finish" = "หนึ่ง-สอง";
+"none" = "ไม่มี";
+"card_score" = "คะแนนไพ่";
+"add_round" = "เพิ่มรอบ";
+
+// Score History
+"round_history" = "ประวัติรอบ";
+"no_records" = "ยังไม่มีบันทึก";
+"round_prefix" = "R";
+
+// Tichu
+"small_tichu" = "เล็ก";
+"large_tichu" = "ใหญ่";
+"one_two" = "1-2";
+
+// Game
+"new_game" = "เกมใหม่";
+"game_over" = "จบเกม!";
+"winner_message" = "%@ ชนะ!";
+"final_score" = "คะแนนสุดท้าย";
+"confirm" = "ตกลง";
+"cancel" = "ยกเลิก";
+"new_game_confirm" = "รีเซ็ตเกมปัจจุบันและเริ่มเกมใหม่?";
+
+// Player
+"player_format" = "%@ %d";

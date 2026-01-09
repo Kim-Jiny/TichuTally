@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_round">เพิ่มรอบ</string>
+    <string name="app_name">Tichu Tally</string>
+    <string name="cancel">ยกเลิก</string>
+    <string name="card_score">คะแนนไพ่</string>
+    <string name="confirm">ตกลง</string>
+    <string name="final_score">คะแนนสุดท้าย</string>
+    <string name="game_over">จบเกม!</string>
+    <string name="new_game">เกมใหม่</string>
+    <string name="new_game_confirm">รีเซ็ตเกมปัจจุบันและเริ่มเกมใหม่?</string>
+    <string name="no_records">ยังไม่มีบันทึก</string>
+    <string name="none">ไม่มี</string>
+    <string name="one_two_finish">หนึ่ง-สอง</string>
+    <string name="points_suffix">คะแนน</string>
+    <string name="round_history">ประวัติรอบ</string>
+    <string name="round_input_title">บันทึกรอบ</string>
+    <string name="round_prefix">R</string>
+    <string name="team_a">ทีม A</string>
+    <string name="team_b">ทีม B</string>
+    <string name="tichu_section_title">ทิชู (S:เล็ก L:ใหญ่)</string>
+    <string name="winner_message">%s ชนะ!</string>
+</resources>

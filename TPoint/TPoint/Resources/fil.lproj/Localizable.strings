@@ -1,0 +1,39 @@
+/*
+  Localizable.strings
+  TPoint - Filipino
+*/
+
+// Team
+"team_a" = "Team A";
+"team_b" = "Team B";
+"points_suffix" = "pts";
+
+// Round Input
+"round_input_title" = "Input ng Round";
+"tichu_section_title" = "Tichu (S:Small L:Large)";
+"one_two_finish" = "One-Two Finish";
+"none" = "Wala";
+"card_score" = "Card Score";
+"add_round" = "Dagdag Round";
+
+// Score History
+"round_history" = "Kasaysayan ng Round";
+"no_records" = "Wala pang record";
+"round_prefix" = "R";
+
+// Tichu
+"small_tichu" = "Small";
+"large_tichu" = "Large";
+"one_two" = "1-2";
+
+// Game
+"new_game" = "Bagong Laro";
+"game_over" = "Tapos na ang Laro!";
+"winner_message" = "Panalo ang %@!";
+"final_score" = "Final na Score";
+"confirm" = "OK";
+"cancel" = "Kanselahin";
+"new_game_confirm" = "I-reset ang kasalukuyang laro at magsimula ng bago?";
+
+// Player
+"player_format" = "%@ %d";

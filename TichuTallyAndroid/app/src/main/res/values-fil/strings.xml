@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Tichu Tally</string>
+
+    <!-- Team -->
+    <string name="team_a">Team A</string>
+    <string name="team_b">Team B</string>
+    <string name="points_suffix">pts</string>
+
+    <!-- Round Input -->
+    <string name="round_input_title">Input ng Round</string>
+    <string name="tichu_section_title">Tichu (S:Small L:Large)</string>
+    <string name="one_two_finish">One-Two Finish</string>
+    <string name="none">Wala</string>
+    <string name="card_score">Card Score</string>
+    <string name="add_round">Dagdag Round</string>
+
+    <!-- Score History -->
+    <string name="round_history">Kasaysayan ng Round</string>
+    <string name="no_records">Wala pang record</string>
+    <string name="round_prefix">R</string>
+
+    <!-- Game -->
+    <string name="new_game">Bagong Laro</string>
+    <string name="game_over">Tapos na ang Laro!</string>
+    <string name="winner_message">Panalo ang %s!</string>
+    <string name="final_score">Final na Score</string>
+    <string name="confirm">OK</string>
+    <string name="cancel">Kanselahin</string>
+    <string name="new_game_confirm">I-reset ang kasalukuyang laro at magsimula ng bago?</string>
+</resources>

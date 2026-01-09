@@ -1,0 +1,39 @@
+/*
+  Localizable.strings
+  TPoint - Japanese
+*/
+
+// Team
+"team_a" = "Aチーム";
+"team_b" = "Bチーム";
+"points_suffix" = "点";
+
+// Round Input
+"round_input_title" = "ラウンド入力";
+"tichu_section_title" = "ティチュー (S:スモール L:ラージ)";
+"one_two_finish" = "ワンツーフィニッシュ";
+"none" = "なし";
+"card_score" = "カード点数";
+"add_round" = "ラウンド追加";
+
+// Score History
+"round_history" = "ラウンド履歴";
+"no_records" = "まだ記録がありません";
+"round_prefix" = "R";
+
+// Tichu
+"small_tichu" = "スモール";
+"large_tichu" = "ラージ";
+"one_two" = "ワンツー";
+
+// Game
+"new_game" = "新規ゲーム";
+"game_over" = "ゲーム終了！";
+"winner_message" = "%@ 勝利！";
+"final_score" = "最終スコア";
+"confirm" = "確認";
+"cancel" = "キャンセル";
+"new_game_confirm" = "現在のゲームをリセットして新しいゲームを始めますか？";
+
+// Player
+"player_format" = "%@ %d";

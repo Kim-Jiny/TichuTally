@@ -1,0 +1,39 @@
+/*
+  Localizable.strings
+  TPoint - Spanish
+*/
+
+// Team
+"team_a" = "Equipo A";
+"team_b" = "Equipo B";
+"points_suffix" = "pts";
+
+// Round Input
+"round_input_title" = "Entrada de Ronda";
+"tichu_section_title" = "Tichu (S:Pequeño L:Grande)";
+"one_two_finish" = "Uno-Dos";
+"none" = "Ninguno";
+"card_score" = "Puntos de Cartas";
+"add_round" = "Añadir Ronda";
+
+// Score History
+"round_history" = "Historial de Rondas";
+"no_records" = "Sin registros aún";
+"round_prefix" = "R";
+
+// Tichu
+"small_tichu" = "Pequeño";
+"large_tichu" = "Grande";
+"one_two" = "1-2";
+
+// Game
+"new_game" = "Nuevo Juego";
+"game_over" = "¡Fin del Juego!";
+"winner_message" = "¡%@ Gana!";
+"final_score" = "Puntuación Final";
+"confirm" = "Aceptar";
+"cancel" = "Cancelar";
+"new_game_confirm" = "¿Reiniciar el juego actual y comenzar uno nuevo?";
+
+// Player
+"player_format" = "%@ %d";

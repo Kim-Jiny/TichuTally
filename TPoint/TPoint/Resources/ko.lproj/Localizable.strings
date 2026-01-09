@@ -1,0 +1,39 @@
+/*
+  Localizable.strings
+  TPoint - Korean
+*/
+
+// Team
+"team_a" = "A팀";
+"team_b" = "B팀";
+"points_suffix" = "점";
+
+// Round Input
+"round_input_title" = "라운드 입력";
+"tichu_section_title" = "티츄 (S:스몰 L:라지)";
+"one_two_finish" = "원투 피니시";
+"none" = "없음";
+"card_score" = "카드 점수";
+"add_round" = "라운드 추가";
+
+// Score History
+"round_history" = "라운드 기록";
+"no_records" = "아직 기록이 없습니다";
+"round_prefix" = "R";
+
+// Tichu
+"small_tichu" = "스몰";
+"large_tichu" = "라지";
+"one_two" = "원투";
+
+// Game
+"new_game" = "새 게임";
+"game_over" = "게임 종료!";
+"winner_message" = "%@ 승리!";
+"final_score" = "최종 점수";
+"confirm" = "확인";
+"cancel" = "취소";
+"new_game_confirm" = "현재 게임을 초기화하고 새 게임을 시작할까요?";
+
+// Player
+"player_format" = "%@ %d";

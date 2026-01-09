@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_round">Añadir Ronda</string>
+    <string name="app_name">Tichu Tally</string>
+    <string name="cancel">Cancelar</string>
+    <string name="card_score">Puntos de Cartas</string>
+    <string name="confirm">Aceptar</string>
+    <string name="final_score">Puntuación Final</string>
+    <string name="game_over">¡Fin del Juego!</string>
+    <string name="new_game">Nuevo Juego</string>
+    <string name="new_game_confirm">¿Reiniciar el juego actual y comenzar uno nuevo?</string>
+    <string name="no_records">Sin registros aún</string>
+    <string name="none">Ninguno</string>
+    <string name="one_two_finish">Uno-Dos</string>
+    <string name="points_suffix">pts</string>
+    <string name="round_history">Historial de Rondas</string>
+    <string name="round_input_title">Entrada de Ronda</string>
+    <string name="round_prefix">R</string>
+    <string name="team_a">Equipo A</string>
+    <string name="team_b">Equipo B</string>
+    <string name="tichu_section_title">Tichu (S:Pequeño L:Grande)</string>
+    <string name="winner_message">¡%s Gana!</string>
+</resources>
