@@ -5,13 +5,22 @@ plugins {
 
 android {
     namespace = "com.tichutally.app"
-    compileSdk = 34
+    compileSdk = 35
+
+    signingConfigs {
+        create("release") {
+            storeFile = file("../tichutally-release.jks")
+            storePassword = "9512042"
+            keyAlias = "tichutally"
+            keyPassword = "9512042"
+        }
+    }
 
     defaultConfig {
         applicationId = "com.tichutally.app"
         minSdk = 26
-        targetSdk = 34
-        versionCode = 1
+        targetSdk = 35
+        versionCode = 2
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -22,7 +31,9 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
+            signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
