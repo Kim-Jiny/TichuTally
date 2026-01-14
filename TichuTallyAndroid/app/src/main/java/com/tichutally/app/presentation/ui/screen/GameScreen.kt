@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.tichutally.app.R
 import com.tichutally.app.domain.model.TeamType
@@ -47,7 +48,7 @@ fun GameScreen(
             // Team Score Cards
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 TeamScoreCard(
                     teamType = TeamType.TEAM_A,
@@ -55,7 +56,7 @@ fun GameScreen(
                     isWinner = state.winner == TeamType.TEAM_A,
                     modifier = Modifier
                         .weight(1f)
-                        .height(120.dp)
+                        .height(150.dp)
                 )
                 TeamScoreCard(
                     teamType = TeamType.TEAM_B,
@@ -63,7 +64,7 @@ fun GameScreen(
                     isWinner = state.winner == TeamType.TEAM_B,
                     modifier = Modifier
                         .weight(1f)
-                        .height(120.dp)
+                        .height(150.dp)
                 )
             }
 
@@ -97,7 +98,9 @@ fun GameScreen(
             ) {
                 Text(
                     text = stringResource(R.string.new_game),
-                    color = Color.Red
+                    color = Color(0xFFE53935),
+                    fontSize = 14.sp,
+                    fontWeight = androidx.compose.ui.text.font.FontWeight.Medium
                 )
             }
         }

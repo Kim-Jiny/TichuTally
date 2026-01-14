@@ -67,8 +67,8 @@ final class RoundInputView: UIView {
 
     private let scoreSlider: UISlider = {
         let slider = UISlider()
-        slider.minimumValue = 0
-        slider.maximumValue = 100
+        slider.minimumValue = -25
+        slider.maximumValue = 125
         slider.value = 50
         slider.translatesAutoresizingMaskIntoConstraints = false
         return slider

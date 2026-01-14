@@ -1,0 +1,116 @@
+# ====================
+# macOS
+# ====================
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# ====================
+# iOS / Xcode
+# ====================
+# Build
+build/
+DerivedData/
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata/
+*.xccheckout
+*.moved-aside
+*.xcuserstate
+*.xcscmblueprint
+
+# CocoaPods
+Pods/
+Podfile.lock
+
+# Carthage
+Carthage/Build/
+
+# Swift Package Manager
+.build/
+.swiftpm/
+Package.resolved
+
+# fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output
+
+# Code Injection
+iOSInjectionProject/
+
+# ====================
+# Android
+# ====================
+# Gradle
+.gradle/
+*.gradle.kts.swp
+
+# Build
+**/build/
+
+# Local configuration
+local.properties
+
+# IDE - Android Studio / IntelliJ
+.idea/
+*.iml
+*.iws
+.idea_modules/
+
+# Keystore files
+*.jks
+*.keystore
+
+# Google Services (contains API keys)
+# google-services.json
+
+# Proguard
+proguard/
+
+# Log files
+*.log
+
+# APK files
+*.apk
+*.ap_
+*.aab
+
+# Test outputs
+**/test-results/
+
+# ====================
+# General
+# ====================
+# Environment files
+.env
+.env.*
+*.env
+
+# Secrets
+secrets/
+*.pem
+*.p12
+*.cer
+
+# Editor
+*.swp
+*.swo
+*~
+.vscode/
+*.sublime-*
+
+# Archives
+*.zip
+*.tar.gz
+*.rar

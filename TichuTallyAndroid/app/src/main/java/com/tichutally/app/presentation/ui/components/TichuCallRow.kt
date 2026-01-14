@@ -1,14 +1,23 @@
 package com.tichutally.app.presentation.ui.components
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -27,28 +36,38 @@ fun TichuCallRow(
     modifier: Modifier = Modifier
 ) {
     val teamColor = if (player.team == TeamType.TEAM_A) TeamAColor else TeamBColor
+    val teamColorLight = if (player.team == TeamType.TEAM_A) TeamAColorLight else TeamBColorLight
     val selectedType = callInput?.type
     val isSuccess = callInput?.isSuccess ?: false
 
     Row(
-        modifier = modifier.height(36.dp),
+        modifier = modifier.height(40.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
+        horizontalArrangement = Arrangement.spacedBy(6.dp)
     ) {
-        // Player name
-        Text(
-            text = player.displayName,
-            fontSize = 13.sp,
-            fontWeight = FontWeight.SemiBold,
-            color = teamColor,
-            modifier = Modifier.width(32.dp)
-        )
+        // Player name badge
+        Box(
+            modifier = Modifier
+                .clip(RoundedCornerShape(6.dp))
+                .background(teamColorLight)
+                .padding(horizontal = 8.dp, vertical = 4.dp)
+        ) {
+            Text(
+                text = player.displayName,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                color = teamColor
+            )
+        }
+
+        Spacer(modifier = Modifier.width(2.dp))
 
         // Small Tichu button
         TichuButton(
             text = "S",
             isSelected = selectedType == TichuType.SMALL,
             selectedColor = TeamAColor,
+            selectedBgColor = TeamAColorLight,
             onClick = {
                 if (selectedType == TichuType.SMALL) {
                     onCallChanged(null, false)
@@ -62,7 +81,8 @@ fun TichuCallRow(
         TichuButton(
             text = "L",
             isSelected = selectedType == TichuType.LARGE,
-            selectedColor = Color(0xFFFF9800),
+            selectedColor = LargeTichuColor,
+            selectedBgColor = LargeTichuColorLight,
             onClick = {
                 if (selectedType == TichuType.LARGE) {
                     onCallChanged(null, false)
@@ -72,8 +92,8 @@ fun TichuCallRow(
             }
         )
 
-        // Success/Fail button
-        SuccessButton(
+        // Success/Fail toggle button
+        SuccessToggleButton(
             isEnabled = selectedType != null,
             isSuccess = isSuccess,
             onClick = {
@@ -90,62 +110,118 @@ private fun TichuButton(
     text: String,
     isSelected: Boolean,
     selectedColor: Color,
+    selectedBgColor: Color,
     onClick: () -> Unit
 ) {
+    val backgroundColor by animateColorAsState(
+        targetValue = if (isSelected) selectedColor else Color.Transparent,
+        animationSpec = tween(200),
+        label = "bgColor"
+    )
+    val borderColor by animateColorAsState(
+        targetValue = if (isSelected) selectedColor else TextHint,
+        animationSpec = tween(200),
+        label = "borderColor"
+    )
+    val textColor by animateColorAsState(
+        targetValue = if (isSelected) Color.White else selectedColor,
+        animationSpec = tween(200),
+        label = "textColor"
+    )
+
     Box(
         modifier = Modifier
-            .size(28.dp)
-            .background(
-                color = if (isSelected) selectedColor else Color.Transparent,
-                shape = RoundedCornerShape(4.dp)
+            .size(32.dp)
+            .shadow(
+                elevation = if (isSelected) 4.dp else 0.dp,
+                shape = RoundedCornerShape(8.dp),
+                ambientColor = selectedColor.copy(alpha = 0.2f),
+                spotColor = selectedColor.copy(alpha = 0.2f)
             )
+            .clip(RoundedCornerShape(8.dp))
+            .background(backgroundColor)
             .border(
-                width = 1.dp,
-                color = if (isSelected) selectedColor else Color.LightGray,
-                shape = RoundedCornerShape(4.dp)
+                width = if (isSelected) 0.dp else 1.5.dp,
+                color = borderColor,
+                shape = RoundedCornerShape(8.dp)
             )
-            .clickable(onClick = onClick),
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = rememberRipple(bounded = true, color = selectedColor),
+                onClick = onClick
+            ),
         contentAlignment = Alignment.Center
     ) {
         Text(
             text = text,
-            fontSize = 12.sp,
+            fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
-            color = if (isSelected) Color.White else selectedColor
+            color = textColor
         )
     }
 }
 
 @Composable
-private fun SuccessButton(
+private fun SuccessToggleButton(
     isEnabled: Boolean,
     isSuccess: Boolean,
     onClick: () -> Unit
 ) {
-    val (bgColor, textColor, text) = when {
-        !isEnabled -> Triple(Color.Transparent, Color.LightGray, "-")
-        isSuccess -> Triple(SuccessColor, Color.White, "O")
-        else -> Triple(FailureColor, Color.White, "X")
+    val backgroundColor by animateColorAsState(
+        targetValue = when {
+            !isEnabled -> Color.Transparent
+            isSuccess -> SuccessColor
+            else -> FailureColor
+        },
+        animationSpec = tween(200),
+        label = "bgColor"
+    )
+    val borderColor by animateColorAsState(
+        targetValue = when {
+            !isEnabled -> TextHint
+            isSuccess -> SuccessColor
+            else -> FailureColor
+        },
+        animationSpec = tween(200),
+        label = "borderColor"
+    )
+    val textColor by animateColorAsState(
+        targetValue = when {
+            !isEnabled -> TextHint
+            else -> Color.White
+        },
+        animationSpec = tween(200),
+        label = "textColor"
+    )
+
+    val (text, iconColor) = when {
+        !isEnabled -> "-" to TextHint
+        isSuccess -> "O" to Color.White
+        else -> "X" to Color.White
     }
 
     Box(
         modifier = Modifier
-            .size(28.dp)
-            .background(
-                color = bgColor,
-                shape = RoundedCornerShape(4.dp)
+            .size(32.dp)
+            .shadow(
+                elevation = if (isEnabled) 4.dp else 0.dp,
+                shape = RoundedCornerShape(8.dp),
+                ambientColor = backgroundColor.copy(alpha = 0.3f),
+                spotColor = backgroundColor.copy(alpha = 0.3f)
             )
+            .clip(RoundedCornerShape(8.dp))
+            .background(backgroundColor)
             .border(
-                width = 1.dp,
-                color = if (isEnabled) bgColor else Color.LightGray,
-                shape = RoundedCornerShape(4.dp)
+                width = if (isEnabled) 0.dp else 1.5.dp,
+                color = borderColor,
+                shape = RoundedCornerShape(8.dp)
             )
             .clickable(enabled = isEnabled, onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
         Text(
             text = text,
-            fontSize = 12.sp,
+            fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
             color = textColor
         )

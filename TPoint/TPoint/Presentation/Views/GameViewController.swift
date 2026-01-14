@@ -4,6 +4,7 @@
 //
 
 import UIKit
+import GoogleMobileAds
 
 final class GameViewController: UIViewController {
 
@@ -35,6 +36,17 @@ final class GameViewController: UIViewController {
         return button
     }()
 
+    // Banner Ad
+    private let bannerAdView: BannerAdView = {
+        let view = BannerAdView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = UIColor.systemGray6 // 배경색 추가
+        return view
+    }()
+
+    private var bannerHeightConstraint: NSLayoutConstraint?
+    private var hasLoadedBanner = false
+
     // MARK: - Properties
 
     private let viewModel: GameViewModel
@@ -56,8 +68,18 @@ final class GameViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
         setupActions()
+        setupBannerAd()
         viewModel.delegate = self
         updateUI()
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        // Load banner only once after layout is ready
+        if !hasLoadedBanner && view.frame.width > 0 {
+            hasLoadedBanner = true
+            bannerAdView.loadBannerAd()
+        }
     }
 
     // MARK: - Setup
@@ -71,6 +93,7 @@ final class GameViewController: UIViewController {
         roundInputView.translatesAutoresizingMaskIntoConstraints = false
         scoreHistoryView.translatesAutoresizingMaskIntoConstraints = false
 
+        view.addSubview(bannerAdView)
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
 
@@ -82,11 +105,21 @@ final class GameViewController: UIViewController {
 
         roundInputView.delegate = self
 
+        // Banner height (will be updated after ad loads)
+        bannerHeightConstraint = bannerAdView.heightAnchor.constraint(equalToConstant: 50)
+
         NSLayoutConstraint.activate([
+            // Banner at bottom
+            bannerAdView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            bannerAdView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            bannerAdView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            bannerHeightConstraint!,
+
+            // ScrollView above banner
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: bannerAdView.topAnchor),
 
             contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
             contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
@@ -122,6 +155,10 @@ final class GameViewController: UIViewController {
     private func setupActions() {
         newGameButton.setTitle(L10n.newGame, for: .normal)
         newGameButton.addTarget(self, action: #selector(newGameTapped), for: .touchUpInside)
+    }
+
+    private func setupBannerAd() {
+        bannerAdView.configure(rootViewController: self)
     }
 
     // MARK: - Actions

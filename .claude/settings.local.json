@@ -16,7 +16,8 @@
       "Bash(echo:*)",
       "Bash(JAVA_HOME=/opt/homebrew/opt/openjdk@17 ./gradlew:*)",
       "Bash($ANDROID_HOME/emulator/emulator -list-avds)",
-      "Bash(~/Library/Android/sdk/emulator/emulator -list-avds)"
+      "Bash(~/Library/Android/sdk/emulator/emulator -list-avds)",
+      "Bash(git rm:*)"
     ]
   }
 }
