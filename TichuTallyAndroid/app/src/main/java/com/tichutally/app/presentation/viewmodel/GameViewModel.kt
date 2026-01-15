@@ -16,7 +16,7 @@ class GameViewModel(
     val state: StateFlow<GameState> = _state.asStateFlow()
 
     fun setTeamACardScore(score: Int) {
-        _state.update { it.copy(currentTeamACardScore = score.coerceIn(0, 100)) }
+        _state.update { it.copy(currentTeamACardScore = score.coerceIn(-25, 125)) }
     }
 
     fun setOneTwoFinish(enabled: Boolean, team: TeamType?) {

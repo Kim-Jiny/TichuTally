@@ -50,7 +50,7 @@ fun RoundInputCard(
     ) {
         Column(
             modifier = Modifier
-                .padding(20.dp)
+                .padding(16.dp)
                 .fillMaxWidth()
         ) {
             // Title with accent bar
@@ -60,7 +60,7 @@ fun RoundInputCard(
                 Box(
                     modifier = Modifier
                         .width(4.dp)
-                        .height(20.dp)
+                        .height(18.dp)
                         .clip(RoundedCornerShape(2.dp))
                         .background(
                             Brush.verticalGradient(
@@ -68,36 +68,36 @@ fun RoundInputCard(
                             )
                         )
                 )
-                Spacer(modifier = Modifier.width(10.dp))
+                Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = stringResource(R.string.round_input_title),
-                    fontSize = 18.sp,
+                    fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     color = TextPrimary
                 )
             }
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             // Tichu Section
             SectionHeader(title = stringResource(R.string.tichu_section_title))
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(6.dp))
 
             // Tichu Call Rows with card background
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(12.dp))
+                    .clip(RoundedCornerShape(10.dp))
                     .background(SurfaceLight)
-                    .padding(12.dp)
+                    .padding(10.dp)
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     // Team A players
-                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                         Player.allPlayers.filter { it.team == TeamType.TEAM_A }.forEach { player ->
                             TichuCallRow(
                                 player = player,
@@ -109,7 +109,7 @@ fun RoundInputCard(
                         }
                     }
                     // Team B players
-                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                         Player.allPlayers.filter { it.team == TeamType.TEAM_B }.forEach { player ->
                             TichuCallRow(
                                 player = player,
@@ -123,12 +123,12 @@ fun RoundInputCard(
                 }
             }
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             // One-Two Finish
             SectionHeader(title = stringResource(R.string.one_two_finish))
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(6.dp))
 
             OneTwoFinishSelector(
                 selectedTeam = if (oneTwoFinish) oneTwoFinishTeam else null,
@@ -137,18 +137,18 @@ fun RoundInputCard(
                 }
             )
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             // Card Score
             SectionHeader(title = stringResource(R.string.card_score))
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(6.dp))
 
             // Score Display with gradient background
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(16.dp))
+                    .clip(RoundedCornerShape(12.dp))
                     .background(
                         Brush.horizontalGradient(
                             colors = listOf(
@@ -158,7 +158,7 @@ fun RoundInputCard(
                             )
                         )
                     )
-                    .padding(vertical = 16.dp),
+                    .padding(vertical = 10.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Row(
@@ -168,17 +168,17 @@ fun RoundInputCard(
                     // Team A Score
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.width(80.dp)
+                        modifier = Modifier.width(70.dp)
                     ) {
                         Text(
                             text = "A",
-                            fontSize = 14.sp,
+                            fontSize = 12.sp,
                             fontWeight = FontWeight.Bold,
                             color = TeamAColor
                         )
                         Text(
                             text = "$teamACardScore",
-                            fontSize = 36.sp,
+                            fontSize = 28.sp,
                             fontWeight = FontWeight.Bold,
                             color = TeamAColor
                         )
@@ -186,26 +186,26 @@ fun RoundInputCard(
 
                     Text(
                         text = ":",
-                        fontSize = 36.sp,
+                        fontSize = 28.sp,
                         fontWeight = FontWeight.Bold,
                         color = TextSecondary,
-                        modifier = Modifier.padding(horizontal = 16.dp)
+                        modifier = Modifier.padding(horizontal = 12.dp)
                     )
 
                     // Team B Score
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.width(80.dp)
+                        modifier = Modifier.width(70.dp)
                     ) {
                         Text(
                             text = "B",
-                            fontSize = 14.sp,
+                            fontSize = 12.sp,
                             fontWeight = FontWeight.Bold,
                             color = TeamBColor
                         )
                         Text(
                             text = "${100 - teamACardScore}",
-                            fontSize = 36.sp,
+                            fontSize = 28.sp,
                             fontWeight = FontWeight.Bold,
                             color = TeamBColor
                         )
@@ -213,11 +213,9 @@ fun RoundInputCard(
                 }
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             // Custom Slider
-            val sliderAlpha = if (oneTwoFinish || !isEnabled) 0.4f else 1f
-
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -226,8 +224,8 @@ fun RoundInputCard(
             ) {
                 Box(
                     modifier = Modifier
-                        .size(32.dp)
-                        .clip(RoundedCornerShape(8.dp))
+                        .size(28.dp)
+                        .clip(RoundedCornerShape(6.dp))
                         .background(TeamAColorLight),
                     contentAlignment = Alignment.Center
                 ) {
@@ -235,7 +233,7 @@ fun RoundInputCard(
                         text = "A",
                         fontWeight = FontWeight.Bold,
                         color = TeamAColor,
-                        fontSize = 14.sp
+                        fontSize = 12.sp
                     )
                 }
 
@@ -249,7 +247,7 @@ fun RoundInputCard(
                     enabled = !oneTwoFinish && isEnabled,
                     modifier = Modifier
                         .weight(1f)
-                        .padding(horizontal = 12.dp),
+                        .padding(horizontal = 8.dp),
                     colors = SliderDefaults.colors(
                         thumbColor = if (teamACardScore >= 50) TeamAColor else TeamBColor,
                         activeTrackColor = TeamAColor,
@@ -262,8 +260,8 @@ fun RoundInputCard(
 
                 Box(
                     modifier = Modifier
-                        .size(32.dp)
-                        .clip(RoundedCornerShape(8.dp))
+                        .size(28.dp)
+                        .clip(RoundedCornerShape(6.dp))
                         .background(TeamBColorLight),
                     contentAlignment = Alignment.Center
                 ) {
@@ -271,23 +269,23 @@ fun RoundInputCard(
                         text = "B",
                         fontWeight = FontWeight.Bold,
                         color = TeamBColor,
-                        fontSize = 14.sp
+                        fontSize = 12.sp
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(14.dp))
 
-            // Add Round Button with gradient
+            // Add Round Button
             Button(
                 onClick = onAddRound,
                 enabled = isEnabled,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(52.dp)
+                    .height(46.dp)
                     .shadow(
-                        elevation = if (isEnabled) 6.dp else 0.dp,
-                        shape = RoundedCornerShape(12.dp),
+                        elevation = if (isEnabled) 4.dp else 0.dp,
+                        shape = RoundedCornerShape(10.dp),
                         ambientColor = SuccessColor.copy(alpha = 0.3f),
                         spotColor = SuccessColor.copy(alpha = 0.3f)
                     ),
@@ -295,13 +293,12 @@ fun RoundInputCard(
                     containerColor = SuccessColor,
                     disabledContainerColor = TextHint
                 ),
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(10.dp)
             ) {
                 Text(
                     text = stringResource(R.string.add_round),
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    letterSpacing = 0.5.sp
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Bold
                 )
             }
         }
@@ -312,10 +309,9 @@ fun RoundInputCard(
 private fun SectionHeader(title: String) {
     Text(
         text = title,
-        fontSize = 13.sp,
+        fontSize = 12.sp,
         fontWeight = FontWeight.SemiBold,
-        color = TextSecondary,
-        letterSpacing = 0.5.sp
+        color = TextSecondary
     )
 }
 
@@ -326,7 +322,7 @@ private fun OneTwoFinishSelector(
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(10.dp)
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         listOf(
             null to stringResource(R.string.none),
@@ -359,6 +355,7 @@ private fun OneTwoFinishSelector(
                 label = {
                     Text(
                         text = label,
+                        fontSize = 13.sp,
                         fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal
                     )
                 },
@@ -377,7 +374,7 @@ private fun OneTwoFinishSelector(
                     borderWidth = 0.dp,
                     selectedBorderWidth = 2.dp
                 ),
-                shape = RoundedCornerShape(10.dp)
+                shape = RoundedCornerShape(8.dp)
             )
         }
     }

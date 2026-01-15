@@ -7,7 +7,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Text
@@ -41,33 +40,32 @@ fun TichuCallRow(
     val isSuccess = callInput?.isSuccess ?: false
 
     Row(
-        modifier = modifier.height(40.dp),
+        modifier = modifier.height(36.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(6.dp)
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        // Player name badge
+        // Player name badge - 더 컴팩트하게
         Box(
             modifier = Modifier
-                .clip(RoundedCornerShape(6.dp))
+                .widthIn(min = 28.dp)
+                .clip(RoundedCornerShape(4.dp))
                 .background(teamColorLight)
-                .padding(horizontal = 8.dp, vertical = 4.dp)
+                .padding(horizontal = 6.dp, vertical = 3.dp),
+            contentAlignment = Alignment.Center
         ) {
             Text(
                 text = player.displayName,
-                fontSize = 12.sp,
+                fontSize = 11.sp,
                 fontWeight = FontWeight.Bold,
                 color = teamColor
             )
         }
-
-        Spacer(modifier = Modifier.width(2.dp))
 
         // Small Tichu button
         TichuButton(
             text = "S",
             isSelected = selectedType == TichuType.SMALL,
             selectedColor = TeamAColor,
-            selectedBgColor = TeamAColorLight,
             onClick = {
                 if (selectedType == TichuType.SMALL) {
                     onCallChanged(null, false)
@@ -82,7 +80,6 @@ fun TichuCallRow(
             text = "L",
             isSelected = selectedType == TichuType.LARGE,
             selectedColor = LargeTichuColor,
-            selectedBgColor = LargeTichuColorLight,
             onClick = {
                 if (selectedType == TichuType.LARGE) {
                     onCallChanged(null, false)
@@ -110,7 +107,6 @@ private fun TichuButton(
     text: String,
     isSelected: Boolean,
     selectedColor: Color,
-    selectedBgColor: Color,
     onClick: () -> Unit
 ) {
     val backgroundColor by animateColorAsState(
@@ -131,19 +127,19 @@ private fun TichuButton(
 
     Box(
         modifier = Modifier
-            .size(32.dp)
+            .size(28.dp)
             .shadow(
-                elevation = if (isSelected) 4.dp else 0.dp,
-                shape = RoundedCornerShape(8.dp),
+                elevation = if (isSelected) 2.dp else 0.dp,
+                shape = RoundedCornerShape(6.dp),
                 ambientColor = selectedColor.copy(alpha = 0.2f),
                 spotColor = selectedColor.copy(alpha = 0.2f)
             )
-            .clip(RoundedCornerShape(8.dp))
+            .clip(RoundedCornerShape(6.dp))
             .background(backgroundColor)
             .border(
-                width = if (isSelected) 0.dp else 1.5.dp,
+                width = if (isSelected) 0.dp else 1.dp,
                 color = borderColor,
-                shape = RoundedCornerShape(8.dp)
+                shape = RoundedCornerShape(6.dp)
             )
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
@@ -154,7 +150,7 @@ private fun TichuButton(
     ) {
         Text(
             text = text,
-            fontSize = 14.sp,
+            fontSize = 12.sp,
             fontWeight = FontWeight.Bold,
             color = textColor
         )
@@ -194,34 +190,34 @@ private fun SuccessToggleButton(
         label = "textColor"
     )
 
-    val (text, iconColor) = when {
-        !isEnabled -> "-" to TextHint
-        isSuccess -> "O" to Color.White
-        else -> "X" to Color.White
+    val text = when {
+        !isEnabled -> "-"
+        isSuccess -> "O"
+        else -> "X"
     }
 
     Box(
         modifier = Modifier
-            .size(32.dp)
+            .size(28.dp)
             .shadow(
-                elevation = if (isEnabled) 4.dp else 0.dp,
-                shape = RoundedCornerShape(8.dp),
+                elevation = if (isEnabled) 2.dp else 0.dp,
+                shape = RoundedCornerShape(6.dp),
                 ambientColor = backgroundColor.copy(alpha = 0.3f),
                 spotColor = backgroundColor.copy(alpha = 0.3f)
             )
-            .clip(RoundedCornerShape(8.dp))
+            .clip(RoundedCornerShape(6.dp))
             .background(backgroundColor)
             .border(
-                width = if (isEnabled) 0.dp else 1.5.dp,
+                width = if (isEnabled) 0.dp else 1.dp,
                 color = borderColor,
-                shape = RoundedCornerShape(8.dp)
+                shape = RoundedCornerShape(6.dp)
             )
             .clickable(enabled = isEnabled, onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
         Text(
             text = text,
-            fontSize = 14.sp,
+            fontSize = 12.sp,
             fontWeight = FontWeight.Bold,
             color = textColor
         )

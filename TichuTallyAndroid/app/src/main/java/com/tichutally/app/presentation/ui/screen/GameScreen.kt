@@ -1,5 +1,6 @@
 package com.tichutally.app.presentation.ui.screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -11,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -18,56 +20,56 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.tichutally.app.R
 import com.tichutally.app.domain.model.TeamType
 import com.tichutally.app.presentation.ui.components.*
+import com.tichutally.app.presentation.ui.theme.SurfaceLight
 import com.tichutally.app.presentation.viewmodel.GameViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GameScreen(
     viewModel: GameViewModel = viewModel()
 ) {
     val state by viewModel.state.collectAsState()
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Tichu Tally") },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer
-                )
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(SurfaceLight)
+            .statusBarsPadding()
+    ) {
+        // 상단 고정 - Team Score Cards
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .padding(top = 16.dp, bottom = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            TeamScoreCard(
+                teamType = TeamType.TEAM_A,
+                score = state.teamAScore,
+                isWinner = state.winner == TeamType.TEAM_A,
+                modifier = Modifier
+                    .weight(1f)
+                    .height(130.dp)
+            )
+            TeamScoreCard(
+                teamType = TeamType.TEAM_B,
+                score = state.teamBScore,
+                isWinner = state.winner == TeamType.TEAM_B,
+                modifier = Modifier
+                    .weight(1f)
+                    .height(130.dp)
             )
         }
-    ) { paddingValues ->
+
+        // 스크롤 가능한 영역
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
-                .padding(16.dp),
+                .padding(horizontal = 16.dp)
+                .padding(top = 8.dp, bottom = 16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Team Score Cards
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                TeamScoreCard(
-                    teamType = TeamType.TEAM_A,
-                    score = state.teamAScore,
-                    isWinner = state.winner == TeamType.TEAM_A,
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(150.dp)
-                )
-                TeamScoreCard(
-                    teamType = TeamType.TEAM_B,
-                    score = state.teamBScore,
-                    isWinner = state.winner == TeamType.TEAM_B,
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(150.dp)
-                )
-            }
-
             // Round Input Card
             RoundInputCard(
                 teamACardScore = state.currentTeamACardScore,
@@ -100,9 +102,12 @@ fun GameScreen(
                     text = stringResource(R.string.new_game),
                     color = Color(0xFFE53935),
                     fontSize = 14.sp,
-                    fontWeight = androidx.compose.ui.text.font.FontWeight.Medium
+                    fontWeight = FontWeight.Medium
                 )
             }
+
+            // Bottom spacing
+            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 

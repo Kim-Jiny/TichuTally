@@ -115,16 +115,26 @@ final class ScoreHistoryCell: UITableViewCell {
 
     static let identifier = "ScoreHistoryCell"
 
+    // 라운드 번호
     private let roundLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 14, weight: .medium)
+        label.font = .systemFont(ofSize: 13, weight: .medium)
+        label.textColor = .secondaryLabel
+        label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
 
+    // 점수 컨테이너 (고정 너비)
+    private let scoreContainer: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+
     private let teamAScoreLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 14, weight: .semibold)
+        label.font = .monospacedDigitSystemFont(ofSize: 14, weight: .semibold)
         label.textColor = .systemBlue
         label.textAlignment = .right
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -133,9 +143,9 @@ final class ScoreHistoryCell: UITableViewCell {
 
     private let separatorLabel: UILabel = {
         let label = UILabel()
-        label.text = "/"
-        label.font = .systemFont(ofSize: 14)
-        label.textColor = .secondaryLabel
+        label.text = ":"
+        label.font = .systemFont(ofSize: 14, weight: .medium)
+        label.textColor = .tertiaryLabel
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -143,17 +153,21 @@ final class ScoreHistoryCell: UITableViewCell {
 
     private let teamBScoreLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 14, weight: .semibold)
+        label.font = .monospacedDigitSystemFont(ofSize: 14, weight: .semibold)
         label.textColor = .systemRed
         label.textAlignment = .left
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
 
+    // 세부내용 (오른쪽 정렬, 고정 위치)
     private let detailLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 11)
         label.textColor = .tertiaryLabel
+        label.textAlignment = .right
+        label.numberOfLines = 1
+        label.lineBreakMode = .byTruncatingTail
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -172,46 +186,59 @@ final class ScoreHistoryCell: UITableViewCell {
         selectionStyle = .none
 
         contentView.addSubview(roundLabel)
-        contentView.addSubview(teamAScoreLabel)
-        contentView.addSubview(separatorLabel)
-        contentView.addSubview(teamBScoreLabel)
+        contentView.addSubview(scoreContainer)
         contentView.addSubview(detailLabel)
 
+        scoreContainer.addSubview(teamAScoreLabel)
+        scoreContainer.addSubview(separatorLabel)
+        scoreContainer.addSubview(teamBScoreLabel)
+
         NSLayoutConstraint.activate([
-            roundLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            // 라운드 번호 (왼쪽 고정, 너비 36)
+            roundLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
             roundLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            roundLabel.widthAnchor.constraint(equalToConstant: 30),
+            roundLabel.widthAnchor.constraint(equalToConstant: 36),
 
-            teamAScoreLabel.leadingAnchor.constraint(equalTo: roundLabel.trailingAnchor, constant: 8),
-            teamAScoreLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            teamAScoreLabel.widthAnchor.constraint(equalToConstant: 50),
+            // 점수 컨테이너 (라운드 옆, 고정 너비 100)
+            scoreContainer.leadingAnchor.constraint(equalTo: roundLabel.trailingAnchor, constant: 4),
+            scoreContainer.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            scoreContainer.widthAnchor.constraint(equalToConstant: 100),
+            scoreContainer.heightAnchor.constraint(equalToConstant: 20),
 
-            separatorLabel.leadingAnchor.constraint(equalTo: teamAScoreLabel.trailingAnchor, constant: 4),
-            separatorLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            // 점수 컨테이너 내부
+            teamAScoreLabel.leadingAnchor.constraint(equalTo: scoreContainer.leadingAnchor),
+            teamAScoreLabel.centerYAnchor.constraint(equalTo: scoreContainer.centerYAnchor),
+            teamAScoreLabel.widthAnchor.constraint(equalToConstant: 42),
 
-            teamBScoreLabel.leadingAnchor.constraint(equalTo: separatorLabel.trailingAnchor, constant: 4),
-            teamBScoreLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            teamBScoreLabel.widthAnchor.constraint(equalToConstant: 50),
+            separatorLabel.centerXAnchor.constraint(equalTo: scoreContainer.centerXAnchor),
+            separatorLabel.centerYAnchor.constraint(equalTo: scoreContainer.centerYAnchor),
+            separatorLabel.widthAnchor.constraint(equalToConstant: 16),
 
-            detailLabel.leadingAnchor.constraint(equalTo: teamBScoreLabel.trailingAnchor, constant: 12),
-            detailLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            teamBScoreLabel.trailingAnchor.constraint(equalTo: scoreContainer.trailingAnchor),
+            teamBScoreLabel.centerYAnchor.constraint(equalTo: scoreContainer.centerYAnchor),
+            teamBScoreLabel.widthAnchor.constraint(equalToConstant: 42),
+
+            // 세부내용 (오른쪽 정렬)
+            detailLabel.leadingAnchor.constraint(equalTo: scoreContainer.trailingAnchor, constant: 8),
+            detailLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12),
             detailLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
         ])
     }
 
     func configure(round: Round, score: RoundScore) {
-        roundLabel.text = "\(L10n.roundPrefix)\(round.roundNumber)"
+        roundLabel.text = "R\(round.roundNumber)"
         teamAScoreLabel.text = score.teamADisplay
         teamBScoreLabel.text = score.teamBDisplay
 
         var details: [String] = []
         if round.isOneTwoFinish, let team = round.oneTwoFinishTeam {
-            details.append("\(team.displayName) \(L10n.oneTwo)")
+            details.append("\(team.shortName) 1-2")
         }
         for call in round.tichuCalls {
             let result = call.isSuccess ? "O" : "X"
-            details.append("\(call.player.displayName) \(call.displayName)\(result)")
+            let tichuShort = call.isLarge ? "L" : "S"
+            details.append("\(call.player.displayName)\(tichuShort)\(result)")
         }
-        detailLabel.text = details.joined(separator: ", ")
+        detailLabel.text = details.joined(separator: " ")
     }
 }
