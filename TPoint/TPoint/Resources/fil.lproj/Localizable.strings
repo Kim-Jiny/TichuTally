@@ -33,6 +33,7 @@
 "final_score" = "Final na Score";
 "confirm" = "OK";
 "cancel" = "Kanselahin";
+"delete" = "Burahin";
 "new_game_confirm" = "I-reset ang kasalukuyang laro at magsimula ng bago?";
 
 // Player

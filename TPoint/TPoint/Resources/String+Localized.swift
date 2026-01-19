@@ -47,6 +47,7 @@ enum L10n {
     static let finalScore = "final_score".localized
     static let confirm = "confirm".localized
     static let cancel = "cancel".localized
+    static let delete = "delete".localized
     static let newGameConfirm = "new_game_confirm".localized
 
     static func winnerMessage(_ team: String) -> String {

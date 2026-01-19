@@ -102,4 +102,37 @@ class GameViewModel(
     fun newGame() {
         _state.value = GameState()
     }
+
+    fun deleteRound(index: Int) {
+        _state.update { currentState ->
+            val rounds = currentState.game.rounds
+            if (index < 0 || index >= rounds.size) return@update currentState
+
+            val deletedScore = currentState.roundScores.getOrNull(index) ?: return@update currentState
+
+            // 점수 차감
+            val newTeamA = currentState.game.teamA.copy(
+                totalScore = currentState.game.teamA.totalScore - deletedScore.teamAScore
+            )
+            val newTeamB = currentState.game.teamB.copy(
+                totalScore = currentState.game.teamB.totalScore - deletedScore.teamBScore
+            )
+
+            // 라운드 삭제 및 번호 재정렬
+            val newRounds = rounds.toMutableList().apply { removeAt(index) }
+                .mapIndexed { i, round -> round.copy(roundNumber = i + 1) }
+
+            val newRoundScores = currentState.roundScores.toMutableList().apply { removeAt(index) }
+
+            currentState.copy(
+                game = currentState.game.copy(
+                    teamA = newTeamA,
+                    teamB = newTeamB,
+                    rounds = newRounds
+                ),
+                roundScores = newRoundScores,
+                showWinnerDialog = false
+            )
+        }
+    }
 }

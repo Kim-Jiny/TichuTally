@@ -90,7 +90,8 @@ fun GameScreen(
             // Score History Card
             ScoreHistoryCard(
                 rounds = state.rounds,
-                scores = state.roundScores
+                scores = state.roundScores,
+                onDeleteRound = { viewModel.deleteRound(it) }
             )
 
             // New Game Button

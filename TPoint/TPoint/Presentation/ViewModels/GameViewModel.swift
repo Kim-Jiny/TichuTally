@@ -115,6 +115,33 @@ final class GameViewModel {
         delegate?.gameDidUpdate()
     }
 
+    func deleteRound(at index: Int) {
+        guard index >= 0 && index < game.rounds.count else { return }
+
+        let round = game.rounds[index]
+        let score = calculateScoreUseCase.calculate(round: round)
+
+        // 점수 차감
+        game.teamA.totalScore -= score.teamAScore
+        game.teamB.totalScore -= score.teamBScore
+
+        // 라운드 삭제
+        game.rounds.remove(at: index)
+
+        // 라운드 번호 재정렬
+        for i in index..<game.rounds.count {
+            game.rounds[i] = Round(
+                roundNumber: i + 1,
+                teamACardScore: game.rounds[i].teamACardScore,
+                isOneTwoFinish: game.rounds[i].isOneTwoFinish,
+                oneTwoFinishTeam: game.rounds[i].oneTwoFinishTeam,
+                tichuCalls: game.rounds[i].tichuCalls
+            )
+        }
+
+        delegate?.gameDidUpdate()
+    }
+
     // MARK: - Private Methods
 
     private func resetCurrentRoundInput() {

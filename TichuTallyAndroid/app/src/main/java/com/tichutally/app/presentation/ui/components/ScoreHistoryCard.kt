@@ -1,10 +1,13 @@
 package com.tichutally.app.presentation.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -28,6 +31,7 @@ import com.tichutally.app.presentation.ui.theme.*
 fun ScoreHistoryCard(
     rounds: List<Round>,
     scores: List<RoundScore>,
+    onDeleteRound: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -104,6 +108,7 @@ fun ScoreHistoryCard(
                         .padding(horizontal = 12.dp, vertical = 10.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+                    Spacer(modifier = Modifier.width(28.dp))
                     Text(
                         text = "#",
                         fontSize = 12.sp,
@@ -148,7 +153,8 @@ fun ScoreHistoryCard(
                         RoundHistoryItem(
                             round = round,
                             score = scores.getOrNull(index) ?: RoundScore(0, 0),
-                            isEven = index % 2 == 0
+                            isEven = index % 2 == 0,
+                            onDelete = { onDeleteRound(index) }
                         )
                     }
                 }
@@ -161,7 +167,8 @@ fun ScoreHistoryCard(
 private fun RoundHistoryItem(
     round: Round,
     score: RoundScore,
-    isEven: Boolean
+    isEven: Boolean,
+    onDelete: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -171,6 +178,19 @@ private fun RoundHistoryItem(
             .padding(horizontal = 12.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        // Delete button
+        Icon(
+            imageVector = Icons.Default.Close,
+            contentDescription = "Delete",
+            tint = TextHint,
+            modifier = Modifier
+                .size(20.dp)
+                .clip(RoundedCornerShape(4.dp))
+                .clickable { onDelete() }
+        )
+
+        Spacer(modifier = Modifier.width(8.dp))
+
         // Round number badge
         Box(
             modifier = Modifier

@@ -33,6 +33,7 @@
 "final_score" = "Endergebnis";
 "confirm" = "OK";
 "cancel" = "Abbrechen";
+"delete" = "Löschen";
 "new_game_confirm" = "Aktuelles Spiel zurücksetzen und ein neues starten?";
 
 // Player

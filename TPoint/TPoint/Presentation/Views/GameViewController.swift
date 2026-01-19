@@ -104,6 +104,7 @@ final class GameViewController: UIViewController {
         contentView.addSubview(newGameButton)
 
         roundInputView.delegate = self
+        scoreHistoryView.delegate = self
 
         // Banner height (will be updated after ad loads)
         bannerHeightConstraint = bannerAdView.heightAnchor.constraint(equalToConstant: 50)
@@ -243,5 +244,13 @@ extension GameViewController: RoundInputViewDelegate {
     func roundInputViewDidTapAddRound(_ view: RoundInputView) {
         viewModel.addRound()
         roundInputView.reset()
+    }
+}
+
+// MARK: - ScoreHistoryViewDelegate
+
+extension GameViewController: ScoreHistoryViewDelegate {
+    func scoreHistoryView(_ view: ScoreHistoryView, didDeleteRoundAt index: Int) {
+        viewModel.deleteRound(at: index)
     }
 }

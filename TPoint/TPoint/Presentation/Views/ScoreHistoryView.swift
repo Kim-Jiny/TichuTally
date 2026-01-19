@@ -5,7 +5,15 @@
 
 import UIKit
 
+protocol ScoreHistoryViewDelegate: AnyObject {
+    func scoreHistoryView(_ view: ScoreHistoryView, didDeleteRoundAt index: Int)
+}
+
 final class ScoreHistoryView: UIView {
+
+    // MARK: - Delegate
+
+    weak var delegate: ScoreHistoryViewDelegate?
 
     // MARK: - UI Components
 
@@ -105,15 +113,35 @@ extension ScoreHistoryView: UITableViewDataSource {
         let round = rounds[indexPath.row]
         let score = scores[indexPath.row]
         cell.configure(round: round, score: score)
+        cell.onDeleteTapped = { [weak self] in
+            guard let self = self else { return }
+            self.delegate?.scoreHistoryView(self, didDeleteRoundAt: indexPath.row)
+        }
         return cell
     }
 }
+
 
 // MARK: - ScoreHistoryCell
 
 final class ScoreHistoryCell: UITableViewCell {
 
     static let identifier = "ScoreHistoryCell"
+
+    // MARK: - Callback
+
+    var onDeleteTapped: (() -> Void)?
+
+    // MARK: - UI Components
+
+    private let deleteButton: UIButton = {
+        let button = UIButton(type: .system)
+        let config = UIImage.SymbolConfiguration(pointSize: 12, weight: .medium)
+        button.setImage(UIImage(systemName: "xmark", withConfiguration: config), for: .normal)
+        button.tintColor = .tertiaryLabel
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
 
     // 라운드 번호
     private let roundLabel: UILabel = {
@@ -185,6 +213,7 @@ final class ScoreHistoryCell: UITableViewCell {
         backgroundColor = .clear
         selectionStyle = .none
 
+        contentView.addSubview(deleteButton)
         contentView.addSubview(roundLabel)
         contentView.addSubview(scoreContainer)
         contentView.addSubview(detailLabel)
@@ -193,11 +222,19 @@ final class ScoreHistoryCell: UITableViewCell {
         scoreContainer.addSubview(separatorLabel)
         scoreContainer.addSubview(teamBScoreLabel)
 
+        deleteButton.addTarget(self, action: #selector(deleteButtonTapped), for: .touchUpInside)
+
         NSLayoutConstraint.activate([
-            // 라운드 번호 (왼쪽 고정, 너비 36)
-            roundLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
+            // 삭제 버튼 (왼쪽 끝)
+            deleteButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
+            deleteButton.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            deleteButton.widthAnchor.constraint(equalToConstant: 24),
+            deleteButton.heightAnchor.constraint(equalToConstant: 24),
+
+            // 라운드 번호 (삭제 버튼 옆, 너비 32)
+            roundLabel.leadingAnchor.constraint(equalTo: deleteButton.trailingAnchor, constant: 4),
             roundLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            roundLabel.widthAnchor.constraint(equalToConstant: 36),
+            roundLabel.widthAnchor.constraint(equalToConstant: 32),
 
             // 점수 컨테이너 (라운드 옆, 고정 너비 100)
             scoreContainer.leadingAnchor.constraint(equalTo: roundLabel.trailingAnchor, constant: 4),
@@ -223,6 +260,10 @@ final class ScoreHistoryCell: UITableViewCell {
             detailLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12),
             detailLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
         ])
+    }
+
+    @objc private func deleteButtonTapped() {
+        onDeleteTapped?()
     }
 
     func configure(round: Round, score: RoundScore) {
