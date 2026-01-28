@@ -38,3 +38,24 @@
 
 // Player
 "player_format" = "%@ %d";
+
+// Settings
+"settings" = "การตั้งค่า";
+"theme" = "ธีม";
+"theme_system" = "ระบบ";
+"theme_light" = "สว่าง";
+"theme_dark" = "มืด";
+"target_score" = "คะแนนเป้าหมาย";
+"custom_score" = "กำหนดเอง";
+"save" = "บันทึก";
+
+// Round
+"round_number" = "รอบ %d";
+"no_records_title" = "ไม่มีบันทึก";
+
+// Winner
+"win" = "WIN";
+"winner" = "ผู้ชนะ";
+"vs" = "VS";
+"details" = "รายละเอียด";
+"current_score" = "คะแนนปัจจุบัน";

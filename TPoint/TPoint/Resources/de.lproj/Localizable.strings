@@ -38,3 +38,24 @@
 
 // Player
 "player_format" = "%@ %d";
+
+// Settings
+"settings" = "Einstellungen";
+"theme" = "Thema";
+"theme_system" = "System";
+"theme_light" = "Hell";
+"theme_dark" = "Dunkel";
+"target_score" = "Zielpunktzahl";
+"custom_score" = "Benutzerdefiniert";
+"save" = "Speichern";
+
+// Round
+"round_number" = "Runde %d";
+"no_records_title" = "Keine Einträge";
+
+// Winner
+"win" = "WIN";
+"winner" = "GEWINNER";
+"vs" = "VS";
+"details" = "Details";
+"current_score" = "Aktueller Punktestand";

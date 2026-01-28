@@ -13,9 +13,18 @@ final class TichuCallView: UIView {
 
     // MARK: - UI Components
 
-    private let playerLabel: UILabel = {
+    private let teamBadge: UIView = {
+        let view = UIView()
+        view.layer.cornerRadius = 4
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+
+    private let teamLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 13, weight: .semibold)
+        label.font = .systemFont(ofSize: 12, weight: .bold)
+        label.textColor = .white
+        label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -23,10 +32,9 @@ final class TichuCallView: UIView {
     private let smallTichuButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("S", for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 12, weight: .bold)
-        button.layer.cornerRadius = 4
-        button.layer.borderWidth = 1
-        button.layer.borderColor = UIColor.systemGray3.cgColor
+        button.titleLabel?.font = .systemFont(ofSize: 13, weight: .bold)
+        button.layer.cornerRadius = 6
+        button.layer.borderWidth = 1.5
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -34,29 +42,26 @@ final class TichuCallView: UIView {
     private let largeTichuButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("L", for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 12, weight: .bold)
-        button.layer.cornerRadius = 4
-        button.layer.borderWidth = 1
-        button.layer.borderColor = UIColor.systemGray3.cgColor
+        button.titleLabel?.font = .systemFont(ofSize: 13, weight: .bold)
+        button.layer.cornerRadius = 6
+        button.layer.borderWidth = 1.5
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
 
     private let successButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("O", for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 12, weight: .bold)
-        button.layer.cornerRadius = 4
-        button.layer.borderWidth = 1
-        button.layer.borderColor = UIColor.systemGray3.cgColor
-        button.setTitleColor(.systemGray3, for: .normal)
+        button.setTitle("-", for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 13, weight: .bold)
+        button.layer.cornerRadius = 6
+        button.layer.borderWidth = 1.5
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
 
     // MARK: - Properties
 
-    let player: Player
+    let team: TeamType
     weak var delegate: TichuCallViewDelegate?
 
     private var selectedType: TichuType? {
@@ -77,10 +82,23 @@ final class TichuCallView: UIView {
 
     private var isSilentUpdate: Bool = false
 
+    // Compatibility properties for RoundInputView
+    var player: Player {
+        Player(team: team, position: 0)
+    }
+
+    var hasTichuCall: Bool {
+        selectedType != nil
+    }
+
+    var currentTichuType: TichuType? {
+        selectedType
+    }
+
     // MARK: - Initialization
 
-    init(player: Player) {
-        self.player = player
+    init(team: TeamType) {
+        self.team = team
         super.init(frame: .zero)
         setupUI()
         setupActions()
@@ -90,41 +108,66 @@ final class TichuCallView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        if traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
+            updateButtonStates()
+            updateTeamBadgeColor()
+        }
+    }
+
     // MARK: - Setup
 
     private func setupUI() {
-        playerLabel.text = player.displayName
-        playerLabel.textColor = player.team == .teamA ? .systemBlue : .systemRed
+        backgroundColor = AppColors.cardBackgroundElevated
+        layer.cornerRadius = 10
+        layer.shadowColor = UIColor.black.cgColor
+        layer.shadowOffset = CGSize(width: 0, height: 1)
+        layer.shadowRadius = 3
+        layer.shadowOpacity = 0.08
 
-        addSubview(playerLabel)
+        addSubview(teamBadge)
+        teamBadge.addSubview(teamLabel)
         addSubview(smallTichuButton)
         addSubview(largeTichuButton)
         addSubview(successButton)
 
+        teamLabel.text = team.shortName
+        updateTeamBadgeColor()
+
         NSLayoutConstraint.activate([
-            heightAnchor.constraint(equalToConstant: 32),
+            heightAnchor.constraint(equalToConstant: 44),
 
-            playerLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
-            playerLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
+            teamBadge.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
+            teamBadge.centerYAnchor.constraint(equalTo: centerYAnchor),
+            teamBadge.widthAnchor.constraint(equalToConstant: 28),
+            teamBadge.heightAnchor.constraint(equalToConstant: 28),
 
-            smallTichuButton.leadingAnchor.constraint(equalTo: playerLabel.trailingAnchor, constant: 6),
+            teamLabel.centerXAnchor.constraint(equalTo: teamBadge.centerXAnchor),
+            teamLabel.centerYAnchor.constraint(equalTo: teamBadge.centerYAnchor),
+
+            smallTichuButton.leadingAnchor.constraint(equalTo: teamBadge.trailingAnchor, constant: 8),
             smallTichuButton.centerYAnchor.constraint(equalTo: centerYAnchor),
-            smallTichuButton.widthAnchor.constraint(equalToConstant: 28),
-            smallTichuButton.heightAnchor.constraint(equalToConstant: 28),
+            smallTichuButton.widthAnchor.constraint(equalToConstant: 36),
+            smallTichuButton.heightAnchor.constraint(equalToConstant: 32),
 
-            largeTichuButton.leadingAnchor.constraint(equalTo: smallTichuButton.trailingAnchor, constant: 4),
+            largeTichuButton.leadingAnchor.constraint(equalTo: smallTichuButton.trailingAnchor, constant: 6),
             largeTichuButton.centerYAnchor.constraint(equalTo: centerYAnchor),
-            largeTichuButton.widthAnchor.constraint(equalToConstant: 28),
-            largeTichuButton.heightAnchor.constraint(equalToConstant: 28),
+            largeTichuButton.widthAnchor.constraint(equalToConstant: 36),
+            largeTichuButton.heightAnchor.constraint(equalToConstant: 32),
 
-            successButton.leadingAnchor.constraint(equalTo: largeTichuButton.trailingAnchor, constant: 4),
+            successButton.leadingAnchor.constraint(equalTo: largeTichuButton.trailingAnchor, constant: 6),
             successButton.centerYAnchor.constraint(equalTo: centerYAnchor),
-            successButton.widthAnchor.constraint(equalToConstant: 28),
-            successButton.heightAnchor.constraint(equalToConstant: 28),
-            successButton.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor)
+            successButton.widthAnchor.constraint(equalToConstant: 36),
+            successButton.heightAnchor.constraint(equalToConstant: 32),
+            successButton.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor, constant: -8)
         ])
 
         updateButtonStates()
+    }
+
+    private func updateTeamBadgeColor() {
+        teamBadge.backgroundColor = AppColors.teamColor(for: team)
     }
 
     private func setupActions() {
@@ -136,6 +179,7 @@ final class TichuCallView: UIView {
     // MARK: - Actions
 
     @objc private func smallTichuTapped() {
+        animateButton(smallTichuButton)
         if selectedType == .small {
             selectedType = nil
         } else {
@@ -144,6 +188,7 @@ final class TichuCallView: UIView {
     }
 
     @objc private func largeTichuTapped() {
+        animateButton(largeTichuButton)
         if selectedType == .large {
             selectedType = nil
         } else {
@@ -153,7 +198,18 @@ final class TichuCallView: UIView {
 
     @objc private func successTapped() {
         guard selectedType != nil else { return }
+        animateButton(successButton)
         isSuccess.toggle()
+    }
+
+    private func animateButton(_ button: UIButton) {
+        UIView.animate(withDuration: 0.1, animations: {
+            button.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
+        }) { _ in
+            UIView.animate(withDuration: 0.1) {
+                button.transform = .identity
+            }
+        }
     }
 
     // MARK: - Private Methods
@@ -163,35 +219,38 @@ final class TichuCallView: UIView {
         let isLargeSelected = selectedType == .large
         let hasTichuCall = selectedType != nil
 
-        // 스몰 티츄 버튼
-        smallTichuButton.backgroundColor = isSmallSelected ? .systemBlue : .clear
-        smallTichuButton.setTitleColor(isSmallSelected ? .white : .systemBlue, for: .normal)
-        smallTichuButton.layer.borderColor = isSmallSelected ? UIColor.systemBlue.cgColor : UIColor.systemGray3.cgColor
+        let teamColor = AppColors.teamColor(for: team)
 
-        // 라지 티츄 버튼
-        largeTichuButton.backgroundColor = isLargeSelected ? .systemOrange : .clear
-        largeTichuButton.setTitleColor(isLargeSelected ? .white : .systemOrange, for: .normal)
-        largeTichuButton.layer.borderColor = isLargeSelected ? UIColor.systemOrange.cgColor : UIColor.systemGray3.cgColor
+        // Small Tichu button
+        smallTichuButton.backgroundColor = isSmallSelected ? teamColor : .clear
+        smallTichuButton.setTitleColor(isSmallSelected ? .white : teamColor, for: .normal)
+        smallTichuButton.layer.borderColor = (isSmallSelected ? teamColor : AppColors.textHint).cgColor
 
-        // 성공 버튼
+        // Large Tichu button
+        let orangeColor = AppColors.largeTichuColor
+        largeTichuButton.backgroundColor = isLargeSelected ? orangeColor : .clear
+        largeTichuButton.setTitleColor(isLargeSelected ? .white : orangeColor, for: .normal)
+        largeTichuButton.layer.borderColor = (isLargeSelected ? orangeColor : AppColors.textHint).cgColor
+
+        // Success/Fail button
         if hasTichuCall {
             if isSuccess {
-                successButton.backgroundColor = .systemGreen
+                successButton.backgroundColor = AppColors.successColor
                 successButton.setTitleColor(.white, for: .normal)
                 successButton.setTitle("O", for: .normal)
-                successButton.layer.borderColor = UIColor.systemGreen.cgColor
+                successButton.layer.borderColor = AppColors.successColor.cgColor
             } else {
-                successButton.backgroundColor = .systemRed
+                successButton.backgroundColor = AppColors.failureColor
                 successButton.setTitleColor(.white, for: .normal)
                 successButton.setTitle("X", for: .normal)
-                successButton.layer.borderColor = UIColor.systemRed.cgColor
+                successButton.layer.borderColor = AppColors.failureColor.cgColor
             }
             successButton.isEnabled = true
         } else {
             successButton.backgroundColor = .clear
-            successButton.setTitleColor(.systemGray3, for: .normal)
+            successButton.setTitleColor(AppColors.textHint, for: .normal)
             successButton.setTitle("-", for: .normal)
-            successButton.layer.borderColor = UIColor.systemGray3.cgColor
+            successButton.layer.borderColor = AppColors.textHint.cgColor
             successButton.isEnabled = false
         }
     }
@@ -212,13 +271,5 @@ final class TichuCallView: UIView {
         isSilentUpdate = silent
         isSuccess = success
         isSilentUpdate = false
-    }
-
-    var hasTichuCall: Bool {
-        selectedType != nil
-    }
-
-    var currentTichuType: TichuType? {
-        selectedType
     }
 }

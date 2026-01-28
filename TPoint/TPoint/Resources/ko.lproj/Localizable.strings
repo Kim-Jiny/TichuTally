@@ -38,3 +38,24 @@
 
 // Player
 "player_format" = "%@ %d";
+
+// Settings
+"settings" = "설정";
+"theme" = "테마";
+"theme_system" = "시스템";
+"theme_light" = "라이트";
+"theme_dark" = "다크";
+"target_score" = "목표 점수";
+"custom_score" = "직접 입력";
+"save" = "저장";
+
+// Round
+"round_number" = "Round %d";
+"no_records_title" = "기록 없음";
+
+// Winner
+"win" = "WIN";
+"winner" = "승리";
+"vs" = "VS";
+"details" = "상세";
+"current_score" = "현재 점수";

@@ -38,3 +38,24 @@
 
 // Player
 "player_format" = "%@ %d";
+
+// Settings
+"settings" = "Configuración";
+"theme" = "Tema";
+"theme_system" = "Sistema";
+"theme_light" = "Claro";
+"theme_dark" = "Oscuro";
+"target_score" = "Puntuación Objetivo";
+"custom_score" = "Personalizado";
+"save" = "Guardar";
+
+// Round
+"round_number" = "Ronda %d";
+"no_records_title" = "Sin Registros";
+
+// Winner
+"win" = "WIN";
+"winner" = "GANADOR";
+"vs" = "VS";
+"details" = "Detalles";
+"current_score" = "Puntuación Actual";

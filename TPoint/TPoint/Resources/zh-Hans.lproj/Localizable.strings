@@ -38,3 +38,24 @@
 
 // Player
 "player_format" = "%@ %d";
+
+// Settings
+"settings" = "设置";
+"theme" = "主题";
+"theme_system" = "系统";
+"theme_light" = "浅色";
+"theme_dark" = "深色";
+"target_score" = "目标分数";
+"custom_score" = "自定义";
+"save" = "保存";
+
+// Round
+"round_number" = "Round %d";
+"no_records_title" = "暂无记录";
+
+// Winner
+"win" = "WIN";
+"winner" = "胜利";
+"vs" = "VS";
+"details" = "详情";
+"current_score" = "当前分数";

@@ -9,7 +9,7 @@ struct Game {
     var teamA: Team
     var teamB: Team
     var rounds: [Round]
-    let targetScore: Int
+    var targetScore: Int
 
     init(targetScore: Int = 1000) {
         self.teamA = Team(type: .teamA)

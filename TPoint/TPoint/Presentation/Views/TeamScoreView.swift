@@ -9,9 +9,11 @@ final class TeamScoreView: UIView {
 
     // MARK: - UI Components
 
+    private let gradientLayer = CAGradientLayer()
+
     private let teamLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 18, weight: .medium)
+        label.font = .systemFont(ofSize: 16, weight: .semibold)
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -19,7 +21,7 @@ final class TeamScoreView: UIView {
 
     private let scoreLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 48, weight: .bold)
+        label.font = .systemFont(ofSize: 52, weight: .bold)
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -27,8 +29,26 @@ final class TeamScoreView: UIView {
 
     private let pointsLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 16)
-        label.textColor = .secondaryLabel
+        label.font = .systemFont(ofSize: 14)
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+
+    private let winBadge: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor(hex: 0xFFD700)
+        view.layer.cornerRadius = 12
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.isHidden = true
+        return view
+    }()
+
+    private let winLabel: UILabel = {
+        let label = UILabel()
+        label.text = L10n.win
+        label.font = .systemFont(ofSize: 11, weight: .bold)
+        label.textColor = .black
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -37,6 +57,7 @@ final class TeamScoreView: UIView {
     // MARK: - Properties
 
     private let teamType: TeamType
+    private var isWinner: Bool = false
 
     // MARK: - Initialization
 
@@ -50,48 +71,135 @@ final class TeamScoreView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        gradientLayer.frame = bounds
+        updateGradientCornerRadius()
+    }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        if traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
+            updateColors()
+            layer.shadowColor = UIColor.black.cgColor
+        }
+    }
+
     // MARK: - Setup
 
     private func setupUI() {
-        backgroundColor = teamType == .teamA ? .systemBlue.withAlphaComponent(0.1) : .systemRed.withAlphaComponent(0.1)
-        layer.cornerRadius = 12
+        layer.cornerRadius = 16
+        layer.masksToBounds = false
+        clipsToBounds = true
+
+        // Shadow
+        layer.shadowColor = UIColor.black.cgColor
+        layer.shadowOffset = CGSize(width: 0, height: 2)
+        layer.shadowRadius = 8
+        layer.shadowOpacity = 0.1
+
+        // Gradient background
+        layer.insertSublayer(gradientLayer, at: 0)
 
         addSubview(teamLabel)
         addSubview(scoreLabel)
         addSubview(pointsLabel)
+        addSubview(winBadge)
+        winBadge.addSubview(winLabel)
 
-        teamLabel.text = teamType.displayName
-        teamLabel.textColor = teamType == .teamA ? .systemBlue : .systemRed
-        scoreLabel.textColor = teamType == .teamA ? .systemBlue : .systemRed
-        pointsLabel.text = L10n.pointsSuffix
+        updateColors()
 
         NSLayoutConstraint.activate([
             teamLabel.topAnchor.constraint(equalTo: topAnchor, constant: 12),
             teamLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
 
-            scoreLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
+            scoreLabel.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 4),
             scoreLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
 
-            pointsLabel.topAnchor.constraint(equalTo: scoreLabel.bottomAnchor, constant: 4),
+            pointsLabel.topAnchor.constraint(equalTo: scoreLabel.bottomAnchor, constant: 2),
             pointsLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
-            pointsLabel.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -12)
+            pointsLabel.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -12),
+
+            winBadge.topAnchor.constraint(equalTo: topAnchor, constant: 8),
+            winBadge.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8),
+            winBadge.widthAnchor.constraint(equalToConstant: 40),
+            winBadge.heightAnchor.constraint(equalToConstant: 24),
+
+            winLabel.centerXAnchor.constraint(equalTo: winBadge.centerXAnchor),
+            winLabel.centerYAnchor.constraint(equalTo: winBadge.centerYAnchor)
         ])
+    }
+
+    private func updateColors() {
+        let teamColor = AppColors.teamColor(for: teamType)
+        let lightColor = AppColors.teamColorLight(for: teamType)
+        let mediumColor = AppColors.teamColorMedium(for: teamType)
+
+        teamLabel.text = teamType.displayName
+        teamLabel.textColor = teamColor
+        scoreLabel.textColor = teamColor
+        pointsLabel.text = L10n.pointsSuffix
+        pointsLabel.textColor = AppColors.textSecondary
+
+        // Gradient from light to medium
+        gradientLayer.colors = [lightColor.cgColor, mediumColor.cgColor]
+        gradientLayer.startPoint = CGPoint(x: 0.5, y: 0)
+        gradientLayer.endPoint = CGPoint(x: 0.5, y: 1)
+    }
+
+    private func updateGradientCornerRadius() {
+        let maskPath = UIBezierPath(roundedRect: bounds, cornerRadius: 16)
+        let maskLayer = CAShapeLayer()
+        maskLayer.path = maskPath.cgPath
+        gradientLayer.mask = maskLayer
     }
 
     // MARK: - Public Methods
 
     func updateScore(_ score: Int) {
-        scoreLabel.text = "\(score)"
+        let previousScore = Int(scoreLabel.text ?? "0") ?? 0
+
+        UIView.transition(with: scoreLabel, duration: 0.3, options: .transitionCrossDissolve) {
+            self.scoreLabel.text = "\(score)"
+        }
+
+        // Scale animation for score change
+        if score != previousScore {
+            UIView.animate(withDuration: 0.15, animations: {
+                self.scoreLabel.transform = CGAffineTransform(scaleX: 1.1, y: 1.1)
+            }) { _ in
+                UIView.animate(withDuration: 0.15) {
+                    self.scoreLabel.transform = .identity
+                }
+            }
+        }
     }
 
-    func setWinner(_ isWinner: Bool) {
-        if isWinner {
-            backgroundColor = teamType == .teamA ? .systemBlue.withAlphaComponent(0.3) : .systemRed.withAlphaComponent(0.3)
+    func setWinner(_ winner: Bool) {
+        isWinner = winner
+        winBadge.isHidden = !winner
+
+        if winner {
+            // Winner animation
             layer.borderWidth = 3
-            layer.borderColor = teamType == .teamA ? UIColor.systemBlue.cgColor : UIColor.systemRed.cgColor
+            layer.borderColor = AppColors.teamColor(for: teamType).cgColor
+
+            UIView.animate(withDuration: 0.3, delay: 0, options: [.autoreverse, .repeat], animations: {
+                self.winBadge.transform = CGAffineTransform(scaleX: 1.1, y: 1.1)
+            })
+
+            // Scale animation
+            UIView.animate(withDuration: 0.3) {
+                self.transform = CGAffineTransform(scaleX: 1.02, y: 1.02)
+            }
         } else {
-            backgroundColor = teamType == .teamA ? .systemBlue.withAlphaComponent(0.1) : .systemRed.withAlphaComponent(0.1)
             layer.borderWidth = 0
+            winBadge.layer.removeAllAnimations()
+            winBadge.transform = .identity
+
+            UIView.animate(withDuration: 0.3) {
+                self.transform = .identity
+            }
         }
     }
 }

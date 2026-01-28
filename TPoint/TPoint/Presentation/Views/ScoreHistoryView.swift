@@ -17,27 +17,86 @@ final class ScoreHistoryView: UIView {
 
     // MARK: - UI Components
 
-    private let titleLabel: UILabel = {
+    private let headerView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+
+    private let headerNumberLabel: UILabel = {
         let label = UILabel()
-        label.text = L10n.roundHistory
-        label.font = .systemFont(ofSize: 16, weight: .semibold)
+        label.text = "#"
+        label.font = .systemFont(ofSize: 12, weight: .semibold)
+        label.textColor = AppColors.textHint
+        label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
 
-    private let tableView: UITableView = {
-        let table = UITableView()
-        table.register(ScoreHistoryCell.self, forCellReuseIdentifier: ScoreHistoryCell.identifier)
-        table.separatorStyle = .singleLine
-        table.translatesAutoresizingMaskIntoConstraints = false
-        return table
+    private let headerTeamALabel: UILabel = {
+        let label = UILabel()
+        label.text = "A"
+        label.font = .systemFont(ofSize: 12, weight: .bold)
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
     }()
 
-    private let emptyLabel: UILabel = {
+    private let headerTeamBLabel: UILabel = {
         let label = UILabel()
-        label.text = L10n.noRecords
-        label.font = .systemFont(ofSize: 14)
-        label.textColor = .tertiaryLabel
+        label.text = "B"
+        label.font = .systemFont(ofSize: 12, weight: .bold)
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+
+    private let headerDetailsLabel: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 12, weight: .semibold)
+        label.textColor = AppColors.textHint
+        label.textAlignment = .right
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+
+    private let contentStackView: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.spacing = 0
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
+    }()
+
+    private let emptyStateContainer: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+
+    private let emptyIconImageView: UIImageView = {
+        let config = UIImage.SymbolConfiguration(pointSize: 40, weight: .light)
+        let image = UIImage(systemName: "list.bullet.clipboard", withConfiguration: config)
+        let imageView = UIImageView(image: image)
+        imageView.tintColor = AppColors.textHint
+        imageView.contentMode = .scaleAspectFit
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
+
+    private let emptyTitleLabel: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 14, weight: .medium)
+        label.textColor = AppColors.textSecondary
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+
+    private let emptySubtitleLabel: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 12)
+        label.textColor = AppColors.textHint
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -47,6 +106,9 @@ final class ScoreHistoryView: UIView {
 
     private var rounds: [Round] = []
     private var scores: [RoundScore] = []
+
+    private var contentBottomConstraint: NSLayoutConstraint?
+    private var emptyBottomConstraint: NSLayoutConstraint?
 
     // MARK: - Initialization
 
@@ -59,33 +121,102 @@ final class ScoreHistoryView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        if traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
+            updateColors()
+            layer.shadowColor = UIColor.black.cgColor
+        }
+    }
+
     // MARK: - Setup
 
     private func setupUI() {
-        backgroundColor = .systemBackground
-        layer.cornerRadius = 12
-        layer.borderWidth = 1
-        layer.borderColor = UIColor.systemGray5.cgColor
+        backgroundColor = AppColors.cardBackgroundElevated
+        layer.cornerRadius = 16
+        layer.shadowColor = UIColor.black.cgColor
+        layer.shadowOffset = CGSize(width: 0, height: 2)
+        layer.shadowRadius = 8
+        layer.shadowOpacity = 0.1
 
-        addSubview(titleLabel)
-        addSubview(tableView)
-        addSubview(emptyLabel)
+        // Header
+        headerView.addSubview(headerNumberLabel)
+        headerView.addSubview(headerTeamALabel)
+        headerView.addSubview(headerTeamBLabel)
+        headerView.addSubview(headerDetailsLabel)
 
-        tableView.dataSource = self
-        tableView.backgroundColor = .clear
+        // Empty state
+        emptyStateContainer.addSubview(emptyIconImageView)
+        emptyStateContainer.addSubview(emptyTitleLabel)
+        emptyStateContainer.addSubview(emptySubtitleLabel)
+
+        addSubview(headerView)
+        addSubview(contentStackView)
+        addSubview(emptyStateContainer)
+
+        headerDetailsLabel.text = L10n.details
+        emptyTitleLabel.text = L10n.noRecordsTitle
+        emptySubtitleLabel.text = L10n.noRecords
+
+        updateColors()
+
+        // Bottom constraints (will toggle active state)
+        contentBottomConstraint = contentStackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -12)
+        emptyBottomConstraint = emptyStateContainer.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16)
 
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 12),
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+            // Header
+            headerView.topAnchor.constraint(equalTo: topAnchor, constant: 12),
+            headerView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
+            headerView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),
+            headerView.heightAnchor.constraint(equalToConstant: 24),
 
-            tableView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
-            tableView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            headerNumberLabel.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 32),
+            headerNumberLabel.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
+            headerNumberLabel.widthAnchor.constraint(equalToConstant: 32),
 
-            emptyLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
-            emptyLabel.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 20)
+            headerTeamALabel.leadingAnchor.constraint(equalTo: headerNumberLabel.trailingAnchor, constant: 4),
+            headerTeamALabel.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
+            headerTeamALabel.widthAnchor.constraint(equalToConstant: 42),
+
+            headerTeamBLabel.leadingAnchor.constraint(equalTo: headerTeamALabel.trailingAnchor, constant: 16),
+            headerTeamBLabel.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
+            headerTeamBLabel.widthAnchor.constraint(equalToConstant: 42),
+
+            headerDetailsLabel.trailingAnchor.constraint(equalTo: headerView.trailingAnchor),
+            headerDetailsLabel.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
+
+            // Content stack view
+            contentStackView.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: 4),
+            contentStackView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            contentStackView.trailingAnchor.constraint(equalTo: trailingAnchor),
+
+            // Empty state
+            emptyStateContainer.topAnchor.constraint(equalTo: headerView.bottomAnchor),
+            emptyStateContainer.leadingAnchor.constraint(equalTo: leadingAnchor),
+            emptyStateContainer.trailingAnchor.constraint(equalTo: trailingAnchor),
+            emptyStateContainer.heightAnchor.constraint(equalToConstant: 120),
+
+            emptyIconImageView.centerXAnchor.constraint(equalTo: emptyStateContainer.centerXAnchor),
+            emptyIconImageView.topAnchor.constraint(equalTo: emptyStateContainer.topAnchor, constant: 16),
+            emptyIconImageView.widthAnchor.constraint(equalToConstant: 48),
+            emptyIconImageView.heightAnchor.constraint(equalToConstant: 48),
+
+            emptyTitleLabel.topAnchor.constraint(equalTo: emptyIconImageView.bottomAnchor, constant: 8),
+            emptyTitleLabel.centerXAnchor.constraint(equalTo: emptyStateContainer.centerXAnchor),
+
+            emptySubtitleLabel.topAnchor.constraint(equalTo: emptyTitleLabel.bottomAnchor, constant: 4),
+            emptySubtitleLabel.centerXAnchor.constraint(equalTo: emptyStateContainer.centerXAnchor)
         ])
+
+        // Initial state: empty
+        emptyBottomConstraint?.isActive = true
+        contentBottomConstraint?.isActive = false
+    }
+
+    private func updateColors() {
+        headerTeamALabel.textColor = AppColors.teamAColor
+        headerTeamBLabel.textColor = AppColors.teamBColor
     }
 
     // MARK: - Public Methods
@@ -93,40 +224,45 @@ final class ScoreHistoryView: UIView {
     func updateHistory(rounds: [Round], scores: [RoundScore]) {
         self.rounds = rounds
         self.scores = scores
-        tableView.reloadData()
-        emptyLabel.isHidden = !rounds.isEmpty
+
+        // Remove all existing row views
+        contentStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+
+        let isEmpty = rounds.isEmpty
+
+        if !isEmpty {
+            // Add row views for each round
+            for (index, round) in rounds.enumerated() {
+                let score = scores[index]
+                let rowView = ScoreHistoryRowView()
+                rowView.configure(round: round, score: score)
+                rowView.onDeleteTapped = { [weak self] in
+                    guard let self = self else { return }
+                    self.delegate?.scoreHistoryView(self, didDeleteRoundAt: index)
+                }
+                contentStackView.addArrangedSubview(rowView)
+            }
+        }
+
+        // Toggle visibility and constraints
+        emptyStateContainer.isHidden = !isEmpty
+        headerView.isHidden = isEmpty
+        contentStackView.isHidden = isEmpty
+
+        // Switch bottom constraints
+        emptyBottomConstraint?.isActive = isEmpty
+        contentBottomConstraint?.isActive = !isEmpty
+
+        // Force layout update
+        setNeedsLayout()
+        layoutIfNeeded()
     }
 }
 
-// MARK: - UITableViewDataSource
 
-extension ScoreHistoryView: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        rounds.count
-    }
+// MARK: - ScoreHistoryRowView
 
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: ScoreHistoryCell.identifier, for: indexPath) as? ScoreHistoryCell else {
-            return UITableViewCell()
-        }
-
-        let round = rounds[indexPath.row]
-        let score = scores[indexPath.row]
-        cell.configure(round: round, score: score)
-        cell.onDeleteTapped = { [weak self] in
-            guard let self = self else { return }
-            self.delegate?.scoreHistoryView(self, didDeleteRoundAt: indexPath.row)
-        }
-        return cell
-    }
-}
-
-
-// MARK: - ScoreHistoryCell
-
-final class ScoreHistoryCell: UITableViewCell {
-
-    static let identifier = "ScoreHistoryCell"
+final class ScoreHistoryRowView: UIView {
 
     // MARK: - Callback
 
@@ -134,37 +270,36 @@ final class ScoreHistoryCell: UITableViewCell {
 
     // MARK: - UI Components
 
+    private let containerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = AppColors.surfaceLight
+        view.layer.cornerRadius = 8
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+
     private let deleteButton: UIButton = {
         let button = UIButton(type: .system)
-        let config = UIImage.SymbolConfiguration(pointSize: 12, weight: .medium)
+        let config = UIImage.SymbolConfiguration(pointSize: 10, weight: .bold)
         button.setImage(UIImage(systemName: "xmark", withConfiguration: config), for: .normal)
-        button.tintColor = .tertiaryLabel
+        button.tintColor = AppColors.textHint
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
 
-    // 라운드 번호
     private let roundLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 13, weight: .medium)
-        label.textColor = .secondaryLabel
+        label.font = .systemFont(ofSize: 12, weight: .medium)
+        label.textColor = AppColors.textSecondary
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
 
-    // 점수 컨테이너 (고정 너비)
-    private let scoreContainer: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-
     private let teamAScoreLabel: UILabel = {
         let label = UILabel()
-        label.font = .monospacedDigitSystemFont(ofSize: 14, weight: .semibold)
-        label.textColor = .systemBlue
-        label.textAlignment = .right
+        label.font = .monospacedDigitSystemFont(ofSize: 14, weight: .bold)
+        label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -173,7 +308,7 @@ final class ScoreHistoryCell: UITableViewCell {
         let label = UILabel()
         label.text = ":"
         label.font = .systemFont(ofSize: 14, weight: .medium)
-        label.textColor = .tertiaryLabel
+        label.textColor = AppColors.textHint
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -181,27 +316,25 @@ final class ScoreHistoryCell: UITableViewCell {
 
     private let teamBScoreLabel: UILabel = {
         let label = UILabel()
-        label.font = .monospacedDigitSystemFont(ofSize: 14, weight: .semibold)
-        label.textColor = .systemRed
-        label.textAlignment = .left
+        label.font = .monospacedDigitSystemFont(ofSize: 14, weight: .bold)
+        label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
 
-    // 세부내용 (오른쪽 정렬, 고정 위치)
-    private let detailLabel: UILabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 11)
-        label.textColor = .tertiaryLabel
-        label.textAlignment = .right
-        label.numberOfLines = 1
-        label.lineBreakMode = .byTruncatingTail
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
+    private let detailsStackView: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .horizontal
+        stack.spacing = 4
+        stack.alignment = .center
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
     }()
 
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    // MARK: - Initialization
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         setupUI()
     }
 
@@ -209,77 +342,140 @@ final class ScoreHistoryCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        if traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
+            updateColors()
+        }
+    }
+
     private func setupUI() {
-        backgroundColor = .clear
-        selectionStyle = .none
+        translatesAutoresizingMaskIntoConstraints = false
 
-        contentView.addSubview(deleteButton)
-        contentView.addSubview(roundLabel)
-        contentView.addSubview(scoreContainer)
-        contentView.addSubview(detailLabel)
-
-        scoreContainer.addSubview(teamAScoreLabel)
-        scoreContainer.addSubview(separatorLabel)
-        scoreContainer.addSubview(teamBScoreLabel)
+        addSubview(containerView)
+        containerView.addSubview(deleteButton)
+        containerView.addSubview(roundLabel)
+        containerView.addSubview(teamAScoreLabel)
+        containerView.addSubview(separatorLabel)
+        containerView.addSubview(teamBScoreLabel)
+        containerView.addSubview(detailsStackView)
 
         deleteButton.addTarget(self, action: #selector(deleteButtonTapped), for: .touchUpInside)
 
+        updateColors()
+
         NSLayoutConstraint.activate([
-            // 삭제 버튼 (왼쪽 끝)
-            deleteButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
-            deleteButton.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            // Self height
+            heightAnchor.constraint(equalToConstant: 40),
+
+            containerView.topAnchor.constraint(equalTo: topAnchor, constant: 2),
+            containerView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
+            containerView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8),
+            containerView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -2),
+
+            deleteButton.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 8),
+            deleteButton.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
             deleteButton.widthAnchor.constraint(equalToConstant: 24),
             deleteButton.heightAnchor.constraint(equalToConstant: 24),
 
-            // 라운드 번호 (삭제 버튼 옆, 너비 32)
             roundLabel.leadingAnchor.constraint(equalTo: deleteButton.trailingAnchor, constant: 4),
-            roundLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            roundLabel.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
             roundLabel.widthAnchor.constraint(equalToConstant: 32),
 
-            // 점수 컨테이너 (라운드 옆, 고정 너비 100)
-            scoreContainer.leadingAnchor.constraint(equalTo: roundLabel.trailingAnchor, constant: 4),
-            scoreContainer.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            scoreContainer.widthAnchor.constraint(equalToConstant: 100),
-            scoreContainer.heightAnchor.constraint(equalToConstant: 20),
-
-            // 점수 컨테이너 내부
-            teamAScoreLabel.leadingAnchor.constraint(equalTo: scoreContainer.leadingAnchor),
-            teamAScoreLabel.centerYAnchor.constraint(equalTo: scoreContainer.centerYAnchor),
+            teamAScoreLabel.leadingAnchor.constraint(equalTo: roundLabel.trailingAnchor, constant: 4),
+            teamAScoreLabel.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
             teamAScoreLabel.widthAnchor.constraint(equalToConstant: 42),
 
-            separatorLabel.centerXAnchor.constraint(equalTo: scoreContainer.centerXAnchor),
-            separatorLabel.centerYAnchor.constraint(equalTo: scoreContainer.centerYAnchor),
+            separatorLabel.leadingAnchor.constraint(equalTo: teamAScoreLabel.trailingAnchor),
+            separatorLabel.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
             separatorLabel.widthAnchor.constraint(equalToConstant: 16),
 
-            teamBScoreLabel.trailingAnchor.constraint(equalTo: scoreContainer.trailingAnchor),
-            teamBScoreLabel.centerYAnchor.constraint(equalTo: scoreContainer.centerYAnchor),
+            teamBScoreLabel.leadingAnchor.constraint(equalTo: separatorLabel.trailingAnchor),
+            teamBScoreLabel.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
             teamBScoreLabel.widthAnchor.constraint(equalToConstant: 42),
 
-            // 세부내용 (오른쪽 정렬)
-            detailLabel.leadingAnchor.constraint(equalTo: scoreContainer.trailingAnchor, constant: 8),
-            detailLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12),
-            detailLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
+            detailsStackView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -8),
+            detailsStackView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor)
         ])
     }
 
+    private func updateColors() {
+        teamAScoreLabel.textColor = AppColors.teamAColor
+        teamBScoreLabel.textColor = AppColors.teamBColor
+        containerView.backgroundColor = AppColors.surfaceLight
+    }
+
     @objc private func deleteButtonTapped() {
+        // Animation
+        UIView.animate(withDuration: 0.1, animations: {
+            self.deleteButton.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+        }) { _ in
+            UIView.animate(withDuration: 0.1) {
+                self.deleteButton.transform = .identity
+            }
+        }
         onDeleteTapped?()
     }
 
     func configure(round: Round, score: RoundScore) {
-        roundLabel.text = "R\(round.roundNumber)"
+        roundLabel.text = "\(round.roundNumber)"
         teamAScoreLabel.text = score.teamADisplay
         teamBScoreLabel.text = score.teamBDisplay
 
-        var details: [String] = []
+        // Clear previous tags
+        detailsStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+
+        // One-Two finish tag
         if round.isOneTwoFinish, let team = round.oneTwoFinishTeam {
-            details.append("\(team.shortName) 1-2")
+            let tag = createTag(text: "1-2", team: team)
+            detailsStackView.addArrangedSubview(tag)
         }
+
+        // Tichu call tags
         for call in round.tichuCalls {
-            let result = call.isSuccess ? "O" : "X"
             let tichuShort = call.isLarge ? "L" : "S"
-            details.append("\(call.player.displayName)\(tichuShort)\(result)")
+            let result = call.isSuccess ? "O" : "X"
+            let text = "\(tichuShort)\(result)"
+            let tag = createTag(text: text, team: call.player.team, isSuccess: call.isSuccess, isLarge: call.isLarge)
+            detailsStackView.addArrangedSubview(tag)
         }
-        detailLabel.text = details.joined(separator: " ")
+    }
+
+    private func createTag(text: String, team: TeamType, isSuccess: Bool? = nil, isLarge: Bool = false) -> UIView {
+        let container = UIView()
+        container.layer.cornerRadius = 4
+
+        var bgColor: UIColor
+        let textColor: UIColor = .white
+
+        if let success = isSuccess {
+            if isLarge {
+                bgColor = success ? AppColors.largeTichuColor : AppColors.failureColor.withAlphaComponent(0.7)
+            } else {
+                bgColor = success ? AppColors.successColor : AppColors.failureColor.withAlphaComponent(0.7)
+            }
+        } else {
+            bgColor = AppColors.teamColor(for: team)
+        }
+
+        container.backgroundColor = bgColor
+
+        let label = UILabel()
+        label.text = text
+        label.font = .systemFont(ofSize: 10, weight: .bold)
+        label.textColor = textColor
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+
+        container.addSubview(label)
+
+        NSLayoutConstraint.activate([
+            label.topAnchor.constraint(equalTo: container.topAnchor, constant: 2),
+            label.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -2),
+            label.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 6),
+            label.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -6)
+        ])
+
+        return container
     }
 }

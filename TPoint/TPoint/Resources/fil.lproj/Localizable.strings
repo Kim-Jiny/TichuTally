@@ -38,3 +38,24 @@
 
 // Player
 "player_format" = "%@ %d";
+
+// Settings
+"settings" = "Settings";
+"theme" = "Theme";
+"theme_system" = "System";
+"theme_light" = "Light";
+"theme_dark" = "Dark";
+"target_score" = "Target Score";
+"custom_score" = "Custom";
+"save" = "Save";
+
+// Round
+"round_number" = "Round %d";
+"no_records_title" = "Walang Record";
+
+// Winner
+"win" = "WIN";
+"winner" = "WINNER";
+"vs" = "VS";
+"details" = "Details";
+"current_score" = "Kasalukuyang Score";

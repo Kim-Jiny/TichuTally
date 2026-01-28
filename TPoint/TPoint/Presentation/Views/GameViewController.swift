@@ -10,6 +10,40 @@ final class GameViewController: UIViewController {
 
     // MARK: - UI Components
 
+    private let topBarView: UIView = {
+        let view = UIView()
+        view.backgroundColor = AppColors.cardBackgroundElevated
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+
+    private let settingsButton: UIButton = {
+        let button = UIButton(type: .system)
+        let config = UIImage.SymbolConfiguration(pointSize: 20, weight: .medium)
+        button.setImage(UIImage(systemName: "gearshape.fill", withConfiguration: config), for: .normal)
+        button.tintColor = AppColors.textSecondary
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+
+    private let roundLabel: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 18, weight: .bold)
+        label.textColor = AppColors.textPrimary
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+
+    private let newGameTopButton: UIButton = {
+        let button = UIButton(type: .system)
+        let config = UIImage.SymbolConfiguration(pointSize: 20, weight: .medium)
+        button.setImage(UIImage(systemName: "arrow.counterclockwise", withConfiguration: config), for: .normal)
+        button.tintColor = AppColors.failureColor
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+
     private let scrollView: UIScrollView = {
         let scroll = UIScrollView()
         scroll.showsVerticalScrollIndicator = false
@@ -28,19 +62,11 @@ final class GameViewController: UIViewController {
     private let roundInputView = RoundInputView()
     private let scoreHistoryView = ScoreHistoryView()
 
-    private let newGameButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
-        button.setTitleColor(.systemRed, for: .normal)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
-
     // Banner Ad
     private let bannerAdView: BannerAdView = {
         let view = BannerAdView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = UIColor.systemGray6 // 배경색 추가
+        view.backgroundColor = AppColors.surfaceLight
         return view
     }()
 
@@ -70,6 +96,7 @@ final class GameViewController: UIViewController {
         setupActions()
         setupBannerAd()
         viewModel.delegate = self
+        applyTheme()
         updateUI()
     }
 
@@ -82,16 +109,29 @@ final class GameViewController: UIViewController {
         }
     }
 
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        if traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
+            updateColors()
+        }
+    }
+
     // MARK: - Setup
 
     private func setupUI() {
-        view.backgroundColor = .systemBackground
-        title = "Tichu Tally"
+        view.backgroundColor = AppColors.surfaceLight
+        navigationController?.setNavigationBarHidden(true, animated: false)
 
         teamAScoreView.translatesAutoresizingMaskIntoConstraints = false
         teamBScoreView.translatesAutoresizingMaskIntoConstraints = false
         roundInputView.translatesAutoresizingMaskIntoConstraints = false
         scoreHistoryView.translatesAutoresizingMaskIntoConstraints = false
+
+        // Top bar
+        view.addSubview(topBarView)
+        topBarView.addSubview(settingsButton)
+        topBarView.addSubview(roundLabel)
+        topBarView.addSubview(newGameTopButton)
 
         view.addSubview(bannerAdView)
         view.addSubview(scrollView)
@@ -101,7 +141,6 @@ final class GameViewController: UIViewController {
         contentView.addSubview(teamBScoreView)
         contentView.addSubview(roundInputView)
         contentView.addSubview(scoreHistoryView)
-        contentView.addSubview(newGameButton)
 
         roundInputView.delegate = self
         scoreHistoryView.delegate = self
@@ -110,14 +149,33 @@ final class GameViewController: UIViewController {
         bannerHeightConstraint = bannerAdView.heightAnchor.constraint(equalToConstant: 50)
 
         NSLayoutConstraint.activate([
+            // Top bar
+            topBarView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            topBarView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            topBarView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            topBarView.heightAnchor.constraint(equalToConstant: 52),
+
+            settingsButton.leadingAnchor.constraint(equalTo: topBarView.leadingAnchor, constant: 16),
+            settingsButton.centerYAnchor.constraint(equalTo: topBarView.centerYAnchor),
+            settingsButton.widthAnchor.constraint(equalToConstant: 44),
+            settingsButton.heightAnchor.constraint(equalToConstant: 44),
+
+            roundLabel.centerXAnchor.constraint(equalTo: topBarView.centerXAnchor),
+            roundLabel.centerYAnchor.constraint(equalTo: topBarView.centerYAnchor),
+
+            newGameTopButton.trailingAnchor.constraint(equalTo: topBarView.trailingAnchor, constant: -16),
+            newGameTopButton.centerYAnchor.constraint(equalTo: topBarView.centerYAnchor),
+            newGameTopButton.widthAnchor.constraint(equalToConstant: 44),
+            newGameTopButton.heightAnchor.constraint(equalToConstant: 44),
+
             // Banner at bottom
             bannerAdView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             bannerAdView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             bannerAdView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             bannerHeightConstraint!,
 
-            // ScrollView above banner
-            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            // ScrollView below top bar, above banner
+            scrollView.topAnchor.constraint(equalTo: topBarView.bottomAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             scrollView.bottomAnchor.constraint(equalTo: bannerAdView.topAnchor),
@@ -130,12 +188,12 @@ final class GameViewController: UIViewController {
 
             teamAScoreView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
             teamAScoreView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            teamAScoreView.heightAnchor.constraint(equalToConstant: 120),
+            teamAScoreView.heightAnchor.constraint(equalToConstant: 130),
 
             teamBScoreView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
-            teamBScoreView.leadingAnchor.constraint(equalTo: teamAScoreView.trailingAnchor, constant: 16),
+            teamBScoreView.leadingAnchor.constraint(equalTo: teamAScoreView.trailingAnchor, constant: 12),
             teamBScoreView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            teamBScoreView.heightAnchor.constraint(equalToConstant: 120),
+            teamBScoreView.heightAnchor.constraint(equalToConstant: 130),
             teamBScoreView.widthAnchor.constraint(equalTo: teamAScoreView.widthAnchor),
 
             roundInputView.topAnchor.constraint(equalTo: teamAScoreView.bottomAnchor, constant: 16),
@@ -145,41 +203,54 @@ final class GameViewController: UIViewController {
             scoreHistoryView.topAnchor.constraint(equalTo: roundInputView.bottomAnchor, constant: 16),
             scoreHistoryView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             scoreHistoryView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            scoreHistoryView.heightAnchor.constraint(equalToConstant: 200),
-
-            newGameButton.topAnchor.constraint(equalTo: scoreHistoryView.bottomAnchor, constant: 20),
-            newGameButton.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            newGameButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20)
+            scoreHistoryView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20)
         ])
     }
 
     private func setupActions() {
-        newGameButton.setTitle(L10n.newGame, for: .normal)
-        newGameButton.addTarget(self, action: #selector(newGameTapped), for: .touchUpInside)
+        settingsButton.addTarget(self, action: #selector(settingsTapped), for: .touchUpInside)
+        newGameTopButton.addTarget(self, action: #selector(newGameTapped), for: .touchUpInside)
     }
 
     private func setupBannerAd() {
         bannerAdView.configure(rootViewController: self)
     }
 
+    private func updateColors() {
+        view.backgroundColor = AppColors.surfaceLight
+        topBarView.backgroundColor = AppColors.cardBackgroundElevated
+        roundLabel.textColor = AppColors.textPrimary
+        settingsButton.tintColor = AppColors.textSecondary
+        newGameTopButton.tintColor = AppColors.failureColor
+        bannerAdView.backgroundColor = AppColors.surfaceLight
+    }
+
     // MARK: - Actions
 
-    @objc private func newGameTapped() {
-        let alert = UIAlertController(
-            title: L10n.newGame,
-            message: L10n.newGameConfirm,
-            preferredStyle: .alert
+    @objc private func settingsTapped() {
+        let settingsVC = SettingsViewController(
+            targetScore: viewModel.targetScore,
+            themeMode: viewModel.themeMode
         )
-        alert.addAction(UIAlertAction(title: L10n.cancel, style: .cancel))
-        alert.addAction(UIAlertAction(title: L10n.newGame, style: .destructive) { [weak self] _ in
-            self?.viewModel.newGame()
-        })
-        present(alert, animated: true)
+        settingsVC.delegate = self
+        present(settingsVC, animated: false)
+    }
+
+    @objc private func newGameTapped() {
+        let newGameVC = NewGameViewController(
+            teamAScore: viewModel.teamAScore,
+            teamBScore: viewModel.teamBScore
+        )
+        newGameVC.delegate = self
+        present(newGameVC, animated: false)
     }
 
     // MARK: - Private Methods
 
     private func updateUI() {
+        // Update round label
+        roundLabel.text = L10n.roundNumberFormat(viewModel.currentRound)
+
         teamAScoreView.updateScore(viewModel.teamAScore)
         teamBScoreView.updateScore(viewModel.teamBScore)
 
@@ -199,17 +270,34 @@ final class GameViewController: UIViewController {
         }
     }
 
-    private func showWinnerAlert(winner: TeamType) {
-        let alert = UIAlertController(
-            title: L10n.gameOver,
-            message: "\(L10n.winnerMessage(winner.displayName))\n\n\(L10n.finalScore)\n\(L10n.teamA): \(viewModel.teamAScore)\(L10n.pointsSuffix)\n\(L10n.teamB): \(viewModel.teamBScore)\(L10n.pointsSuffix)",
-            preferredStyle: .alert
+    private func showWinnerDialog(winner: TeamType) {
+        let winnerVC = WinnerViewController(
+            winner: winner,
+            teamAScore: viewModel.teamAScore,
+            teamBScore: viewModel.teamBScore
         )
-        alert.addAction(UIAlertAction(title: L10n.confirm, style: .default))
-        alert.addAction(UIAlertAction(title: L10n.newGame, style: .default) { [weak self] _ in
-            self?.viewModel.newGame()
-        })
-        present(alert, animated: true)
+        winnerVC.delegate = self
+        present(winnerVC, animated: false)
+    }
+
+    private func applyTheme() {
+        let style: UIUserInterfaceStyle
+        switch viewModel.themeMode {
+        case .system:
+            style = .unspecified
+        case .light:
+            style = .light
+        case .dark:
+            style = .dark
+        }
+
+        if let windowScene = view.window?.windowScene {
+            windowScene.windows.forEach { window in
+                window.overrideUserInterfaceStyle = style
+            }
+        } else {
+            view.window?.overrideUserInterfaceStyle = style
+        }
     }
 }
 
@@ -222,7 +310,7 @@ extension GameViewController: GameViewModelDelegate {
 
     func gameDidEnd(winner: TeamType) {
         updateUI()
-        showWinnerAlert(winner: winner)
+        showWinnerDialog(winner: winner)
     }
 }
 
@@ -251,6 +339,49 @@ extension GameViewController: RoundInputViewDelegate {
 
 extension GameViewController: ScoreHistoryViewDelegate {
     func scoreHistoryView(_ view: ScoreHistoryView, didDeleteRoundAt index: Int) {
-        viewModel.deleteRound(at: index)
+        guard index < viewModel.rounds.count,
+              let score = viewModel.getRoundScore(at: index) else { return }
+
+        let round = viewModel.rounds[index]
+        let deleteVC = DeleteRoundViewController(roundIndex: index, round: round, score: score)
+        deleteVC.delegate = self
+        present(deleteVC, animated: false)
+    }
+}
+
+// MARK: - SettingsViewControllerDelegate
+
+extension GameViewController: SettingsViewControllerDelegate {
+    func settingsDidChangeTargetScore(_ score: Int) {
+        viewModel.targetScore = score
+    }
+
+    func settingsDidChangeTheme(_ mode: ThemeMode) {
+        viewModel.themeMode = mode
+        applyTheme()
+    }
+}
+
+// MARK: - WinnerViewControllerDelegate
+
+extension GameViewController: WinnerViewControllerDelegate {
+    func winnerViewControllerDidTapNewGame(_ controller: WinnerViewController) {
+        viewModel.newGame()
+    }
+}
+
+// MARK: - NewGameViewControllerDelegate
+
+extension GameViewController: NewGameViewControllerDelegate {
+    func newGameViewControllerDidConfirm(_ controller: NewGameViewController) {
+        viewModel.newGame()
+    }
+}
+
+// MARK: - DeleteRoundViewControllerDelegate
+
+extension GameViewController: DeleteRoundViewControllerDelegate {
+    func deleteRoundViewControllerDidConfirm(_ controller: DeleteRoundViewController, roundIndex: Int) {
+        viewModel.deleteRound(at: roundIndex)
     }
 }

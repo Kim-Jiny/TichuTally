@@ -10,7 +10,20 @@ protocol GameViewModelDelegate: AnyObject {
     func gameDidEnd(winner: TeamType)
 }
 
+enum ThemeMode: Int {
+    case system = 0
+    case light = 1
+    case dark = 2
+}
+
 final class GameViewModel {
+
+    // MARK: - UserDefaults Keys
+
+    private enum Keys {
+        static let targetScore = "targetScore"
+        static let themeMode = "themeMode"
+    }
 
     // MARK: - Properties
 
@@ -25,6 +38,29 @@ final class GameViewModel {
     var currentOneTwoFinishTeam: TeamType?
     var currentTichuCalls: [Player: TichuCallInput] = [:]
 
+    // 설정 - 목표 점수
+    var targetScore: Int {
+        get {
+            let saved = UserDefaults.standard.integer(forKey: Keys.targetScore)
+            return saved > 0 ? saved : 1000
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: Keys.targetScore)
+            game.targetScore = newValue
+            delegate?.gameDidUpdate()
+        }
+    }
+
+    // 설정 - 테마 모드
+    var themeMode: ThemeMode {
+        get {
+            ThemeMode(rawValue: UserDefaults.standard.integer(forKey: Keys.themeMode)) ?? .system
+        }
+        set {
+            UserDefaults.standard.set(newValue.rawValue, forKey: Keys.themeMode)
+        }
+    }
+
     // MARK: - Computed Properties
 
     var teamAScore: Int { game.teamA.totalScore }
@@ -33,6 +69,8 @@ final class GameViewModel {
     var roundCount: Int { game.rounds.count }
     var isGameOver: Bool { game.isGameOver }
     var winner: TeamType? { game.winner }
+
+    var currentRound: Int { game.rounds.count + 1 }
 
     var currentTeamBCardScore: Int {
         100 - currentTeamACardScore
@@ -43,6 +81,11 @@ final class GameViewModel {
     init(calculateScoreUseCase: CalculateScoreUseCaseProtocol = CalculateScoreUseCase()) {
         self.game = Game()
         self.calculateScoreUseCase = calculateScoreUseCase
+        // Load saved target score
+        let savedTargetScore = UserDefaults.standard.integer(forKey: Keys.targetScore)
+        if savedTargetScore > 0 {
+            self.game.targetScore = savedTargetScore
+        }
         resetCurrentRoundInput()
     }
 

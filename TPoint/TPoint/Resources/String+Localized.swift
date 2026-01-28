@@ -50,11 +50,36 @@ enum L10n {
     static let delete = "delete".localized
     static let newGameConfirm = "new_game_confirm".localized
 
+    // Settings
+    static let settings = "settings".localized
+    static let theme = "theme".localized
+    static let themeSystem = "theme_system".localized
+    static let themeLight = "theme_light".localized
+    static let themeDark = "theme_dark".localized
+    static let targetScore = "target_score".localized
+    static let customScore = "custom_score".localized
+    static let save = "save".localized
+
+    // Round
+    static let roundNumber = "round_number".localized
+    static let noRecordsTitle = "no_records_title".localized
+
+    // Winner
+    static let win = "win".localized
+    static let winner = "winner".localized
+    static let vs = "vs".localized
+    static let details = "details".localized
+    static let currentScore = "current_score".localized
+
     static func winnerMessage(_ team: String) -> String {
         "winner_message".localized(with: team)
     }
 
     static func playerFormat(_ team: String, _ number: Int) -> String {
         "player_format".localized(with: team, number)
+    }
+
+    static func roundNumberFormat(_ number: Int) -> String {
+        "round_number".localized(with: number)
     }
 }

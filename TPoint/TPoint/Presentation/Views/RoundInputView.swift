@@ -16,17 +16,10 @@ final class RoundInputView: UIView {
 
     // MARK: - UI Components
 
-    private let titleLabel: UILabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 16, weight: .semibold)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-
     private let tichuSectionLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 13, weight: .medium)
-        label.textColor = .secondaryLabel
+        label.font = .systemFont(ofSize: 13, weight: .semibold)
+        label.textColor = AppColors.textSecondary
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -35,8 +28,8 @@ final class RoundInputView: UIView {
 
     private let oneTwoFinishLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 13, weight: .medium)
-        label.textColor = .secondaryLabel
+        label.font = .systemFont(ofSize: 13, weight: .semibold)
+        label.textColor = AppColors.textSecondary
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -50,17 +43,62 @@ final class RoundInputView: UIView {
 
     private let scoreLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 13, weight: .medium)
-        label.textColor = .secondaryLabel
+        label.font = .systemFont(ofSize: 13, weight: .semibold)
+        label.textColor = AppColors.textSecondary
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
 
-    private let teamAScoreLabel: UILabel = {
+    private let scoreDisplayContainer: UIView = {
+        let view = UIView()
+        view.layer.cornerRadius = 12
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+
+    private let scoreGradientLayer = CAGradientLayer()
+
+    private let teamAScoreValueLabel: UILabel = {
+        let label = UILabel()
+        label.text = "50"
+        label.font = .systemFont(ofSize: 32, weight: .bold)
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+
+    private let scoreSeparatorLabel: UILabel = {
+        let label = UILabel()
+        label.text = ":"
+        label.font = .systemFont(ofSize: 32, weight: .bold)
+        label.textColor = AppColors.textSecondary
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+
+    private let teamBScoreValueLabel: UILabel = {
+        let label = UILabel()
+        label.text = "50"
+        label.font = .systemFont(ofSize: 32, weight: .bold)
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+
+    private let teamABadge: UIView = {
+        let view = UIView()
+        view.layer.cornerRadius = 4
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+
+    private let teamABadgeLabel: UILabel = {
         let label = UILabel()
         label.text = "A"
-        label.font = .systemFont(ofSize: 14, weight: .bold)
-        label.textColor = .systemBlue
+        label.font = .systemFont(ofSize: 12, weight: .bold)
+        label.textColor = .white
+        label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -74,39 +112,18 @@ final class RoundInputView: UIView {
         return slider
     }()
 
-    private let teamBScoreLabel: UILabel = {
+    private let teamBBadge: UIView = {
+        let view = UIView()
+        view.layer.cornerRadius = 4
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+
+    private let teamBBadgeLabel: UILabel = {
         let label = UILabel()
         label.text = "B"
-        label.font = .systemFont(ofSize: 14, weight: .bold)
-        label.textColor = .systemRed
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-
-    private let teamAScoreValueLabel: UILabel = {
-        let label = UILabel()
-        label.text = "50"
-        label.font = .systemFont(ofSize: 28, weight: .bold)
-        label.textColor = .systemBlue
-        label.textAlignment = .center
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-
-    private let scoreSeparatorLabel: UILabel = {
-        let label = UILabel()
-        label.text = ":"
-        label.font = .systemFont(ofSize: 28, weight: .bold)
-        label.textAlignment = .center
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-
-    private let teamBScoreValueLabel: UILabel = {
-        let label = UILabel()
-        label.text = "50"
-        label.font = .systemFont(ofSize: 28, weight: .bold)
-        label.textColor = .systemRed
+        label.font = .systemFont(ofSize: 12, weight: .bold)
+        label.textColor = .white
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -115,9 +132,8 @@ final class RoundInputView: UIView {
     private let addRoundButton: UIButton = {
         let button = UIButton(type: .system)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
-        button.backgroundColor = .systemGreen
         button.setTitleColor(.white, for: .normal)
-        button.layer.cornerRadius = 8
+        button.layer.cornerRadius = 12
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -138,108 +154,167 @@ final class RoundInputView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        scoreGradientLayer.frame = scoreDisplayContainer.bounds
+        updateScoreGradientCornerRadius()
+    }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        if traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
+            updateColors()
+            layer.shadowColor = UIColor.black.cgColor
+        }
+    }
+
     // MARK: - Setup
 
     private func setupUI() {
-        backgroundColor = .secondarySystemBackground
-        layer.cornerRadius = 12
+        backgroundColor = AppColors.cardBackgroundElevated
+        layer.cornerRadius = 16
+        layer.shadowColor = UIColor.black.cgColor
+        layer.shadowOffset = CGSize(width: 0, height: 2)
+        layer.shadowRadius = 8
+        layer.shadowOpacity = 0.1
 
         // Localized texts
-        titleLabel.text = L10n.roundInputTitle
         tichuSectionLabel.text = L10n.tichuSectionTitle
         oneTwoFinishLabel.text = L10n.oneTwoFinish
         scoreLabel.text = L10n.cardScore
         addRoundButton.setTitle(L10n.addRound, for: .normal)
 
-        // 티츄 콜 뷰 생성
-        for player in Player.allPlayers {
-            let callView = TichuCallView(player: player)
+        // Create team-based tichu call views (2 teams instead of 4 players)
+        for team in TeamType.allCases {
+            let callView = TichuCallView(team: team)
             callView.delegate = self
             callView.translatesAutoresizingMaskIntoConstraints = false
             tichuCallViews.append(callView)
         }
 
-        // A팀 (플레이어 1, 2)
-        let tichuStackA = UIStackView(arrangedSubviews: [tichuCallViews[0], tichuCallViews[1]])
-        tichuStackA.axis = .vertical
-        tichuStackA.spacing = 4
-        tichuStackA.translatesAutoresizingMaskIntoConstraints = false
+        // Tichu section
+        let tichuStack = UIStackView(arrangedSubviews: tichuCallViews)
+        tichuStack.axis = .horizontal
+        tichuStack.distribution = .fillEqually
+        tichuStack.spacing = 8
+        tichuStack.translatesAutoresizingMaskIntoConstraints = false
 
-        // B팀 (플레이어 1, 2)
-        let tichuStackB = UIStackView(arrangedSubviews: [tichuCallViews[2], tichuCallViews[3]])
-        tichuStackB.axis = .vertical
-        tichuStackB.spacing = 4
-        tichuStackB.translatesAutoresizingMaskIntoConstraints = false
+        // Score display with gradient
+        scoreDisplayContainer.layer.insertSublayer(scoreGradientLayer, at: 0)
 
-        // 전체 티츄 영역
-        let tichuContainer = UIStackView(arrangedSubviews: [tichuStackA, tichuStackB])
-        tichuContainer.axis = .horizontal
-        tichuContainer.distribution = .fillEqually
-        tichuContainer.spacing = 8
-        tichuContainer.translatesAutoresizingMaskIntoConstraints = false
-
-        // 점수 표시
+        // Score display stack
         let scoreDisplayStack = UIStackView(arrangedSubviews: [teamAScoreValueLabel, scoreSeparatorLabel, teamBScoreValueLabel])
         scoreDisplayStack.axis = .horizontal
         scoreDisplayStack.distribution = .fillEqually
         scoreDisplayStack.translatesAutoresizingMaskIntoConstraints = false
 
-        // 슬라이더
-        let sliderStack = UIStackView(arrangedSubviews: [teamAScoreLabel, scoreSlider, teamBScoreLabel])
+        // Slider with team badges
+        teamABadge.addSubview(teamABadgeLabel)
+        teamBBadge.addSubview(teamBBadgeLabel)
+
+        let sliderStack = UIStackView(arrangedSubviews: [teamABadge, scoreSlider, teamBBadge])
         sliderStack.axis = .horizontal
         sliderStack.spacing = 8
+        sliderStack.alignment = .center
         sliderStack.translatesAutoresizingMaskIntoConstraints = false
 
-        addSubview(titleLabel)
         addSubview(tichuSectionLabel)
-        addSubview(tichuContainer)
+        addSubview(tichuStack)
         addSubview(oneTwoFinishLabel)
         addSubview(oneTwoSegment)
         addSubview(scoreLabel)
-        addSubview(scoreDisplayStack)
+        addSubview(scoreDisplayContainer)
+        scoreDisplayContainer.addSubview(scoreDisplayStack)
         addSubview(sliderStack)
         addSubview(addRoundButton)
 
-        NSLayoutConstraint.activate([
-            // 타이틀
-            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 12),
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+        updateColors()
 
-            // 티츄 섹션
-            tichuSectionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 12),
+        NSLayoutConstraint.activate([
+            // Tichu section
+            tichuSectionLabel.topAnchor.constraint(equalTo: topAnchor, constant: 16),
             tichuSectionLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
 
-            tichuContainer.topAnchor.constraint(equalTo: tichuSectionLabel.bottomAnchor, constant: 8),
-            tichuContainer.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            tichuContainer.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+            tichuStack.topAnchor.constraint(equalTo: tichuSectionLabel.bottomAnchor, constant: 8),
+            tichuStack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+            tichuStack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
 
-            // 원투 피니시
-            oneTwoFinishLabel.topAnchor.constraint(equalTo: tichuContainer.bottomAnchor, constant: 12),
+            // One-Two finish
+            oneTwoFinishLabel.topAnchor.constraint(equalTo: tichuStack.bottomAnchor, constant: 16),
             oneTwoFinishLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
 
-            oneTwoSegment.topAnchor.constraint(equalTo: oneTwoFinishLabel.bottomAnchor, constant: 6),
+            oneTwoSegment.topAnchor.constraint(equalTo: oneTwoFinishLabel.bottomAnchor, constant: 8),
             oneTwoSegment.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             oneTwoSegment.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
 
-            // 카드 점수
-            scoreLabel.topAnchor.constraint(equalTo: oneTwoSegment.bottomAnchor, constant: 12),
+            // Card score
+            scoreLabel.topAnchor.constraint(equalTo: oneTwoSegment.bottomAnchor, constant: 16),
             scoreLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
 
-            scoreDisplayStack.topAnchor.constraint(equalTo: scoreLabel.bottomAnchor, constant: 4),
-            scoreDisplayStack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            scoreDisplayStack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+            scoreDisplayContainer.topAnchor.constraint(equalTo: scoreLabel.bottomAnchor, constant: 8),
+            scoreDisplayContainer.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+            scoreDisplayContainer.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+            scoreDisplayContainer.heightAnchor.constraint(equalToConstant: 60),
 
-            sliderStack.topAnchor.constraint(equalTo: scoreDisplayStack.bottomAnchor, constant: 4),
+            scoreDisplayStack.centerXAnchor.constraint(equalTo: scoreDisplayContainer.centerXAnchor),
+            scoreDisplayStack.centerYAnchor.constraint(equalTo: scoreDisplayContainer.centerYAnchor),
+            scoreDisplayStack.widthAnchor.constraint(equalTo: scoreDisplayContainer.widthAnchor, constant: -32),
+
+            // Slider
+            sliderStack.topAnchor.constraint(equalTo: scoreDisplayContainer.bottomAnchor, constant: 8),
             sliderStack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             sliderStack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
 
-            // 버튼
+            teamABadge.widthAnchor.constraint(equalToConstant: 28),
+            teamABadge.heightAnchor.constraint(equalToConstant: 28),
+            teamABadgeLabel.centerXAnchor.constraint(equalTo: teamABadge.centerXAnchor),
+            teamABadgeLabel.centerYAnchor.constraint(equalTo: teamABadge.centerYAnchor),
+
+            teamBBadge.widthAnchor.constraint(equalToConstant: 28),
+            teamBBadge.heightAnchor.constraint(equalToConstant: 28),
+            teamBBadgeLabel.centerXAnchor.constraint(equalTo: teamBBadge.centerXAnchor),
+            teamBBadgeLabel.centerYAnchor.constraint(equalTo: teamBBadge.centerYAnchor),
+
+            // Add round button
             addRoundButton.topAnchor.constraint(equalTo: sliderStack.bottomAnchor, constant: 16),
             addRoundButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             addRoundButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            addRoundButton.heightAnchor.constraint(equalToConstant: 44),
-            addRoundButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -12)
+            addRoundButton.heightAnchor.constraint(equalToConstant: 48),
+            addRoundButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16)
         ])
+    }
+
+    private func updateColors() {
+        teamAScoreValueLabel.textColor = AppColors.teamAColor
+        teamBScoreValueLabel.textColor = AppColors.teamBColor
+        teamABadge.backgroundColor = AppColors.teamAColor
+        teamBBadge.backgroundColor = AppColors.teamBColor
+
+        // Score gradient
+        scoreGradientLayer.colors = [
+            AppColors.teamAColorLight.cgColor,
+            AppColors.teamBColorLight.cgColor
+        ]
+        scoreGradientLayer.startPoint = CGPoint(x: 0, y: 0.5)
+        scoreGradientLayer.endPoint = CGPoint(x: 1, y: 0.5)
+
+        // Add round button
+        addRoundButton.backgroundColor = AppColors.successColor
+        addRoundButton.layer.shadowColor = AppColors.successColor.cgColor
+        addRoundButton.layer.shadowOffset = CGSize(width: 0, height: 2)
+        addRoundButton.layer.shadowRadius = 4
+        addRoundButton.layer.shadowOpacity = 0.3
+
+        // Slider tint
+        scoreSlider.minimumTrackTintColor = AppColors.teamAColor
+        scoreSlider.maximumTrackTintColor = AppColors.teamBColor
+    }
+
+    private func updateScoreGradientCornerRadius() {
+        let maskPath = UIBezierPath(roundedRect: scoreDisplayContainer.bounds, cornerRadius: 12)
+        let maskLayer = CAShapeLayer()
+        maskLayer.path = maskPath.cgPath
+        scoreGradientLayer.mask = maskLayer
     }
 
     private func setupActions() {
@@ -251,7 +326,7 @@ final class RoundInputView: UIView {
     // MARK: - Actions
 
     @objc private func sliderValueChanged() {
-        // 5점 단위로 스냅
+        // Snap to 5 point increments
         let rawValue = scoreSlider.value
         let snappedValue = round(rawValue / 5) * 5
         scoreSlider.value = snappedValue
@@ -269,11 +344,21 @@ final class RoundInputView: UIView {
 
         scoreSlider.isEnabled = !enabled
         scoreSlider.alpha = enabled ? 0.5 : 1.0
+        scoreDisplayContainer.alpha = enabled ? 0.5 : 1.0
 
         delegate?.roundInputView(self, didChangeOneTwoFinish: enabled, team: team)
     }
 
     @objc private func addRoundTapped() {
+        // Button animation
+        UIView.animate(withDuration: 0.1, animations: {
+            self.addRoundButton.transform = CGAffineTransform(scaleX: 0.95, y: 0.95)
+        }) { _ in
+            UIView.animate(withDuration: 0.1) {
+                self.addRoundButton.transform = .identity
+            }
+        }
+
         delegate?.roundInputViewDidTapAddRound(self)
     }
 
@@ -286,6 +371,7 @@ final class RoundInputView: UIView {
         oneTwoSegment.selectedSegmentIndex = 0
         scoreSlider.isEnabled = true
         scoreSlider.alpha = 1.0
+        scoreDisplayContainer.alpha = 1.0
 
         for callView in tichuCallViews {
             callView.reset()
@@ -302,15 +388,14 @@ final class RoundInputView: UIView {
 
 extension RoundInputView: TichuCallViewDelegate {
     func tichuCallView(_ view: TichuCallView, didUpdateCall type: TichuType?, isSuccess: Bool) {
-        // 현재 플레이어 상태 업데이트
+        // Pass the tichu call to delegate
         delegate?.roundInputView(self, didChangeTichuCall: view.player, type: type, isSuccess: isSuccess)
 
-        // 성공으로 변경된 경우, 다른 티츄 콜들은 자동으로 실패 처리
+        // When success is set, automatically set other tichu calls to fail
         if isSuccess && type != nil {
             for otherView in tichuCallViews where otherView !== view {
                 if otherView.hasTichuCall {
                     otherView.setSuccess(false, silent: true)
-                    // ViewModel에도 실패 상태 전달
                     if let otherType = otherView.currentTichuType {
                         delegate?.roundInputView(self, didChangeTichuCall: otherView.player, type: otherType, isSuccess: false)
                     }

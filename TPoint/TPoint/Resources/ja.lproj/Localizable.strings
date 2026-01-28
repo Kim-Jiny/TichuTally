@@ -38,3 +38,24 @@
 
 // Player
 "player_format" = "%@ %d";
+
+// Settings
+"settings" = "設定";
+"theme" = "テーマ";
+"theme_system" = "システム";
+"theme_light" = "ライト";
+"theme_dark" = "ダーク";
+"target_score" = "目標スコア";
+"custom_score" = "カスタム";
+"save" = "保存";
+
+// Round
+"round_number" = "Round %d";
+"no_records_title" = "記録なし";
+
+// Winner
+"win" = "WIN";
+"winner" = "勝者";
+"vs" = "VS";
+"details" = "詳細";
+"current_score" = "現在のスコア";
