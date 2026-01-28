@@ -99,8 +99,26 @@ class GameViewModel(
         _state.update { it.copy(showWinnerDialog = false) }
     }
 
+    fun setTargetScore(score: Int) {
+        _state.update { currentState ->
+            currentState.copy(
+                targetScore = score,
+                game = currentState.game.copy(targetScore = score)
+            )
+        }
+    }
+
+    fun setThemeMode(mode: ThemeMode) {
+        _state.update { it.copy(themeMode = mode) }
+    }
+
     fun newGame() {
-        _state.value = GameState()
+        _state.update { currentState ->
+            GameState(
+                targetScore = currentState.targetScore,
+                game = Game(targetScore = currentState.targetScore)
+            )
+        }
     }
 
     fun deleteRound(index: Int) {

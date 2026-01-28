@@ -65,7 +65,7 @@ fun ScoreHistoryCard(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "No Records",
+                            text = stringResource(R.string.no_records_title),
                             color = colors.textHint,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Medium
@@ -98,7 +98,7 @@ fun ScoreHistoryCard(
                         textAlign = TextAlign.Center
                     )
                     Text(
-                        text = "A",
+                        text = stringResource(R.string.team_a_short),
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold,
                         color = colors.teamAColor,
@@ -106,7 +106,7 @@ fun ScoreHistoryCard(
                         textAlign = TextAlign.Center
                     )
                     Text(
-                        text = "B",
+                        text = stringResource(R.string.team_b_short),
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold,
                         color = colors.teamBColor,
@@ -114,7 +114,7 @@ fun ScoreHistoryCard(
                         textAlign = TextAlign.Center
                     )
                     Text(
-                        text = "Details",
+                        text = stringResource(R.string.details),
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold,
                         color = colors.textSecondary,

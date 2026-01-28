@@ -122,7 +122,7 @@ fun TeamScoreCard(
                         .padding(horizontal = 8.dp, vertical = 2.dp)
                 ) {
                     Text(
-                        text = "WIN",
+                        text = stringResource(R.string.win),
                         fontSize = 10.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White,

@@ -20,7 +20,9 @@
       "Bash(git rm:*)",
       "Bash(./gradlew clean:*)",
       "Bash(JAVA_HOME=\"/Applications/Android Studio.app/Contents/jbr/Contents/Home\" ./gradlew bundleRelease:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(unzip:*)",
+      "Bash(xxd:*)"
     ]
   }
 }

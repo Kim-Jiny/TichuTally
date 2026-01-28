@@ -19,8 +19,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.tichutally.app.R
 import com.tichutally.app.domain.model.Player
 import com.tichutally.app.domain.model.TeamType
 import com.tichutally.app.domain.model.TichuType
@@ -64,7 +66,7 @@ fun TichuCallRow(
 
         // Small Tichu button
         TichuButton(
-            text = "S",
+            text = stringResource(R.string.small_tichu),
             isSelected = selectedType == TichuType.SMALL,
             selectedColor = colors.teamAColor,
             onClick = {
@@ -78,7 +80,7 @@ fun TichuCallRow(
 
         // Large Tichu button
         TichuButton(
-            text = "L",
+            text = stringResource(R.string.large_tichu),
             isSelected = selectedType == TichuType.LARGE,
             selectedColor = colors.largeTichuColor,
             onClick = {
@@ -141,7 +143,7 @@ fun TeamTichuCallRow(
 
         // Small Tichu button
         TichuButton(
-            text = "S",
+            text = stringResource(R.string.small_tichu),
             isSelected = selectedType == TichuType.SMALL,
             selectedColor = colors.teamAColor,
             onClick = {
@@ -155,7 +157,7 @@ fun TeamTichuCallRow(
 
         // Large Tichu button
         TichuButton(
-            text = "L",
+            text = stringResource(R.string.large_tichu),
             isSelected = selectedType == TichuType.LARGE,
             selectedColor = colors.largeTichuColor,
             onClick = {

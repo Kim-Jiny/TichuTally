@@ -6,6 +6,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -29,6 +30,7 @@ fun GameScreen(
     val state by viewModel.state.collectAsState()
     val colors = AppTheme.colors
     var showNewGameDialog by remember { mutableStateOf(false) }
+    var showSettingsDialog by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -36,17 +38,34 @@ fun GameScreen(
             .background(colors.surfaceLight)
             .statusBarsPadding()
     ) {
-        // 상단 - New Game 버튼 (우측 상단)
-        Box(
+        // 상단 바 - 설정 버튼 (좌측) / 라운드 표시 (중앙) / 새 게임 버튼 (우측)
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .padding(top = 8.dp)
+                .padding(horizontal = 8.dp)
+                .padding(top = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton(
-                onClick = { showNewGameDialog = true },
-                modifier = Modifier.align(Alignment.TopEnd)
-            ) {
+            // 설정 버튼 (좌측)
+            IconButton(onClick = { showSettingsDialog = true }) {
+                Icon(
+                    imageVector = Icons.Default.Settings,
+                    contentDescription = stringResource(R.string.settings),
+                    tint = colors.textSecondary
+                )
+            }
+
+            // 라운드 표시 (중앙)
+            Text(
+                text = stringResource(R.string.round_number, state.currentRound),
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium,
+                color = colors.textSecondary
+            )
+
+            // 새 게임 버튼 (우측)
+            IconButton(onClick = { showNewGameDialog = true }) {
                 Icon(
                     imageVector = Icons.Default.Refresh,
                     contentDescription = stringResource(R.string.new_game),
@@ -126,72 +145,42 @@ fun GameScreen(
         )
     }
 
+    // Settings Dialog
+    if (showSettingsDialog) {
+        SettingsDialog(
+            currentTargetScore = state.targetScore,
+            currentThemeMode = state.themeMode,
+            onTargetScoreChanged = { viewModel.setTargetScore(it) },
+            onThemeModeChanged = { viewModel.setThemeMode(it) },
+            onDismiss = { showSettingsDialog = false }
+        )
+    }
+
     // New Game Confirmation Dialog
     if (showNewGameDialog) {
-        AlertDialog(
-            onDismissRequest = { showNewGameDialog = false },
-            title = {
-                Text(stringResource(R.string.new_game))
+        NewGameDialog(
+            currentTeamAScore = state.teamAScore,
+            currentTeamBScore = state.teamBScore,
+            roundCount = state.rounds.size,
+            onConfirm = {
+                showNewGameDialog = false
+                viewModel.newGame()
             },
-            text = {
-                Text(stringResource(R.string.new_game_confirm))
-            },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        showNewGameDialog = false
-                        viewModel.newGame()
-                    }
-                ) {
-                    Text(
-                        text = stringResource(R.string.confirm),
-                        color = colors.failureColor
-                    )
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { showNewGameDialog = false }) {
-                    Text(stringResource(R.string.cancel))
-                }
-            }
+            onDismiss = { showNewGameDialog = false }
         )
     }
 
     // Winner Dialog
     if (state.showWinnerDialog && state.winner != null) {
-        val winnerName = if (state.winner == TeamType.TEAM_A) {
-            stringResource(R.string.team_a)
-        } else {
-            stringResource(R.string.team_b)
-        }
-
-        AlertDialog(
-            onDismissRequest = { viewModel.dismissWinnerDialog() },
-            title = {
-                Text(stringResource(R.string.game_over))
+        WinnerDialog(
+            winner = state.winner!!,
+            teamAScore = state.teamAScore,
+            teamBScore = state.teamBScore,
+            onNewGame = {
+                viewModel.dismissWinnerDialog()
+                viewModel.newGame()
             },
-            text = {
-                Text(
-                    text = "${stringResource(R.string.winner_message, winnerName)}\n\n" +
-                            "${stringResource(R.string.final_score)}\n" +
-                            "${stringResource(R.string.team_a)}: ${state.teamAScore}${stringResource(R.string.points_suffix)}\n" +
-                            "${stringResource(R.string.team_b)}: ${state.teamBScore}${stringResource(R.string.points_suffix)}",
-                    textAlign = TextAlign.Center
-                )
-            },
-            confirmButton = {
-                TextButton(onClick = {
-                    viewModel.dismissWinnerDialog()
-                    viewModel.newGame()
-                }) {
-                    Text(stringResource(R.string.new_game))
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { viewModel.dismissWinnerDialog() }) {
-                    Text(stringResource(R.string.confirm))
-                }
-            }
+            onDismiss = { viewModel.dismissWinnerDialog() }
         )
     }
 }

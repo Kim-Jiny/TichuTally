@@ -153,7 +153,7 @@ fun RoundInputCard(
                         modifier = Modifier.width(70.dp)
                     ) {
                         Text(
-                            text = "A",
+                            text = stringResource(R.string.team_a_short),
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Bold,
                             color = colors.teamAColor
@@ -180,7 +180,7 @@ fun RoundInputCard(
                         modifier = Modifier.width(70.dp)
                     ) {
                         Text(
-                            text = "B",
+                            text = stringResource(R.string.team_b_short),
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Bold,
                             color = colors.teamBColor
@@ -212,7 +212,7 @@ fun RoundInputCard(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "A",
+                        text = stringResource(R.string.team_a_short),
                         fontWeight = FontWeight.Bold,
                         color = colors.teamAColor,
                         fontSize = 12.sp
@@ -248,7 +248,7 @@ fun RoundInputCard(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "B",
+                        text = stringResource(R.string.team_b_short),
                         fontWeight = FontWeight.Bold,
                         color = colors.teamBColor,
                         fontSize = 12.sp
