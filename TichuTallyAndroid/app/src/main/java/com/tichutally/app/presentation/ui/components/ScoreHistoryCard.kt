@@ -14,7 +14,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -25,7 +24,8 @@ import com.tichutally.app.R
 import com.tichutally.app.domain.model.Round
 import com.tichutally.app.domain.model.RoundScore
 import com.tichutally.app.domain.model.TichuType
-import com.tichutally.app.presentation.ui.theme.*
+import com.tichutally.app.presentation.ui.theme.AppColors
+import com.tichutally.app.presentation.ui.theme.AppTheme
 
 @Composable
 fun ScoreHistoryCard(
@@ -34,6 +34,8 @@ fun ScoreHistoryCard(
     onDeleteRound: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val colors = AppTheme.colors
+
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -44,33 +46,11 @@ fun ScoreHistoryCard(
                 spotColor = Color.Black.copy(alpha = 0.08f)
             ),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = CardBackgroundElevated)
+        colors = CardDefaults.cardColors(containerColor = colors.cardBackgroundElevated)
     ) {
         Column(
-            modifier = Modifier.padding(20.dp)
+            modifier = Modifier.padding(12.dp)
         ) {
-            // Title with icon
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Box(
-                    modifier = Modifier
-                        .width(4.dp)
-                        .height(20.dp)
-                        .clip(RoundedCornerShape(2.dp))
-                        .background(TextSecondary)
-                )
-                Spacer(modifier = Modifier.width(10.dp))
-                Text(
-                    text = stringResource(R.string.round_history),
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = TextPrimary
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
             if (rounds.isEmpty()) {
                 // Empty state
                 Box(
@@ -78,7 +58,7 @@ fun ScoreHistoryCard(
                         .fillMaxWidth()
                         .height(120.dp)
                         .clip(RoundedCornerShape(12.dp))
-                        .background(SurfaceLight),
+                        .background(colors.surfaceLight),
                     contentAlignment = Alignment.Center
                 ) {
                     Column(
@@ -86,14 +66,14 @@ fun ScoreHistoryCard(
                     ) {
                         Text(
                             text = "No Records",
-                            color = TextHint,
+                            color = colors.textHint,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Medium
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             text = stringResource(R.string.no_records),
-                            color = TextHint,
+                            color = colors.textHint,
                             fontSize = 13.sp
                         )
                     }
@@ -104,7 +84,7 @@ fun ScoreHistoryCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(8.dp))
-                        .background(SurfaceLight)
+                        .background(colors.surfaceLight)
                         .padding(horizontal = 12.dp, vertical = 10.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -113,7 +93,7 @@ fun ScoreHistoryCard(
                         text = "#",
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold,
-                        color = TextSecondary,
+                        color = colors.textSecondary,
                         modifier = Modifier.width(28.dp),
                         textAlign = TextAlign.Center
                     )
@@ -121,7 +101,7 @@ fun ScoreHistoryCard(
                         text = "A",
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold,
-                        color = TeamAColor,
+                        color = colors.teamAColor,
                         modifier = Modifier.width(50.dp),
                         textAlign = TextAlign.Center
                     )
@@ -129,7 +109,7 @@ fun ScoreHistoryCard(
                         text = "B",
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold,
-                        color = TeamBColor,
+                        color = colors.teamBColor,
                         modifier = Modifier.width(50.dp),
                         textAlign = TextAlign.Center
                     )
@@ -137,7 +117,7 @@ fun ScoreHistoryCard(
                         text = "Details",
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold,
-                        color = TextSecondary,
+                        color = colors.textSecondary,
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -170,11 +150,13 @@ private fun RoundHistoryItem(
     isEven: Boolean,
     onDelete: () -> Unit
 ) {
+    val colors = AppTheme.colors
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(8.dp))
-            .background(if (isEven) Color.Transparent else SurfaceLight.copy(alpha = 0.5f))
+            .background(if (isEven) Color.Transparent else colors.surfaceLight.copy(alpha = 0.5f))
             .padding(horizontal = 12.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -182,7 +164,7 @@ private fun RoundHistoryItem(
         Icon(
             imageVector = Icons.Default.Close,
             contentDescription = "Delete",
-            tint = TextHint,
+            tint = colors.textHint,
             modifier = Modifier
                 .size(20.dp)
                 .clip(RoundedCornerShape(4.dp))
@@ -196,14 +178,14 @@ private fun RoundHistoryItem(
             modifier = Modifier
                 .size(24.dp)
                 .clip(RoundedCornerShape(6.dp))
-                .background(TextSecondary.copy(alpha = 0.1f)),
+                .background(colors.textSecondary.copy(alpha = 0.1f)),
             contentAlignment = Alignment.Center
         ) {
             Text(
                 text = "${round.roundNumber}",
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,
-                color = TextSecondary
+                color = colors.textSecondary
             )
         }
 
@@ -212,21 +194,21 @@ private fun RoundHistoryItem(
         // Team A score
         ScoreBadge(
             score = score.teamADisplay,
-            color = TeamAColor,
-            bgColor = TeamAColorLight
+            color = colors.teamAColor,
+            bgColor = colors.teamAColorLight
         )
 
         // Team B score
         ScoreBadge(
             score = score.teamBDisplay,
-            color = TeamBColor,
-            bgColor = TeamBColorLight
+            color = colors.teamBColor,
+            bgColor = colors.teamBColorLight
         )
 
         Spacer(modifier = Modifier.width(8.dp))
 
         // Details
-        val details = buildDetailTags(round)
+        val details = buildDetailTags(round, colors)
         Row(
             horizontalArrangement = Arrangement.spacedBy(4.dp),
             modifier = Modifier.weight(1f)
@@ -269,7 +251,7 @@ private fun DetailTag(
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(4.dp))
-            .background(color.copy(alpha = 0.1f))
+            .background(color.copy(alpha = 0.15f))
             .padding(horizontal = 6.dp, vertical = 2.dp)
     ) {
         Text(
@@ -281,24 +263,25 @@ private fun DetailTag(
     }
 }
 
-private fun buildDetailTags(round: Round): List<Pair<String, Color>> {
+private fun buildDetailTags(round: Round, colors: AppColors): List<Pair<String, Color>> {
     val tags = mutableListOf<Pair<String, Color>>()
 
     if (round.isOneTwoFinish && round.oneTwoFinishTeam != null) {
-        val color = if (round.oneTwoFinishTeam.name == "TEAM_A") TeamAColor else TeamBColor
+        val color = if (round.oneTwoFinishTeam.name == "TEAM_A") colors.teamAColor else colors.teamBColor
         tags.add("${round.oneTwoFinishTeam.shortName} 1-2" to color)
     }
 
     round.tichuCalls.forEach { call ->
+        val teamStr = call.player.team.shortName
         val typeStr = if (call.type == TichuType.LARGE) "L" else "S"
         val resultStr = if (call.isSuccess) "O" else "X"
         val color = when {
-            call.type == TichuType.LARGE && call.isSuccess -> LargeTichuColor
-            call.type == TichuType.LARGE && !call.isSuccess -> FailureColor
-            call.isSuccess -> SuccessColor
-            else -> FailureColor
+            call.type == TichuType.LARGE && call.isSuccess -> colors.largeTichuColor
+            call.type == TichuType.LARGE && !call.isSuccess -> colors.failureColor
+            call.isSuccess -> colors.successColor
+            else -> colors.failureColor
         }
-        tags.add("${call.player.displayName}$typeStr$resultStr" to color)
+        tags.add("$teamStr$typeStr$resultStr" to color)
     }
 
     return tags

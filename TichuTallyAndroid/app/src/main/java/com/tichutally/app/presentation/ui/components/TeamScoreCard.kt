@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tichutally.app.R
 import com.tichutally.app.domain.model.TeamType
-import com.tichutally.app.presentation.ui.theme.*
+import com.tichutally.app.presentation.ui.theme.AppTheme
 
 @Composable
 fun TeamScoreCard(
@@ -32,9 +32,10 @@ fun TeamScoreCard(
     isWinner: Boolean,
     modifier: Modifier = Modifier
 ) {
-    val teamColor = if (teamType == TeamType.TEAM_A) TeamAColor else TeamBColor
-    val teamColorLight = if (teamType == TeamType.TEAM_A) TeamAColorLight else TeamBColorLight
-    val teamColorMedium = if (teamType == TeamType.TEAM_A) TeamAColorMedium else TeamBColorMedium
+    val colors = AppTheme.colors
+    val teamColor = if (teamType == TeamType.TEAM_A) colors.teamAColor else colors.teamBColor
+    val teamColorLight = if (teamType == TeamType.TEAM_A) colors.teamAColorLight else colors.teamBColorLight
+    val teamColorMedium = if (teamType == TeamType.TEAM_A) colors.teamAColorMedium else colors.teamBColorMedium
     val teamName = if (teamType == TeamType.TEAM_A) {
         stringResource(R.string.team_a)
     } else {
@@ -68,7 +69,7 @@ fun TeamScoreCard(
                     colors = if (isWinner) {
                         listOf(teamColorLight, teamColorMedium)
                     } else {
-                        listOf(Color.White, teamColorLight)
+                        listOf(colors.cardBackgroundElevated, teamColorLight)
                     }
                 )
             )
@@ -85,24 +86,15 @@ fun TeamScoreCard(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Team badge
-            Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(
-                        if (isWinner) teamColor else teamColor.copy(alpha = 0.1f)
-                    )
-                    .padding(horizontal = 12.dp, vertical = 4.dp)
-            ) {
-                Text(
-                    text = teamName,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = if (isWinner) Color.White else teamColor
-                )
-            }
+            // Team name
+            Text(
+                text = teamName,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
+                color = teamColor
+            )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(2.dp))
 
             // Score
             Text(
@@ -117,7 +109,7 @@ fun TeamScoreCard(
                 text = stringResource(R.string.points_suffix),
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Medium,
-                color = TextSecondary
+                color = colors.textSecondary
             )
 
             // Winner indicator

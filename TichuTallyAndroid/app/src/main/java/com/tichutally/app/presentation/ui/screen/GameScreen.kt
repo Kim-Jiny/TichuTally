@@ -4,13 +4,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -20,7 +19,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.tichutally.app.R
 import com.tichutally.app.domain.model.TeamType
 import com.tichutally.app.presentation.ui.components.*
-import com.tichutally.app.presentation.ui.theme.SurfaceLight
+import com.tichutally.app.presentation.ui.theme.AppTheme
 import com.tichutally.app.presentation.viewmodel.GameViewModel
 
 @Composable
@@ -28,19 +27,40 @@ fun GameScreen(
     viewModel: GameViewModel = viewModel()
 ) {
     val state by viewModel.state.collectAsState()
+    val colors = AppTheme.colors
+    var showNewGameDialog by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(SurfaceLight)
+            .background(colors.surfaceLight)
             .statusBarsPadding()
     ) {
-        // 상단 고정 - Team Score Cards
+        // 상단 - New Game 버튼 (우측 상단)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .padding(top = 8.dp)
+        ) {
+            IconButton(
+                onClick = { showNewGameDialog = true },
+                modifier = Modifier.align(Alignment.TopEnd)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Refresh,
+                    contentDescription = stringResource(R.string.new_game),
+                    tint = colors.textSecondary
+                )
+            }
+        }
+
+        // Team Score Cards
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
-                .padding(top = 16.dp, bottom = 8.dp),
+                .padding(bottom = 8.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             TeamScoreCard(
@@ -49,7 +69,7 @@ fun GameScreen(
                 isWinner = state.winner == TeamType.TEAM_A,
                 modifier = Modifier
                     .weight(1f)
-                    .height(130.dp)
+                    .height(100.dp)
             )
             TeamScoreCard(
                 teamType = TeamType.TEAM_B,
@@ -57,14 +77,14 @@ fun GameScreen(
                 isWinner = state.winner == TeamType.TEAM_B,
                 modifier = Modifier
                     .weight(1f)
-                    .height(130.dp)
+                    .height(100.dp)
             )
         }
 
         // 스크롤 가능한 영역
         Column(
             modifier = Modifier
-                .fillMaxSize()
+                .weight(1f)
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 16.dp)
                 .padding(top = 8.dp, bottom = 16.dp),
@@ -94,22 +114,47 @@ fun GameScreen(
                 onDeleteRound = { viewModel.deleteRound(it) }
             )
 
-            // New Game Button
-            TextButton(
-                onClick = { viewModel.newGame() },
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            ) {
-                Text(
-                    text = stringResource(R.string.new_game),
-                    color = Color(0xFFE53935),
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-
             // Bottom spacing
             Spacer(modifier = Modifier.height(16.dp))
         }
+
+        // 하단 고정 - AdMob 배너 광고
+        AdBanner(
+            modifier = Modifier
+                .fillMaxWidth()
+                .navigationBarsPadding()
+        )
+    }
+
+    // New Game Confirmation Dialog
+    if (showNewGameDialog) {
+        AlertDialog(
+            onDismissRequest = { showNewGameDialog = false },
+            title = {
+                Text(stringResource(R.string.new_game))
+            },
+            text = {
+                Text(stringResource(R.string.new_game_confirm))
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showNewGameDialog = false
+                        viewModel.newGame()
+                    }
+                ) {
+                    Text(
+                        text = stringResource(R.string.confirm),
+                        color = colors.failureColor
+                    )
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showNewGameDialog = false }) {
+                    Text(stringResource(R.string.cancel))
+                }
+            }
+        )
     }
 
     // Winner Dialog

@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.sp
 import com.tichutally.app.domain.model.Player
 import com.tichutally.app.domain.model.TeamType
 import com.tichutally.app.domain.model.TichuType
-import com.tichutally.app.presentation.ui.theme.*
+import com.tichutally.app.presentation.ui.theme.AppTheme
 import com.tichutally.app.presentation.viewmodel.TichuCallInput
 
 @Composable
@@ -34,8 +34,9 @@ fun TichuCallRow(
     onCallChanged: (TichuType?, Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val teamColor = if (player.team == TeamType.TEAM_A) TeamAColor else TeamBColor
-    val teamColorLight = if (player.team == TeamType.TEAM_A) TeamAColorLight else TeamBColorLight
+    val colors = AppTheme.colors
+    val teamColor = if (player.team == TeamType.TEAM_A) colors.teamAColor else colors.teamBColor
+    val teamColorLight = if (player.team == TeamType.TEAM_A) colors.teamAColorLight else colors.teamBColorLight
     val selectedType = callInput?.type
     val isSuccess = callInput?.isSuccess ?: false
 
@@ -44,7 +45,7 @@ fun TichuCallRow(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        // Player name badge - 더 컴팩트하게
+        // Player name badge
         Box(
             modifier = Modifier
                 .widthIn(min = 28.dp)
@@ -65,7 +66,7 @@ fun TichuCallRow(
         TichuButton(
             text = "S",
             isSelected = selectedType == TichuType.SMALL,
-            selectedColor = TeamAColor,
+            selectedColor = colors.teamAColor,
             onClick = {
                 if (selectedType == TichuType.SMALL) {
                     onCallChanged(null, false)
@@ -79,7 +80,84 @@ fun TichuCallRow(
         TichuButton(
             text = "L",
             isSelected = selectedType == TichuType.LARGE,
-            selectedColor = LargeTichuColor,
+            selectedColor = colors.largeTichuColor,
+            onClick = {
+                if (selectedType == TichuType.LARGE) {
+                    onCallChanged(null, false)
+                } else {
+                    onCallChanged(TichuType.LARGE, isSuccess)
+                }
+            }
+        )
+
+        // Success/Fail toggle button
+        SuccessToggleButton(
+            isEnabled = selectedType != null,
+            isSuccess = isSuccess,
+            onClick = {
+                if (selectedType != null) {
+                    onCallChanged(selectedType, !isSuccess)
+                }
+            }
+        )
+    }
+}
+
+@Composable
+fun TeamTichuCallRow(
+    teamType: TeamType,
+    callInput: TichuCallInput?,
+    onCallChanged: (TichuType?, Boolean) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val colors = AppTheme.colors
+    val teamColor = if (teamType == TeamType.TEAM_A) colors.teamAColor else colors.teamBColor
+    val teamColorLight = if (teamType == TeamType.TEAM_A) colors.teamAColorLight else colors.teamBColorLight
+    val teamName = if (teamType == TeamType.TEAM_A) "A" else "B"
+    val selectedType = callInput?.type
+    val isSuccess = callInput?.isSuccess ?: false
+
+    Row(
+        modifier = modifier.height(36.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        // Team name badge
+        Box(
+            modifier = Modifier
+                .widthIn(min = 28.dp)
+                .clip(RoundedCornerShape(4.dp))
+                .background(teamColorLight)
+                .padding(horizontal = 8.dp, vertical = 3.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = teamName,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                color = teamColor
+            )
+        }
+
+        // Small Tichu button
+        TichuButton(
+            text = "S",
+            isSelected = selectedType == TichuType.SMALL,
+            selectedColor = colors.teamAColor,
+            onClick = {
+                if (selectedType == TichuType.SMALL) {
+                    onCallChanged(null, false)
+                } else {
+                    onCallChanged(TichuType.SMALL, isSuccess)
+                }
+            }
+        )
+
+        // Large Tichu button
+        TichuButton(
+            text = "L",
+            isSelected = selectedType == TichuType.LARGE,
+            selectedColor = colors.largeTichuColor,
             onClick = {
                 if (selectedType == TichuType.LARGE) {
                     onCallChanged(null, false)
@@ -109,13 +187,14 @@ private fun TichuButton(
     selectedColor: Color,
     onClick: () -> Unit
 ) {
+    val colors = AppTheme.colors
     val backgroundColor by animateColorAsState(
         targetValue = if (isSelected) selectedColor else Color.Transparent,
         animationSpec = tween(200),
         label = "bgColor"
     )
     val borderColor by animateColorAsState(
-        targetValue = if (isSelected) selectedColor else TextHint,
+        targetValue = if (isSelected) selectedColor else colors.textHint,
         animationSpec = tween(200),
         label = "borderColor"
     )
@@ -163,27 +242,28 @@ private fun SuccessToggleButton(
     isSuccess: Boolean,
     onClick: () -> Unit
 ) {
+    val colors = AppTheme.colors
     val backgroundColor by animateColorAsState(
         targetValue = when {
             !isEnabled -> Color.Transparent
-            isSuccess -> SuccessColor
-            else -> FailureColor
+            isSuccess -> colors.successColor
+            else -> colors.failureColor
         },
         animationSpec = tween(200),
         label = "bgColor"
     )
     val borderColor by animateColorAsState(
         targetValue = when {
-            !isEnabled -> TextHint
-            isSuccess -> SuccessColor
-            else -> FailureColor
+            !isEnabled -> colors.textHint
+            isSuccess -> colors.successColor
+            else -> colors.failureColor
         },
         animationSpec = tween(200),
         label = "borderColor"
     )
     val textColor by animateColorAsState(
         targetValue = when {
-            !isEnabled -> TextHint
+            !isEnabled -> colors.textHint
             else -> Color.White
         },
         animationSpec = tween(200),

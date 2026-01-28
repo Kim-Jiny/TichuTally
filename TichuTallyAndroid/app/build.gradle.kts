@@ -30,6 +30,9 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField("String", "ADMOB_BANNER_ID", "\"ca-app-pub-3940256099942544/6300978111\"")
+        }
         release {
             isMinifyEnabled = true
             isShrinkResources = true
@@ -38,6 +41,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("String", "ADMOB_BANNER_ID", "\"ca-app-pub-2707874353926722/1958848144\"")
         }
     }
     compileOptions {
@@ -49,6 +53,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.8"
@@ -73,6 +78,9 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
+
+    // AdMob
+    implementation("com.google.android.gms:play-services-ads:23.0.0")
 
     // Testing
     testImplementation("junit:junit:4.13.2")
