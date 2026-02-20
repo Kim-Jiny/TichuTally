@@ -24,7 +24,8 @@
       "Bash(unzip:*)",
       "Bash(xxd:*)",
       "Bash(tree:*)",
-      "Bash(xcodebuild:*)"
+      "Bash(xcodebuild:*)",
+      "Bash(grep:*)"
     ]
   }
 }

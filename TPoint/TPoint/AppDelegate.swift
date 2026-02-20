@@ -12,6 +12,10 @@ import GoogleMobileAds
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        // 가족용 광고 설정 (Google Play/App Store 가족 정책 준수)
+        MobileAds.shared.requestConfiguration.maxAdContentRating = .general
+        MobileAds.shared.requestConfiguration.tagForChildDirectedTreatment = true
+
         // Initialize Google Mobile Ads SDK
         MobileAds.shared.start(completionHandler: nil)
         return true
