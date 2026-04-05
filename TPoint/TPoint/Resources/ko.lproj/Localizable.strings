@@ -50,7 +50,7 @@
 "save" = "저장";
 
 // Round
-"round_number" = "Round %d";
+"round_number" = "%d 라운드";
 "no_records_title" = "기록 없음";
 
 // Winner

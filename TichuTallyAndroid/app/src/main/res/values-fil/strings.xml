@@ -5,6 +5,8 @@
     <!-- Team -->
     <string name="team_a">Team A</string>
     <string name="team_b">Team B</string>
+    <string name="team_a_short">A</string>
+    <string name="team_b_short">B</string>
     <string name="points_suffix">pts</string>
 
     <!-- Round Input -->
@@ -24,8 +26,33 @@
     <string name="new_game">Bagong Laro</string>
     <string name="game_over">Tapos na ang Laro!</string>
     <string name="winner_message">Panalo ang %s!</string>
+    <string name="wins">Panalo!</string>
     <string name="final_score">Final na Score</string>
     <string name="confirm">OK</string>
     <string name="cancel">Kanselahin</string>
     <string name="new_game_confirm">I-reset ang kasalukuyang laro at magsimula ng bago?</string>
+    <string name="current_game">Kasalukuyang Laro</string>
+    <string name="rounds">Mga Round</string>
+    <string name="vs">VS</string>
+    <string name="winner">PANALO</string>
+
+    <!-- Settings -->
+    <string name="settings">Settings</string>
+    <string name="target_score">Target na Score</string>
+    <string name="custom_score">Custom</string>
+    <string name="save">I-save</string>
+    <string name="round_number">Round %d</string>
+
+    <!-- UI Labels -->
+    <string name="no_records_title">Walang Record</string>
+    <string name="details">Detalye</string>
+    <string name="small_tichu">S</string>
+    <string name="large_tichu">L</string>
+    <string name="win">WIN</string>
+
+    <!-- Theme -->
+    <string name="theme">Tema</string>
+    <string name="theme_system">System</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
 </resources>

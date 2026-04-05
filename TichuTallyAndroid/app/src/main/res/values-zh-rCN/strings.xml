@@ -5,6 +5,8 @@
     <!-- Team -->
     <string name="team_a">A队</string>
     <string name="team_b">B队</string>
+    <string name="team_a_short">A</string>
+    <string name="team_b_short">B</string>
     <string name="points_suffix">分</string>
 
     <!-- Round Input -->
@@ -24,8 +26,33 @@
     <string name="new_game">新游戏</string>
     <string name="game_over">游戏结束！</string>
     <string name="winner_message">%s 获胜！</string>
+    <string name="wins">获胜！</string>
     <string name="final_score">最终得分</string>
     <string name="confirm">确定</string>
     <string name="cancel">取消</string>
     <string name="new_game_confirm">重置当前游戏并开始新游戏？</string>
+    <string name="current_game">当前游戏</string>
+    <string name="rounds">回合</string>
+    <string name="vs">VS</string>
+    <string name="winner">胜利</string>
+
+    <!-- Settings -->
+    <string name="settings">设置</string>
+    <string name="target_score">目标分数</string>
+    <string name="custom_score">自定义</string>
+    <string name="save">保存</string>
+    <string name="round_number">第 %d 回合</string>
+
+    <!-- UI Labels -->
+    <string name="no_records_title">暂无记录</string>
+    <string name="details">详情</string>
+    <string name="small_tichu">S</string>
+    <string name="large_tichu">L</string>
+    <string name="win">WIN</string>
+
+    <!-- Theme -->
+    <string name="theme">主题</string>
+    <string name="theme_system">系统</string>
+    <string name="theme_light">浅色</string>
+    <string name="theme_dark">深色</string>
 </resources>

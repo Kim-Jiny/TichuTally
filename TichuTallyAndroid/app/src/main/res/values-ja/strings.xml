@@ -5,6 +5,8 @@
     <!-- Team -->
     <string name="team_a">Aチーム</string>
     <string name="team_b">Bチーム</string>
+    <string name="team_a_short">A</string>
+    <string name="team_b_short">B</string>
     <string name="points_suffix">点</string>
 
     <!-- Round Input -->
@@ -24,8 +26,33 @@
     <string name="new_game">新規ゲーム</string>
     <string name="game_over">ゲーム終了！</string>
     <string name="winner_message">%s 勝利！</string>
+    <string name="wins">勝利！</string>
     <string name="final_score">最終スコア</string>
     <string name="confirm">確認</string>
     <string name="cancel">キャンセル</string>
     <string name="new_game_confirm">現在のゲームをリセットして新しいゲームを始めますか？</string>
+    <string name="current_game">現在のゲーム</string>
+    <string name="rounds">ラウンド</string>
+    <string name="vs">VS</string>
+    <string name="winner">勝者</string>
+
+    <!-- Settings -->
+    <string name="settings">設定</string>
+    <string name="target_score">目標スコア</string>
+    <string name="custom_score">カスタム</string>
+    <string name="save">保存</string>
+    <string name="round_number">ラウンド %d</string>
+
+    <!-- UI Labels -->
+    <string name="no_records_title">記録なし</string>
+    <string name="details">詳細</string>
+    <string name="small_tichu">S</string>
+    <string name="large_tichu">L</string>
+    <string name="win">WIN</string>
+
+    <!-- Theme -->
+    <string name="theme">テーマ</string>
+    <string name="theme_system">システム</string>
+    <string name="theme_light">ライト</string>
+    <string name="theme_dark">ダーク</string>
 </resources>

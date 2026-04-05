@@ -50,7 +50,7 @@
 "save" = "保存";
 
 // Round
-"round_number" = "Round %d";
+"round_number" = "第 %d 回合";
 "no_records_title" = "暂无记录";
 
 // Winner

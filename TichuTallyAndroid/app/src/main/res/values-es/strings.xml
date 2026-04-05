@@ -5,6 +5,8 @@
     <!-- Team -->
     <string name="team_a">Equipo A</string>
     <string name="team_b">Equipo B</string>
+    <string name="team_a_short">A</string>
+    <string name="team_b_short">B</string>
     <string name="points_suffix">pts</string>
 
     <!-- Round Input -->
@@ -24,8 +26,33 @@
     <string name="new_game">Nuevo Juego</string>
     <string name="game_over">¡Fin del Juego!</string>
     <string name="winner_message">¡%s Gana!</string>
+    <string name="wins">¡Gana!</string>
     <string name="final_score">Puntuación Final</string>
     <string name="confirm">Aceptar</string>
     <string name="cancel">Cancelar</string>
     <string name="new_game_confirm">¿Reiniciar el juego actual y comenzar uno nuevo?</string>
+    <string name="current_game">Juego Actual</string>
+    <string name="rounds">Rondas</string>
+    <string name="vs">VS</string>
+    <string name="winner">GANADOR</string>
+
+    <!-- Settings -->
+    <string name="settings">Configuración</string>
+    <string name="target_score">Puntuación Objetivo</string>
+    <string name="custom_score">Personalizado</string>
+    <string name="save">Guardar</string>
+    <string name="round_number">Ronda %d</string>
+
+    <!-- UI Labels -->
+    <string name="no_records_title">Sin Registros</string>
+    <string name="details">Detalles</string>
+    <string name="small_tichu">S</string>
+    <string name="large_tichu">L</string>
+    <string name="win">WIN</string>
+
+    <!-- Theme -->
+    <string name="theme">Tema</string>
+    <string name="theme_system">Sistema</string>
+    <string name="theme_light">Claro</string>
+    <string name="theme_dark">Oscuro</string>
 </resources>
