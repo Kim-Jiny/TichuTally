@@ -116,6 +116,14 @@ final class GameViewController: UIViewController {
         }
     }
 
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        // 회전 후 적절한 adaptive banner 크기로 재로드
+        coordinator.animate(alongsideTransition: nil) { [weak self] _ in
+            self?.bannerAdView.loadBannerAd()
+        }
+    }
+
     // MARK: - Setup
 
     private func setupUI() {
@@ -258,6 +266,9 @@ final class GameViewController: UIViewController {
             viewModel.getRoundScore(at: index)
         }
         scoreHistoryView.updateHistory(rounds: viewModel.rounds, scores: scores)
+
+        // ViewModel의 티츄 콜 상태를 입력 뷰에 반영 (auto-fail 등 ViewModel 측 변경 동기화)
+        roundInputView.syncTichuCalls(from: viewModel.currentTichuCalls)
 
         roundInputView.setEnabled(!viewModel.isGameOver)
 

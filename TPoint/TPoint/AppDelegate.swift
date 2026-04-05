@@ -16,8 +16,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         MobileAds.shared.requestConfiguration.maxAdContentRating = .general
         MobileAds.shared.requestConfiguration.tagForChildDirectedTreatment = true
 
-        // Initialize Google Mobile Ads SDK
-        MobileAds.shared.start(completionHandler: nil)
+        // Initialize Google Mobile Ads SDK - 어댑터 상태 로깅으로 초기화 실패 진단 가능
+        MobileAds.shared.start { status in
+            let adapters = status.adapterStatusesByClassName
+            if adapters.isEmpty {
+                print("❌ AdMob 초기화 실패: 어댑터 상태가 비어 있습니다.")
+            } else {
+                for (adapterClass, adapterStatus) in adapters {
+                    print("🟢 AdMob 어댑터 \(adapterClass): state=\(adapterStatus.state.rawValue), \(adapterStatus.description)")
+                }
+            }
+        }
         return true
     }
 

@@ -388,19 +388,20 @@ final class RoundInputView: UIView {
 
 extension RoundInputView: TichuCallViewDelegate {
     func tichuCallView(_ view: TichuCallView, didUpdateCall type: TichuType?, isSuccess: Bool) {
-        // Pass the tichu call to delegate
+        // ViewModel이 auto-fail 로직을 담당. View는 사용자 입력만 전달하고,
+        // 결과는 syncTichuCalls(from:)으로 동기화됨.
         delegate?.roundInputView(self, didChangeTichuCall: view.player, type: type, isSuccess: isSuccess)
+    }
+}
 
-        // When success is set, automatically set other tichu calls to fail
-        if isSuccess && type != nil {
-            for otherView in tichuCallViews where otherView !== view {
-                if otherView.hasTichuCall {
-                    otherView.setSuccess(false, silent: true)
-                    if let otherType = otherView.currentTichuType {
-                        delegate?.roundInputView(self, didChangeTichuCall: otherView.player, type: otherType, isSuccess: false)
-                    }
-                }
-            }
+// MARK: - ViewModel → View Sync
+
+extension RoundInputView {
+    /// ViewModel의 현재 티츄 콜 상태를 뷰에 반영한다. auto-fail 등 ViewModel 측 변경을 UI에 동기화.
+    func syncTichuCalls(from calls: [Player: TichuCallInput]) {
+        for callView in tichuCallViews {
+            let input = calls[callView.player]
+            callView.applyState(type: input?.type, isSuccess: input?.isSuccess ?? false)
         }
     }
 }

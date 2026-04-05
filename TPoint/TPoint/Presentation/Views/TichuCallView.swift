@@ -67,7 +67,9 @@ final class TichuCallView: UIView {
     private var selectedType: TichuType? {
         didSet {
             updateButtonStates()
-            notifyDelegate()
+            if !isSilentUpdate {
+                notifyDelegate()
+            }
         }
     }
 
@@ -183,6 +185,13 @@ final class TichuCallView: UIView {
         if selectedType == .small {
             selectedType = nil
         } else {
+            // 콜이 없다가 새로 선택된 경우 기본값은 성공(O).
+            // notifyDelegate는 selectedType의 didSet에서 한 번만 호출되도록 silent로 isSuccess 먼저 설정.
+            if selectedType == nil {
+                isSilentUpdate = true
+                isSuccess = true
+                isSilentUpdate = false
+            }
             selectedType = .small
         }
     }
@@ -192,6 +201,11 @@ final class TichuCallView: UIView {
         if selectedType == .large {
             selectedType = nil
         } else {
+            if selectedType == nil {
+                isSilentUpdate = true
+                isSuccess = true
+                isSilentUpdate = false
+            }
             selectedType = .large
         }
     }
@@ -271,5 +285,20 @@ final class TichuCallView: UIView {
         isSilentUpdate = silent
         isSuccess = success
         isSilentUpdate = false
+    }
+
+    /// ViewModel에서 내려온 상태를 뷰에 반영한다. delegate로 재귀 호출되지 않도록 silent 모드로 적용.
+    func applyState(type: TichuType?, isSuccess success: Bool) {
+        isSilentUpdate = true
+        defer { isSilentUpdate = false }
+
+        if selectedType != type {
+            selectedType = type
+        }
+        if type != nil, isSuccess != success {
+            isSuccess = success
+        } else if type == nil {
+            isSuccess = false
+        }
     }
 }

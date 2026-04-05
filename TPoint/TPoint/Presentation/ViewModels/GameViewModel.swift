@@ -30,6 +30,7 @@ final class GameViewModel {
     weak var delegate: GameViewModelDelegate?
 
     private(set) var game: Game
+    private var roundScores: [RoundScore] = []
     private let calculateScoreUseCase: CalculateScoreUseCaseProtocol
 
     // 현재 라운드 입력 상태
@@ -38,25 +39,24 @@ final class GameViewModel {
     var currentOneTwoFinishTeam: TeamType?
     var currentTichuCalls: [Player: TichuCallInput] = [:]
 
-    // 설정 - 목표 점수
+    // 설정 - 목표 점수 (메모리 캐시 + UserDefaults 영속화)
+    private var _targetScore: Int
     var targetScore: Int {
-        get {
-            let saved = UserDefaults.standard.integer(forKey: Keys.targetScore)
-            return saved > 0 ? saved : 1000
-        }
+        get { _targetScore }
         set {
+            _targetScore = newValue
             UserDefaults.standard.set(newValue, forKey: Keys.targetScore)
             game.targetScore = newValue
             delegate?.gameDidUpdate()
         }
     }
 
-    // 설정 - 테마 모드
+    // 설정 - 테마 모드 (메모리 캐시 + UserDefaults 영속화)
+    private var _themeMode: ThemeMode
     var themeMode: ThemeMode {
-        get {
-            ThemeMode(rawValue: UserDefaults.standard.integer(forKey: Keys.themeMode)) ?? .system
-        }
+        get { _themeMode }
         set {
+            _themeMode = newValue
             UserDefaults.standard.set(newValue.rawValue, forKey: Keys.themeMode)
         }
     }
@@ -79,20 +79,21 @@ final class GameViewModel {
     // MARK: - Initialization
 
     init(calculateScoreUseCase: CalculateScoreUseCaseProtocol = CalculateScoreUseCase()) {
-        self.game = Game()
         self.calculateScoreUseCase = calculateScoreUseCase
-        // Load saved target score
+
+        // UserDefaults에서 한 번만 로드해 메모리에 캐시
         let savedTargetScore = UserDefaults.standard.integer(forKey: Keys.targetScore)
-        if savedTargetScore > 0 {
-            self.game.targetScore = savedTargetScore
-        }
+        self._targetScore = savedTargetScore > 0 ? savedTargetScore : 1000
+        self._themeMode = ThemeMode(rawValue: UserDefaults.standard.integer(forKey: Keys.themeMode)) ?? .system
+
+        self.game = Game(targetScore: self._targetScore)
         resetCurrentRoundInput()
     }
 
     // MARK: - Public Methods
 
     func setTeamACardScore(_ score: Int) {
-        currentTeamACardScore = max(0, min(100, score))
+        currentTeamACardScore = max(-25, min(125, score))
         delegate?.gameDidUpdate()
     }
 
@@ -105,6 +106,16 @@ final class GameViewModel {
     func setTichuCall(for player: Player, type: TichuType?, isSuccess: Bool) {
         if let type = type {
             currentTichuCalls[player] = TichuCallInput(type: type, isSuccess: isSuccess)
+
+            // 한 라운드에 성공은 한 명만 가능(먼저 난 사람). 성공으로 설정되면 나머지 콜은 자동 실패.
+            if isSuccess {
+                let otherPlayers = currentTichuCalls.keys.filter { $0 != player }
+                for otherPlayer in otherPlayers {
+                    if let otherInput = currentTichuCalls[otherPlayer] {
+                        currentTichuCalls[otherPlayer] = TichuCallInput(type: otherInput.type, isSuccess: false)
+                    }
+                }
+            }
         } else {
             currentTichuCalls.removeValue(forKey: player)
         }
@@ -135,6 +146,7 @@ final class GameViewModel {
         let score = calculateScoreUseCase.calculate(round: round)
 
         game.rounds.append(round)
+        roundScores.append(score)
         game.teamA.totalScore += score.teamAScore
         game.teamB.totalScore += score.teamBScore
 
@@ -148,28 +160,28 @@ final class GameViewModel {
     }
 
     func getRoundScore(at index: Int) -> RoundScore? {
-        guard index < game.rounds.count else { return nil }
-        return calculateScoreUseCase.calculate(round: game.rounds[index])
+        guard index >= 0 && index < roundScores.count else { return nil }
+        return roundScores[index]
     }
 
     func newGame() {
         game.reset()
+        roundScores.removeAll()
         resetCurrentRoundInput()
         delegate?.gameDidUpdate()
     }
 
     func deleteRound(at index: Int) {
-        guard index >= 0 && index < game.rounds.count else { return }
+        guard index >= 0 && index < game.rounds.count, index < roundScores.count else { return }
 
-        let round = game.rounds[index]
-        let score = calculateScoreUseCase.calculate(round: round)
+        // 저장된 점수로 차감 (재계산 시 계산 로직 변경과 불일치 방지)
+        let deletedScore = roundScores[index]
+        game.teamA.totalScore -= deletedScore.teamAScore
+        game.teamB.totalScore -= deletedScore.teamBScore
 
-        // 점수 차감
-        game.teamA.totalScore -= score.teamAScore
-        game.teamB.totalScore -= score.teamBScore
-
-        // 라운드 삭제
+        // 라운드 및 저장 점수 삭제
         game.rounds.remove(at: index)
+        roundScores.remove(at: index)
 
         // 라운드 번호 재정렬
         for i in index..<game.rounds.count {

@@ -73,7 +73,10 @@ fun TichuCallRow(
                 if (selectedType == TichuType.SMALL) {
                     onCallChanged(null, false)
                 } else {
-                    onCallChanged(TichuType.SMALL, isSuccess)
+                    // 콜이 없다가 새로 선택된 경우 기본값은 성공(true).
+                    // 기존 콜 타입만 바꾸는 경우 현재 성공 여부 유지.
+                    val nextSuccess = if (callInput == null) true else isSuccess
+                    onCallChanged(TichuType.SMALL, nextSuccess)
                 }
             }
         )
@@ -87,7 +90,8 @@ fun TichuCallRow(
                 if (selectedType == TichuType.LARGE) {
                     onCallChanged(null, false)
                 } else {
-                    onCallChanged(TichuType.LARGE, isSuccess)
+                    val nextSuccess = if (callInput == null) true else isSuccess
+                    onCallChanged(TichuType.LARGE, nextSuccess)
                 }
             }
         )
@@ -150,7 +154,9 @@ fun TeamTichuCallRow(
                 if (selectedType == TichuType.SMALL) {
                     onCallChanged(null, false)
                 } else {
-                    onCallChanged(TichuType.SMALL, isSuccess)
+                    // 콜이 없다가 새로 선택된 경우 기본값은 성공(true).
+                    val nextSuccess = if (callInput == null) true else isSuccess
+                    onCallChanged(TichuType.SMALL, nextSuccess)
                 }
             }
         )
@@ -164,7 +170,8 @@ fun TeamTichuCallRow(
                 if (selectedType == TichuType.LARGE) {
                     onCallChanged(null, false)
                 } else {
-                    onCallChanged(TichuType.LARGE, isSuccess)
+                    val nextSuccess = if (callInput == null) true else isSuccess
+                    onCallChanged(TichuType.LARGE, nextSuccess)
                 }
             }
         )

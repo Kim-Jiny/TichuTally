@@ -72,6 +72,9 @@ fun RoundInputCard(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
+                    // 설계: 팀당 1개의 티츄 콜만 기록한다. 한 라운드에 같은 팀 2명이 동시에
+                    // 티츄를 부르는 경우는 드물고 UX가 복잡해지므로, 각 팀을 대표하는
+                    // position=0 플레이어를 키로 사용해 콜을 저장한다.
                     // Team A
                     val teamAPlayer = Player.allPlayers.first { it.team == TeamType.TEAM_A }
                     TeamTichuCallRow(
