@@ -114,3 +114,6 @@ secrets/
 *.zip
 *.tar.gz
 *.rar
+
+# 배포 산출물 (AAB/IPA)
+/release/
