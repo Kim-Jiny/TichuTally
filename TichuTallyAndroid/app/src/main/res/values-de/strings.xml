@@ -5,6 +5,8 @@
     <!-- Team -->
     <string name="team_a">Team A</string>
     <string name="team_b">Team B</string>
+    <string name="team_a_short">A</string>
+    <string name="team_b_short">B</string>
     <string name="points_suffix">Pkt</string>
 
     <!-- Round Input -->
@@ -24,10 +26,35 @@
     <string name="new_game">Neues Spiel</string>
     <string name="game_over">Spiel beendet!</string>
     <string name="winner_message">%s gewinnt!</string>
+    <string name="wins">gewinnt!</string>
     <string name="final_score">Endergebnis</string>
     <string name="confirm">OK</string>
     <string name="cancel">Abbrechen</string>
     <string name="new_game_confirm">Aktuelles Spiel zurücksetzen und ein neues starten?</string>
+    <string name="current_game">Aktuelles Spiel</string>
+    <string name="rounds">Runden</string>
+    <string name="vs">VS</string>
+    <string name="winner">GEWINNER</string>
+
+    <!-- Settings -->
+    <string name="settings">Einstellungen</string>
+    <string name="target_score">Zielpunktzahl</string>
+    <string name="custom_score">Benutzerdefiniert</string>
+    <string name="save">Speichern</string>
+    <string name="round_number">Runde %d</string>
+
+    <!-- UI Labels -->
+    <string name="no_records_title">Keine Einträge</string>
+    <string name="details">Details</string>
+    <string name="small_tichu">S</string>
+    <string name="large_tichu">L</string>
+    <string name="win">WIN</string>
+
+    <!-- Theme -->
+    <string name="theme">Thema</string>
+    <string name="theme_system">System</string>
+    <string name="theme_light">Hell</string>
+    <string name="theme_dark">Dunkel</string>
 
     <!-- Records / Statistics / Team names / Undo / Share (v2) -->
     <string name="records">Aufzeichnungen</string>

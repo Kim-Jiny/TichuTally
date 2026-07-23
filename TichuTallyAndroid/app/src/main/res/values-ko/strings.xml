@@ -5,6 +5,8 @@
     <!-- Team -->
     <string name="team_a">A팀</string>
     <string name="team_b">B팀</string>
+    <string name="team_a_short">A</string>
+    <string name="team_b_short">B</string>
     <string name="points_suffix">점</string>
 
     <!-- Round Input -->
@@ -24,12 +26,37 @@
     <string name="new_game">새 게임</string>
     <string name="game_over">게임 종료!</string>
     <string name="winner_message">%s 승리!</string>
+    <string name="wins">승리!</string>
     <string name="final_score">최종 점수</string>
     <string name="confirm">확인</string>
     <string name="cancel">취소</string>
     <string name="new_game_confirm">현재 게임을 초기화하고 새 게임을 시작할까요?</string>
+    <string name="current_game">현재 게임</string>
+    <string name="rounds">라운드</string>
+    <string name="vs">VS</string>
+    <string name="winner">승리</string>
 
-    <!-- Records / Statistics -->
+    <!-- Settings -->
+    <string name="settings">설정</string>
+    <string name="target_score">목표 점수</string>
+    <string name="custom_score">직접 입력</string>
+    <string name="save">저장</string>
+    <string name="round_number">%d 라운드</string>
+
+    <!-- UI Labels -->
+    <string name="no_records_title">기록 없음</string>
+    <string name="details">상세</string>
+    <string name="small_tichu">S</string>
+    <string name="large_tichu">L</string>
+    <string name="win">WIN</string>
+
+    <!-- Theme -->
+    <string name="theme">테마</string>
+    <string name="theme_system">시스템</string>
+    <string name="theme_light">라이트</string>
+    <string name="theme_dark">다크</string>
+
+    <!-- Records / Statistics / Team names / Undo / Share (v2) -->
     <string name="records">기록</string>
     <string name="tab_history">경기 기록</string>
     <string name="tab_stats">통계</string>
@@ -45,14 +72,8 @@
     <string name="stat_one_two">원투 피니시</string>
     <string name="stat_highest_score">최고 점수</string>
     <string name="draw">무승부</string>
-
-    <!-- Team names -->
     <string name="team_names">팀 이름</string>
-
-    <!-- Undo -->
     <string name="undo">실행취소</string>
     <string name="round_deleted">라운드를 삭제했습니다</string>
-
-    <!-- Share -->
     <string name="share">공유</string>
 </resources>

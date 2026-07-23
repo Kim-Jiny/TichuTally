@@ -5,6 +5,8 @@
     <!-- Team -->
     <string name="team_a">ทีม A</string>
     <string name="team_b">ทีม B</string>
+    <string name="team_a_short">A</string>
+    <string name="team_b_short">B</string>
     <string name="points_suffix">คะแนน</string>
 
     <!-- Round Input -->
@@ -24,10 +26,35 @@
     <string name="new_game">เกมใหม่</string>
     <string name="game_over">จบเกม!</string>
     <string name="winner_message">%s ชนะ!</string>
+    <string name="wins">ชนะ!</string>
     <string name="final_score">คะแนนสุดท้าย</string>
     <string name="confirm">ตกลง</string>
     <string name="cancel">ยกเลิก</string>
     <string name="new_game_confirm">รีเซ็ตเกมปัจจุบันและเริ่มเกมใหม่?</string>
+    <string name="current_game">เกมปัจจุบัน</string>
+    <string name="rounds">รอบ</string>
+    <string name="vs">VS</string>
+    <string name="winner">ผู้ชนะ</string>
+
+    <!-- Settings -->
+    <string name="settings">การตั้งค่า</string>
+    <string name="target_score">คะแนนเป้าหมาย</string>
+    <string name="custom_score">กำหนดเอง</string>
+    <string name="save">บันทึก</string>
+    <string name="round_number">รอบ %d</string>
+
+    <!-- UI Labels -->
+    <string name="no_records_title">ไม่มีบันทึก</string>
+    <string name="details">รายละเอียด</string>
+    <string name="small_tichu">S</string>
+    <string name="large_tichu">L</string>
+    <string name="win">WIN</string>
+
+    <!-- Theme -->
+    <string name="theme">ธีม</string>
+    <string name="theme_system">ระบบ</string>
+    <string name="theme_light">สว่าง</string>
+    <string name="theme_dark">มืด</string>
 
     <!-- Records / Statistics / Team names / Undo / Share (v2) -->
     <string name="records">บันทึก</string>

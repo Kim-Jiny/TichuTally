@@ -118,6 +118,14 @@ final class GameViewController: UIViewController {
         }
     }
 
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        // 회전 후 적절한 adaptive banner 크기로 재로드
+        coordinator.animate(alongsideTransition: nil) { [weak self] _ in
+            self?.bannerAdView.loadBannerAd()
+        }
+    }
+
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         if traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {

@@ -1,6 +1,7 @@
 package com.tichutally.app.presentation.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -30,6 +31,10 @@ import kotlinx.coroutines.withContext
 
 class MainActivity : ComponentActivity() {
 
+    private companion object {
+        const val TAG = "MainActivity"
+    }
+
     // Compose의 viewModel()과 동일한 인스턴스 (액티비티 ViewModelStore 공유)
     private val gameViewModel: GameViewModel by viewModels()
 
@@ -50,8 +55,20 @@ class MainActivity : ComponentActivity() {
             .build()
         MobileAds.setRequestConfiguration(requestConfiguration)
 
-        // AdMob 초기화
-        MobileAds.initialize(this) {}
+        // AdMob 초기화 - 어댑터 상태 로깅으로 초기화 실패 진단 가능
+        MobileAds.initialize(this) { initializationStatus ->
+            val statusMap = initializationStatus.adapterStatusMap
+            if (statusMap.isEmpty()) {
+                Log.e(TAG, "AdMob 초기화 실패: 어댑터 상태가 비어 있습니다.")
+            } else {
+                statusMap.forEach { (adapterClass, status) ->
+                    Log.d(
+                        TAG,
+                        "AdMob 어댑터 $adapterClass: ${status.initializationState} (${status.description})"
+                    )
+                }
+            }
+        }
 
         setContent {
             val viewModel: GameViewModel = viewModel()
