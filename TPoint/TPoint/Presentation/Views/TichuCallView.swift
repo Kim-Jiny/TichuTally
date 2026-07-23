@@ -61,7 +61,8 @@ final class TichuCallView: UIView {
 
     // MARK: - Properties
 
-    let team: TeamType
+    let player: Player
+    var team: TeamType { player.team }
     weak var delegate: TichuCallViewDelegate?
 
     private var selectedType: TichuType? {
@@ -84,11 +85,6 @@ final class TichuCallView: UIView {
 
     private var isSilentUpdate: Bool = false
 
-    // Compatibility properties for RoundInputView
-    var player: Player {
-        Player(team: team, position: 0)
-    }
-
     var hasTichuCall: Bool {
         selectedType != nil
     }
@@ -99,8 +95,8 @@ final class TichuCallView: UIView {
 
     // MARK: - Initialization
 
-    init(team: TeamType) {
-        self.team = team
+    init(player: Player) {
+        self.player = player
         super.init(frame: .zero)
         setupUI()
         setupActions()
@@ -134,7 +130,7 @@ final class TichuCallView: UIView {
         addSubview(largeTichuButton)
         addSubview(successButton)
 
-        teamLabel.text = team.shortName
+        teamLabel.text = player.displayName
         updateTeamBadgeColor()
 
         NSLayoutConstraint.activate([
