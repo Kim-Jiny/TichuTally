@@ -169,6 +169,52 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch(Dispatchers.IO) { historyStorage.clear() }
     }
 
+    fun updateRound(
+        index: Int,
+        teamACardScore: Int,
+        isOneTwoFinish: Boolean,
+        oneTwoFinishTeam: TeamType?,
+        tichuCalls: Map<Player, TichuCallInput>
+    ) {
+        _state.update { currentState ->
+            val rounds = currentState.game.rounds
+            if (index < 0 || index >= rounds.size) return@update currentState
+            val oldScore = currentState.roundScores.getOrNull(index) ?: return@update currentState
+
+            // 원투피니시 시 상대팀 티추 성공 강제 실패
+            val oneTwoOpponent = if (isOneTwoFinish) oneTwoFinishTeam?.opponent else null
+            val calls = tichuCalls.mapNotNull { (player, input) ->
+                input.type?.let { type ->
+                    val success = if (player.team == oneTwoOpponent) false else input.isSuccess
+                    TichuCall(player, type, success)
+                }
+            }
+            val newRound = rounds[index].copy(
+                teamACardScore = teamACardScore.coerceIn(-25, 125),
+                isOneTwoFinish = isOneTwoFinish,
+                oneTwoFinishTeam = oneTwoFinishTeam,
+                tichuCalls = calls
+            )
+            val newScore = calculateScoreUseCase.calculate(newRound)
+
+            val newRounds = rounds.toMutableList().apply { set(index, newRound) }
+            val newRoundScores = currentState.roundScores.toMutableList().apply { set(index, newScore) }
+            val newTeamA = currentState.game.teamA.copy(
+                totalScore = currentState.game.teamA.totalScore - oldScore.teamAScore + newScore.teamAScore
+            )
+            val newTeamB = currentState.game.teamB.copy(
+                totalScore = currentState.game.teamB.totalScore - oldScore.teamBScore + newScore.teamBScore
+            )
+            val wasOver = currentState.game.isGameOver
+            val newGame = currentState.game.copy(teamA = newTeamA, teamB = newTeamB, rounds = newRounds)
+            currentState.copy(
+                game = newGame,
+                roundScores = newRoundScores,
+                showWinnerDialog = newGame.isGameOver && (currentState.showWinnerDialog || !wasOver)
+            )
+        }
+    }
+
     // 삭제 직전 상태 (실행취소용)
     private var undoSnapshot: GameState? = null
 

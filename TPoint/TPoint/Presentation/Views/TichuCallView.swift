@@ -67,7 +67,9 @@ final class TichuCallView: UIView {
     private var selectedType: TichuType? {
         didSet {
             updateButtonStates()
-            notifyDelegate()
+            if !isSilentUpdate {
+                notifyDelegate()
+            }
         }
     }
 
@@ -264,6 +266,15 @@ final class TichuCallView: UIView {
     func reset() {
         selectedType = nil
         isSuccess = false
+    }
+
+    /// 주어진 값으로 상태를 설정 (편집 시 사전 채움, 델리게이트 알림 없음)
+    func configure(type: TichuType?, isSuccess: Bool) {
+        isSilentUpdate = true
+        selectedType = type
+        self.isSuccess = isSuccess
+        isSilentUpdate = false
+        updateButtonStates()
     }
 
     func setSuccess(_ success: Bool, silent: Bool = false) {

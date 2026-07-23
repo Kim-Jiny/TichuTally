@@ -457,6 +457,39 @@ extension GameViewController: ScoreHistoryViewDelegate {
         deleteVC.delegate = self
         present(deleteVC, animated: false)
     }
+
+    func scoreHistoryView(_ view: ScoreHistoryView, didRequestEditRoundAt index: Int) {
+        guard index >= 0 && index < viewModel.rounds.count else { return }
+        let editVC = EditRoundViewController(index: index, round: viewModel.rounds[index])
+        editVC.delegate = self
+        present(editVC, animated: true)
+    }
+}
+
+// MARK: - EditRoundViewControllerDelegate
+
+extension GameViewController: EditRoundViewControllerDelegate {
+    func editRoundViewController(
+        _ controller: EditRoundViewController,
+        didSaveAt index: Int,
+        teamACardScore: Int,
+        isOneTwoFinish: Bool,
+        oneTwoFinishTeam: TeamType?,
+        tichuCalls: [Player: TichuCallInput]
+    ) {
+        let wasOver = viewModel.isGameOver
+        viewModel.updateRound(
+            at: index,
+            teamACardScore: teamACardScore,
+            isOneTwoFinish: isOneTwoFinish,
+            oneTwoFinishTeam: oneTwoFinishTeam,
+            tichuCalls: tichuCalls
+        )
+        // 편집으로 게임이 새로 종료된 경우에만 승자 다이얼로그 표시
+        if !wasOver, let winner = viewModel.winner {
+            showWinnerDialog(winner: winner)
+        }
+    }
 }
 
 // MARK: - SettingsViewControllerDelegate

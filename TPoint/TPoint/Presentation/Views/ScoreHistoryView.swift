@@ -7,6 +7,7 @@ import UIKit
 
 protocol ScoreHistoryViewDelegate: AnyObject {
     func scoreHistoryView(_ view: ScoreHistoryView, didDeleteRoundAt index: Int)
+    func scoreHistoryView(_ view: ScoreHistoryView, didRequestEditRoundAt index: Int)
 }
 
 final class ScoreHistoryView: UIView {
@@ -240,6 +241,10 @@ final class ScoreHistoryView: UIView {
                     guard let self = self else { return }
                     self.delegate?.scoreHistoryView(self, didDeleteRoundAt: index)
                 }
+                rowView.onRowTapped = { [weak self] in
+                    guard let self = self else { return }
+                    self.delegate?.scoreHistoryView(self, didRequestEditRoundAt: index)
+                }
                 contentStackView.addArrangedSubview(rowView)
             }
         }
@@ -267,6 +272,7 @@ final class ScoreHistoryRowView: UIView {
     // MARK: - Callback
 
     var onDeleteTapped: (() -> Void)?
+    var onRowTapped: (() -> Void)?
 
     // MARK: - UI Components
 
@@ -362,6 +368,11 @@ final class ScoreHistoryRowView: UIView {
 
         deleteButton.addTarget(self, action: #selector(deleteButtonTapped), for: .touchUpInside)
 
+        // 행 탭 시 편집
+        let tap = UITapGestureRecognizer(target: self, action: #selector(rowTapped))
+        containerView.addGestureRecognizer(tap)
+        containerView.isUserInteractionEnabled = true
+
         updateColors()
 
         NSLayoutConstraint.activate([
@@ -403,6 +414,10 @@ final class ScoreHistoryRowView: UIView {
         teamAScoreLabel.textColor = AppColors.teamAColor
         teamBScoreLabel.textColor = AppColors.teamBColor
         containerView.backgroundColor = AppColors.surfaceLight
+    }
+
+    @objc private func rowTapped() {
+        onRowTapped?()
     }
 
     @objc private func deleteButtonTapped() {

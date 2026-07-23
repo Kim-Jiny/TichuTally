@@ -382,6 +382,26 @@ final class RoundInputView: UIView {
         isUserInteractionEnabled = enabled
         alpha = enabled ? 1.0 : 0.5
     }
+
+    /// 편집 시 라운드 값으로 사전 채움
+    func configure(teamACardScore: Int, oneTwoFinish: Bool, oneTwoFinishTeam: TeamType?, tichuCalls: [Player: TichuCallInput]) {
+        scoreSlider.value = Float(teamACardScore)
+        teamAScoreValueLabel.text = "\(teamACardScore)"
+        teamBScoreValueLabel.text = "\(100 - teamACardScore)"
+        if oneTwoFinish, let team = oneTwoFinishTeam {
+            oneTwoSegment.selectedSegmentIndex = (team == .teamA) ? 1 : 2
+        } else {
+            oneTwoSegment.selectedSegmentIndex = 0
+        }
+        for callView in tichuCallViews {
+            let input = tichuCalls[callView.player]
+            callView.configure(type: input?.type, isSuccess: input?.isSuccess ?? false)
+        }
+    }
+
+    func setAddButtonTitle(_ title: String) {
+        addRoundButton.setTitle(title, for: .normal)
+    }
 }
 
 // MARK: - TichuCallViewDelegate

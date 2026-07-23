@@ -32,7 +32,8 @@ fun ScoreHistoryCard(
     rounds: List<Round>,
     scores: List<RoundScore>,
     onDeleteRound: (Int) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onEditRound: (Int) -> Unit = {}
 ) {
     val colors = AppTheme.colors
 
@@ -134,7 +135,8 @@ fun ScoreHistoryCard(
                             round = round,
                             score = scores.getOrNull(index) ?: RoundScore(0, 0),
                             isEven = index % 2 == 0,
-                            onDelete = { onDeleteRound(index) }
+                            onDelete = { onDeleteRound(index) },
+                            onEdit = { onEditRound(index) }
                         )
                     }
                 }
@@ -148,7 +150,8 @@ private fun RoundHistoryItem(
     round: Round,
     score: RoundScore,
     isEven: Boolean,
-    onDelete: () -> Unit
+    onDelete: () -> Unit,
+    onEdit: () -> Unit = {}
 ) {
     val colors = AppTheme.colors
 
@@ -157,6 +160,7 @@ private fun RoundHistoryItem(
             .fillMaxWidth()
             .clip(RoundedCornerShape(8.dp))
             .background(if (isEven) Color.Transparent else colors.surfaceLight.copy(alpha = 0.5f))
+            .clickable { onEdit() }
             .padding(horizontal = 12.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {

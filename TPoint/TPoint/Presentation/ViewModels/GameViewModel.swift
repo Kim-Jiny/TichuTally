@@ -251,6 +251,39 @@ final class GameViewModel {
         delegate?.gameDidUpdate()
     }
 
+    func updateRound(
+        at index: Int,
+        teamACardScore: Int,
+        isOneTwoFinish: Bool,
+        oneTwoFinishTeam: TeamType?,
+        tichuCalls: [Player: TichuCallInput]
+    ) {
+        guard index >= 0 && index < game.rounds.count else { return }
+
+        // 원투피니시 시 상대팀 티추 성공 강제 실패
+        let oneTwoOpponent = isOneTwoFinish ? oneTwoFinishTeam?.opponent : nil
+        let calls = tichuCalls.compactMap { (player, input) -> TichuCall? in
+            let success = (player.team == oneTwoOpponent) ? false : input.isSuccess
+            return TichuCall(player: player, isLarge: input.type == .large, isSuccess: success)
+        }
+        let oldScore = calculateScoreUseCase.calculate(round: game.rounds[index])
+        let newRound = Round(
+            roundNumber: game.rounds[index].roundNumber,
+            teamACardScore: max(-25, min(125, teamACardScore)),
+            isOneTwoFinish: isOneTwoFinish,
+            oneTwoFinishTeam: oneTwoFinishTeam,
+            tichuCalls: calls
+        )
+        let newScore = calculateScoreUseCase.calculate(round: newRound)
+
+        game.rounds[index] = newRound
+        game.teamA.totalScore += newScore.teamAScore - oldScore.teamAScore
+        game.teamB.totalScore += newScore.teamBScore - oldScore.teamBScore
+
+        persist()
+        delegate?.gameDidUpdate()
+    }
+
     /// 마지막 삭제를 되돌린다.
     func undoDelete() {
         guard let snapshot = undoGame else { return }

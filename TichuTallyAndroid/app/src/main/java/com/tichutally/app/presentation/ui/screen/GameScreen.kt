@@ -38,6 +38,7 @@ fun GameScreen(
     val colors = AppTheme.colors
     var showNewGameDialog by remember { mutableStateOf(false) }
     var showSettingsDialog by remember { mutableStateOf(false) }
+    var editingRoundIndex by remember { mutableStateOf<Int?>(null) }
 
     val teamADisplayName = state.teamAName.ifBlank { stringResource(R.string.team_a) }
     val teamBDisplayName = state.teamBName.ifBlank { stringResource(R.string.team_b) }
@@ -186,7 +187,8 @@ fun GameScreen(
                 onDeleteRound = {
                     view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
                     viewModel.deleteRound(it)
-                }
+                },
+                onEditRound = { editingRoundIndex = it }
             )
 
             // Bottom spacing
@@ -235,6 +237,19 @@ fun GameScreen(
             onTeamNamesChanged = { a, b -> viewModel.setTeamNames(a, b) },
             onDismiss = { showSettingsDialog = false }
         )
+    }
+
+    // Edit Round Dialog
+    editingRoundIndex?.let { idx ->
+        state.rounds.getOrNull(idx)?.let { round ->
+            EditRoundDialog(
+                round = round,
+                onSave = { cardScore, oneTwo, oneTwoTeam, calls ->
+                    viewModel.updateRound(idx, cardScore, oneTwo, oneTwoTeam, calls)
+                },
+                onDismiss = { editingRoundIndex = null }
+            )
+        }
     }
 
     // New Game Confirmation Dialog

@@ -34,7 +34,8 @@ fun RoundInputCard(
     onOneTwoFinishChanged: (Boolean, TeamType?) -> Unit,
     onTichuCallChanged: (Player, TichuType?, Boolean) -> Unit,
     onAddRound: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    addButtonText: String? = null
 ) {
     val colors = AppTheme.colors
 
@@ -278,7 +279,7 @@ fun RoundInputCard(
                 shape = RoundedCornerShape(10.dp)
             ) {
                 Text(
-                    text = stringResource(R.string.add_round),
+                    text = addButtonText ?: stringResource(R.string.add_round),
                     fontSize = 15.sp,
                     fontWeight = FontWeight.Bold
                 )
