@@ -3,6 +3,7 @@ package com.tichutally.app.presentation.ui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -20,6 +21,8 @@ import com.tichutally.app.presentation.viewmodel.ThemeMode
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        // 모든 API 레벨에서 일관된 edge-to-edge 처리 (targetSdk 35+ 강제 대응)
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
         // AdMob 가족용 광고 설정 (Google Play 가족 정책 준수)
