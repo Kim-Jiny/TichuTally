@@ -4,6 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -30,13 +32,18 @@ import com.tichutally.app.presentation.viewmodel.ThemeMode
 fun SettingsDialog(
     currentTargetScore: Int,
     currentThemeMode: ThemeMode,
+    currentTeamAName: String,
+    currentTeamBName: String,
     onTargetScoreChanged: (Int) -> Unit,
     onThemeModeChanged: (ThemeMode) -> Unit,
+    onTeamNamesChanged: (String, String) -> Unit,
     onDismiss: () -> Unit
 ) {
     val colors = AppTheme.colors
     var inputText by remember { mutableStateOf(currentTargetScore.toString()) }
     var selectedTheme by remember { mutableStateOf(currentThemeMode) }
+    var teamAInput by remember { mutableStateOf(currentTeamAName) }
+    var teamBInput by remember { mutableStateOf(currentTeamBName) }
     val presetScores = listOf(500, 1000, 1500, 2000)
 
     Dialog(
@@ -53,6 +60,7 @@ fun SettingsDialog(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
                     .padding(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -197,6 +205,39 @@ fun SettingsDialog(
                     shape = RoundedCornerShape(12.dp)
                 )
 
+                Spacer(modifier = Modifier.height(20.dp))
+
+                // 팀 이름 섹션
+                Text(
+                    text = stringResource(R.string.team_names),
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = colors.textSecondary,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                OutlinedTextField(
+                    value = teamAInput,
+                    onValueChange = { teamAInput = it.take(20) },
+                    label = { Text(stringResource(R.string.team_a)) },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp)
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                OutlinedTextField(
+                    value = teamBInput,
+                    onValueChange = { teamBInput = it.take(20) },
+                    label = { Text(stringResource(R.string.team_b)) },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp)
+                )
+
                 Spacer(modifier = Modifier.height(24.dp))
 
                 // 버튼들
@@ -225,6 +266,7 @@ fun SettingsDialog(
                             val score = inputText.toIntOrNull() ?: 1000
                             onTargetScoreChanged(score.coerceIn(100, 10000))
                             onThemeModeChanged(selectedTheme)
+                            onTeamNamesChanged(teamAInput, teamBInput)
                             onDismiss()
                         },
                         modifier = Modifier.weight(1f),

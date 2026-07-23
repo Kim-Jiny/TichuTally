@@ -30,13 +30,14 @@ fun TeamScoreCard(
     teamType: TeamType,
     score: Int,
     isWinner: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    teamName: String? = null
 ) {
     val colors = AppTheme.colors
     val teamColor = if (teamType == TeamType.TEAM_A) colors.teamAColor else colors.teamBColor
     val teamColorLight = if (teamType == TeamType.TEAM_A) colors.teamAColorLight else colors.teamBColorLight
     val teamColorMedium = if (teamType == TeamType.TEAM_A) colors.teamAColorMedium else colors.teamBColorMedium
-    val teamName = if (teamType == TeamType.TEAM_A) {
+    val resolvedTeamName = teamName ?: if (teamType == TeamType.TEAM_A) {
         stringResource(R.string.team_a)
     } else {
         stringResource(R.string.team_b)
@@ -88,7 +89,7 @@ fun TeamScoreCard(
         ) {
             // Team name
             Text(
-                text = teamName,
+                text = resolvedTeamName,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
                 color = teamColor

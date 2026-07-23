@@ -141,6 +141,10 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         _state.update { it.copy(themeMode = mode) }
     }
 
+    fun setTeamNames(teamAName: String, teamBName: String) {
+        _state.update { it.copy(teamAName = teamAName.trim(), teamBName = teamBName.trim()) }
+    }
+
     fun newGame() {
         // 라운드가 있는 현재 게임은 새 게임 시작 시 기록에 보관
         val current = _state.value
@@ -152,6 +156,8 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             GameState(
                 targetScore = currentState.targetScore,
                 themeMode = currentState.themeMode,
+                teamAName = currentState.teamAName,
+                teamBName = currentState.teamBName,
                 game = Game(targetScore = currentState.targetScore)
             )
         }

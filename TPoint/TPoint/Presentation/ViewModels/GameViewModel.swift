@@ -23,6 +23,8 @@ final class GameViewModel {
     private enum Keys {
         static let targetScore = "targetScore"
         static let themeMode = "themeMode"
+        static let teamAName = "teamAName"
+        static let teamBName = "teamBName"
     }
 
     // MARK: - Properties
@@ -63,6 +65,18 @@ final class GameViewModel {
             UserDefaults.standard.set(newValue.rawValue, forKey: Keys.themeMode)
         }
     }
+
+    // 설정 - 팀 이름 (빈 문자열이면 기본 이름 사용)
+    var teamAName: String {
+        get { UserDefaults.standard.string(forKey: Keys.teamAName) ?? "" }
+        set { UserDefaults.standard.set(newValue.trimmingCharacters(in: .whitespaces), forKey: Keys.teamAName) }
+    }
+    var teamBName: String {
+        get { UserDefaults.standard.string(forKey: Keys.teamBName) ?? "" }
+        set { UserDefaults.standard.set(newValue.trimmingCharacters(in: .whitespaces), forKey: Keys.teamBName) }
+    }
+    var teamADisplayName: String { teamAName.isEmpty ? L10n.teamA : teamAName }
+    var teamBDisplayName: String { teamBName.isEmpty ? L10n.teamB : teamBName }
 
     // MARK: - Computed Properties
 

@@ -8,6 +8,7 @@ import UIKit
 protocol SettingsViewControllerDelegate: AnyObject {
     func settingsDidChangeTargetScore(_ score: Int)
     func settingsDidChangeTheme(_ mode: ThemeMode)
+    func settingsDidChangeTeamNames(_ teamAName: String, _ teamBName: String)
 }
 
 final class SettingsViewController: UIViewController {
@@ -102,6 +103,39 @@ final class SettingsViewController: UIViewController {
         return field
     }()
 
+    // Team names section
+    private let teamNamesSectionLabel: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 14, weight: .semibold)
+        label.textColor = AppColors.textSecondary
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+
+    private let teamANameField: UITextField = {
+        let field = UITextField()
+        field.font = .systemFont(ofSize: 16)
+        field.textColor = AppColors.textPrimary
+        field.borderStyle = .roundedRect
+        field.backgroundColor = AppColors.surfaceLight
+        field.autocorrectionType = .no
+        field.returnKeyType = .next
+        field.translatesAutoresizingMaskIntoConstraints = false
+        return field
+    }()
+
+    private let teamBNameField: UITextField = {
+        let field = UITextField()
+        field.font = .systemFont(ofSize: 16)
+        field.textColor = AppColors.textPrimary
+        field.borderStyle = .roundedRect
+        field.backgroundColor = AppColors.surfaceLight
+        field.autocorrectionType = .no
+        field.returnKeyType = .done
+        field.translatesAutoresizingMaskIntoConstraints = false
+        return field
+    }()
+
     private let saveButton: UIButton = {
         let button = UIButton(type: .system)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
@@ -117,12 +151,16 @@ final class SettingsViewController: UIViewController {
     weak var delegate: SettingsViewControllerDelegate?
     private var currentTargetScore: Int
     private var currentThemeMode: ThemeMode
+    private let initialTeamAName: String
+    private let initialTeamBName: String
 
     // MARK: - Initialization
 
-    init(targetScore: Int, themeMode: ThemeMode) {
+    init(targetScore: Int, themeMode: ThemeMode, teamAName: String, teamBName: String) {
         self.currentTargetScore = targetScore
         self.currentThemeMode = themeMode
+        self.initialTeamAName = teamAName
+        self.initialTeamBName = teamBName
         super.init(nibName: nil, bundle: nil)
         modalPresentationStyle = .overFullScreen
         modalTransitionStyle = .crossDissolve
@@ -156,6 +194,11 @@ final class SettingsViewController: UIViewController {
         themeSectionLabel.text = L10n.theme
         scoreSectionLabel.text = L10n.targetScore
         customScoreLabel.text = L10n.customScore
+        teamNamesSectionLabel.text = L10n.teamNames
+        teamANameField.placeholder = L10n.teamA
+        teamBNameField.placeholder = L10n.teamB
+        teamANameField.text = initialTeamAName
+        teamBNameField.text = initialTeamBName
         saveButton.setTitle(L10n.save, for: .normal)
 
         // Create score preset buttons
@@ -182,6 +225,9 @@ final class SettingsViewController: UIViewController {
         containerView.addSubview(scoreSectionLabel)
         containerView.addSubview(scoreButtonsStack)
         containerView.addSubview(customScoreContainer)
+        containerView.addSubview(teamNamesSectionLabel)
+        containerView.addSubview(teamANameField)
+        containerView.addSubview(teamBNameField)
         containerView.addSubview(saveButton)
 
         containerView.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
@@ -230,8 +276,22 @@ final class SettingsViewController: UIViewController {
             customScoreTextField.centerYAnchor.constraint(equalTo: customScoreContainer.centerYAnchor),
             customScoreTextField.widthAnchor.constraint(equalToConstant: 80),
 
+            // Team names section
+            teamNamesSectionLabel.topAnchor.constraint(equalTo: customScoreContainer.bottomAnchor, constant: 20),
+            teamNamesSectionLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 20),
+
+            teamANameField.topAnchor.constraint(equalTo: teamNamesSectionLabel.bottomAnchor, constant: 8),
+            teamANameField.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 20),
+            teamANameField.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -20),
+            teamANameField.heightAnchor.constraint(equalToConstant: 40),
+
+            teamBNameField.topAnchor.constraint(equalTo: teamANameField.bottomAnchor, constant: 8),
+            teamBNameField.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 20),
+            teamBNameField.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -20),
+            teamBNameField.heightAnchor.constraint(equalToConstant: 40),
+
             // Save button
-            saveButton.topAnchor.constraint(equalTo: customScoreContainer.bottomAnchor, constant: 24),
+            saveButton.topAnchor.constraint(equalTo: teamBNameField.bottomAnchor, constant: 24),
             saveButton.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 20),
             saveButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -20),
             saveButton.heightAnchor.constraint(equalToConstant: 48),
@@ -322,6 +382,10 @@ final class SettingsViewController: UIViewController {
             self.dismiss(animated: false) {
                 self.delegate?.settingsDidChangeTargetScore(self.currentTargetScore)
                 self.delegate?.settingsDidChangeTheme(self.currentThemeMode)
+                self.delegate?.settingsDidChangeTeamNames(
+                    self.teamANameField.text ?? "",
+                    self.teamBNameField.text ?? ""
+                )
             }
         }
     }

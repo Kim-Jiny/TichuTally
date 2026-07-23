@@ -25,7 +25,10 @@ data class GameState(
     val roundScores: List<RoundScore> = emptyList(),
     @Transient val showWinnerDialog: Boolean = false,
     val targetScore: Int = 1000,
-    val themeMode: ThemeMode = ThemeMode.SYSTEM
+    val themeMode: ThemeMode = ThemeMode.SYSTEM,
+    // 사용자 지정 팀 이름 (빈 문자열이면 기본 리소스 이름 사용)
+    val teamAName: String = "",
+    val teamBName: String = ""
 ) {
     val teamAScore: Int get() = game.teamA.totalScore
     val teamBScore: Int get() = game.teamB.totalScore

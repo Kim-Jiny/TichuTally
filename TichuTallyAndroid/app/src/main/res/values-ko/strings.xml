@@ -46,4 +46,7 @@
     <string name="stat_highest_score">최고 점수</string>
     <string name="stat_success">성공</string>
     <string name="draw">무승부</string>
+
+    <!-- Team names -->
+    <string name="team_names">팀 이름</string>
 </resources>

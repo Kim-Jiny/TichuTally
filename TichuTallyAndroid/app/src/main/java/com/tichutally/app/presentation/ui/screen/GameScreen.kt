@@ -34,6 +34,9 @@ fun GameScreen(
     var showNewGameDialog by remember { mutableStateOf(false) }
     var showSettingsDialog by remember { mutableStateOf(false) }
 
+    val teamADisplayName = state.teamAName.ifBlank { stringResource(R.string.team_a) }
+    val teamBDisplayName = state.teamBName.ifBlank { stringResource(R.string.team_b) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -97,6 +100,7 @@ fun GameScreen(
                 teamType = TeamType.TEAM_A,
                 score = state.teamAScore,
                 isWinner = state.winner == TeamType.TEAM_A,
+                teamName = teamADisplayName,
                 modifier = Modifier
                     .weight(1f)
                     .height(100.dp)
@@ -105,6 +109,7 @@ fun GameScreen(
                 teamType = TeamType.TEAM_B,
                 score = state.teamBScore,
                 isWinner = state.winner == TeamType.TEAM_B,
+                teamName = teamBDisplayName,
                 modifier = Modifier
                     .weight(1f)
                     .height(100.dp)
@@ -161,8 +166,11 @@ fun GameScreen(
         SettingsDialog(
             currentTargetScore = state.targetScore,
             currentThemeMode = state.themeMode,
+            currentTeamAName = state.teamAName,
+            currentTeamBName = state.teamBName,
             onTargetScoreChanged = { viewModel.setTargetScore(it) },
             onThemeModeChanged = { viewModel.setThemeMode(it) },
+            onTeamNamesChanged = { a, b -> viewModel.setTeamNames(a, b) },
             onDismiss = { showSettingsDialog = false }
         )
     }
@@ -185,6 +193,7 @@ fun GameScreen(
     if (state.showWinnerDialog && state.winner != null) {
         WinnerDialog(
             winner = state.winner!!,
+            winnerName = if (state.winner == TeamType.TEAM_A) teamADisplayName else teamBDisplayName,
             teamAScore = state.teamAScore,
             teamBScore = state.teamBScore,
             onNewGame = {

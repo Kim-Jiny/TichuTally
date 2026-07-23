@@ -30,12 +30,13 @@ fun WinnerDialog(
     teamAScore: Int,
     teamBScore: Int,
     onNewGame: () -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    winnerName: String? = null
 ) {
     val colors = AppTheme.colors
     val winnerColor = if (winner == TeamType.TEAM_A) colors.teamAColor else colors.teamBColor
     val winnerColorLight = if (winner == TeamType.TEAM_A) colors.teamAColorLight else colors.teamBColorLight
-    val winnerName = if (winner == TeamType.TEAM_A) stringResource(R.string.team_a) else stringResource(R.string.team_b)
+    val resolvedWinnerName = winnerName ?: if (winner == TeamType.TEAM_A) stringResource(R.string.team_a) else stringResource(R.string.team_b)
 
     // 애니메이션
     val infiniteTransition = rememberInfiniteTransition(label = "trophy")
@@ -102,7 +103,7 @@ fun WinnerDialog(
 
                 // 우승팀 이름
                 Text(
-                    text = "$winnerName ${stringResource(R.string.wins)}",
+                    text = "$resolvedWinnerName ${stringResource(R.string.wins)}",
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Bold,
                     color = winnerColor

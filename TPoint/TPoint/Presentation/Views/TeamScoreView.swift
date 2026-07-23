@@ -57,6 +57,7 @@ final class TeamScoreView: UIView {
     // MARK: - Properties
 
     private let teamType: TeamType
+    private var customName: String?
     private var isWinner: Bool = false
 
     // MARK: - Initialization
@@ -135,7 +136,7 @@ final class TeamScoreView: UIView {
         let lightColor = AppColors.teamColorLight(for: teamType)
         let mediumColor = AppColors.teamColorMedium(for: teamType)
 
-        teamLabel.text = teamType.displayName
+        teamLabel.text = customName ?? teamType.displayName
         teamLabel.textColor = teamColor
         scoreLabel.textColor = teamColor
         pointsLabel.text = L10n.pointsSuffix
@@ -155,6 +156,12 @@ final class TeamScoreView: UIView {
     }
 
     // MARK: - Public Methods
+
+    /// 사용자 지정 팀 이름 설정 (nil/빈 문자열이면 기본 이름 사용)
+    func setTeamName(_ name: String?) {
+        customName = (name?.isEmpty == false) ? name : nil
+        teamLabel.text = customName ?? teamType.displayName
+    }
 
     func updateScore(_ score: Int) {
         let previousScore = Int(scoreLabel.text ?? "0") ?? 0

@@ -247,7 +247,9 @@ final class GameViewController: UIViewController {
     @objc private func settingsTapped() {
         let settingsVC = SettingsViewController(
             targetScore: viewModel.targetScore,
-            themeMode: viewModel.themeMode
+            themeMode: viewModel.themeMode,
+            teamAName: viewModel.teamAName,
+            teamBName: viewModel.teamBName
         )
         settingsVC.delegate = self
         present(settingsVC, animated: false)
@@ -276,6 +278,8 @@ final class GameViewController: UIViewController {
         // Update round label
         roundLabel.text = L10n.roundNumberFormat(viewModel.currentRound)
 
+        teamAScoreView.setTeamName(viewModel.teamAName)
+        teamBScoreView.setTeamName(viewModel.teamBName)
         teamAScoreView.updateScore(viewModel.teamAScore)
         teamBScoreView.updateScore(viewModel.teamBScore)
 
@@ -299,7 +303,8 @@ final class GameViewController: UIViewController {
         let winnerVC = WinnerViewController(
             winner: winner,
             teamAScore: viewModel.teamAScore,
-            teamBScore: viewModel.teamBScore
+            teamBScore: viewModel.teamBScore,
+            winnerName: winner == .teamA ? viewModel.teamADisplayName : viewModel.teamBDisplayName
         )
         winnerVC.delegate = self
         present(winnerVC, animated: false)
@@ -390,6 +395,12 @@ extension GameViewController: SettingsViewControllerDelegate {
     func settingsDidChangeTheme(_ mode: ThemeMode) {
         viewModel.themeMode = mode
         applyTheme()
+    }
+
+    func settingsDidChangeTeamNames(_ teamAName: String, _ teamBName: String) {
+        viewModel.teamAName = teamAName
+        viewModel.teamBName = teamBName
+        updateUI()
     }
 }
 

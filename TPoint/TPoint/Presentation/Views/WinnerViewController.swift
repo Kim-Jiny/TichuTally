@@ -112,13 +112,15 @@ final class WinnerViewController: UIViewController {
     private let winner: TeamType
     private let teamAScore: Int
     private let teamBScore: Int
+    private let winnerName: String?
 
     // MARK: - Initialization
 
-    init(winner: TeamType, teamAScore: Int, teamBScore: Int) {
+    init(winner: TeamType, teamAScore: Int, teamBScore: Int, winnerName: String? = nil) {
         self.winner = winner
         self.teamAScore = teamAScore
         self.teamBScore = teamBScore
+        self.winnerName = winnerName
         super.init(nibName: nil, bundle: nil)
         modalPresentationStyle = .overFullScreen
         modalTransitionStyle = .crossDissolve
@@ -221,7 +223,7 @@ final class WinnerViewController: UIViewController {
 
     private func configureContent() {
         let winnerColor = AppColors.teamColor(for: winner)
-        teamNameLabel.text = winner.displayName
+        teamNameLabel.text = winnerName ?? winner.displayName
         teamNameLabel.textColor = winnerColor
 
         teamAScoreLabel.text = "\(teamAScore)"

@@ -73,4 +73,7 @@
     <string name="stat_highest_score">Highest Score</string>
     <string name="stat_success">Success</string>
     <string name="draw">Draw</string>
+
+    <!-- Team names -->
+    <string name="team_names">Team Names</string>
 </resources>
