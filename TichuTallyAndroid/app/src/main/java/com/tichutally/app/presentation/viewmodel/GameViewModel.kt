@@ -3,7 +3,9 @@ package com.tichutally.app.presentation.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.tichutally.app.data.GameHistoryEntry
 import com.tichutally.app.data.GameStorage
+import com.tichutally.app.data.HistoryStorage
 import com.tichutally.app.domain.model.*
 import com.tichutally.app.domain.usecase.CalculateScoreUseCase
 import kotlinx.coroutines.Dispatchers
@@ -20,6 +22,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
 
     private val calculateScoreUseCase = CalculateScoreUseCase()
     private val storage = GameStorage(application)
+    private val historyStorage = HistoryStorage(application)
 
     // 저장된 진행 중 게임이 있으면 복원, 없으면 새 게임으로 시작
     private val _state = MutableStateFlow(storage.load() ?: GameState())
@@ -139,6 +142,12 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun newGame() {
+        // 라운드가 있는 현재 게임은 새 게임 시작 시 기록에 보관
+        val current = _state.value
+        if (current.game.rounds.isNotEmpty()) {
+            val entry = GameHistoryEntry(System.currentTimeMillis(), current.game)
+            viewModelScope.launch(Dispatchers.IO) { historyStorage.append(entry) }
+        }
         _state.update { currentState ->
             GameState(
                 targetScore = currentState.targetScore,
@@ -146,6 +155,12 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
                 game = Game(targetScore = currentState.targetScore)
             )
         }
+    }
+
+    fun loadHistory(): List<GameHistoryEntry> = historyStorage.load()
+
+    fun clearHistory() {
+        viewModelScope.launch(Dispatchers.IO) { historyStorage.clear() }
     }
 
     fun deleteRound(index: Int) {

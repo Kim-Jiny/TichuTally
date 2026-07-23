@@ -71,6 +71,26 @@ enum L10n {
     static let details = "details".localized
     static let currentScore = "current_score".localized
 
+    // Records / Statistics
+    static let records = "records".localized
+    static let tabHistory = "tab_history".localized
+    static let tabStats = "tab_stats".localized
+    static let noHistory = "no_history".localized
+    static let clearHistory = "clear_history".localized
+    static let clearHistoryConfirm = "clear_history_confirm".localized
+    static let statTotalGames = "stat_total_games".localized
+    static let statWinRate = "stat_win_rate".localized
+    static let statAvgRounds = "stat_avg_rounds".localized
+    static let statSmallTichu = "stat_small_tichu".localized
+    static let statLargeTichu = "stat_large_tichu".localized
+    static let statOneTwo = "stat_one_two".localized
+    static let statHighestScore = "stat_highest_score".localized
+    static let draw = "draw".localized
+
+    static func roundsCount(_ n: Int) -> String {
+        "rounds_count".localized(with: n)
+    }
+
     static func winnerMessage(_ team: String) -> String {
         "winner_message".localized(with: team)
     }

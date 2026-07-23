@@ -10,14 +10,22 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
+import com.tichutally.app.data.GameHistoryEntry
 import com.tichutally.app.presentation.ui.screen.GameScreen
+import com.tichutally.app.presentation.ui.screen.RecordsScreen
 import com.tichutally.app.presentation.ui.theme.TichuTallyTheme
 import com.tichutally.app.presentation.viewmodel.GameViewModel
 import com.tichutally.app.presentation.viewmodel.ThemeMode
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,12 +53,32 @@ class MainActivity : ComponentActivity() {
                 ThemeMode.DARK -> true
             }
 
+            var showRecords by remember { mutableStateOf(false) }
+
             TichuTallyTheme(darkTheme = darkTheme) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    GameScreen(viewModel = viewModel)
+                    if (showRecords) {
+                        var history by remember { mutableStateOf(emptyList<GameHistoryEntry>()) }
+                        LaunchedEffect(Unit) {
+                            history = withContext(Dispatchers.IO) { viewModel.loadHistory() }
+                        }
+                        RecordsScreen(
+                            history = history,
+                            onBack = { showRecords = false },
+                            onClearHistory = {
+                                viewModel.clearHistory()
+                                history = emptyList()
+                            }
+                        )
+                    } else {
+                        GameScreen(
+                            viewModel = viewModel,
+                            onOpenRecords = { showRecords = true }
+                        )
+                    }
                 }
             }
         }

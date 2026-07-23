@@ -59,3 +59,20 @@
 "vs" = "VS";
 "details" = "Details";
 "current_score" = "Current Score";
+
+// Records / Statistics
+"records" = "Records";
+"tab_history" = "History";
+"tab_stats" = "Statistics";
+"no_history" = "No games recorded yet";
+"clear_history" = "Clear History";
+"clear_history_confirm" = "Delete all game records?";
+"rounds_count" = "%d rounds";
+"stat_total_games" = "Total Games";
+"stat_win_rate" = "Win Rate";
+"stat_avg_rounds" = "Avg. Rounds";
+"stat_small_tichu" = "Small Tichu";
+"stat_large_tichu" = "Large Tichu";
+"stat_one_two" = "One-Two Finish";
+"stat_highest_score" = "Highest Score";
+"draw" = "Draw";

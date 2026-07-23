@@ -26,6 +26,15 @@ final class GameViewController: UIViewController {
         return button
     }()
 
+    private let recordsButton: UIButton = {
+        let button = UIButton(type: .system)
+        let config = UIImage.SymbolConfiguration(pointSize: 20, weight: .medium)
+        button.setImage(UIImage(systemName: "list.bullet.rectangle", withConfiguration: config), for: .normal)
+        button.tintColor = AppColors.textSecondary
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+
     private let roundLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 18, weight: .bold)
@@ -130,6 +139,7 @@ final class GameViewController: UIViewController {
         // Top bar
         view.addSubview(topBarView)
         topBarView.addSubview(settingsButton)
+        topBarView.addSubview(recordsButton)
         topBarView.addSubview(roundLabel)
         topBarView.addSubview(newGameTopButton)
 
@@ -159,6 +169,11 @@ final class GameViewController: UIViewController {
             settingsButton.centerYAnchor.constraint(equalTo: topBarView.centerYAnchor),
             settingsButton.widthAnchor.constraint(equalToConstant: 44),
             settingsButton.heightAnchor.constraint(equalToConstant: 44),
+
+            recordsButton.leadingAnchor.constraint(equalTo: settingsButton.trailingAnchor, constant: 4),
+            recordsButton.centerYAnchor.constraint(equalTo: topBarView.centerYAnchor),
+            recordsButton.widthAnchor.constraint(equalToConstant: 44),
+            recordsButton.heightAnchor.constraint(equalToConstant: 44),
 
             roundLabel.centerXAnchor.constraint(equalTo: topBarView.centerXAnchor),
             roundLabel.centerYAnchor.constraint(equalTo: topBarView.centerYAnchor),
@@ -209,6 +224,7 @@ final class GameViewController: UIViewController {
 
     private func setupActions() {
         settingsButton.addTarget(self, action: #selector(settingsTapped), for: .touchUpInside)
+        recordsButton.addTarget(self, action: #selector(recordsTapped), for: .touchUpInside)
         newGameTopButton.addTarget(self, action: #selector(newGameTapped), for: .touchUpInside)
     }
 
@@ -221,6 +237,7 @@ final class GameViewController: UIViewController {
         topBarView.backgroundColor = AppColors.cardBackgroundElevated
         roundLabel.textColor = AppColors.textPrimary
         settingsButton.tintColor = AppColors.textSecondary
+        recordsButton.tintColor = AppColors.textSecondary
         newGameTopButton.tintColor = AppColors.failureColor
         bannerAdView.backgroundColor = AppColors.surfaceLight
     }
@@ -234,6 +251,14 @@ final class GameViewController: UIViewController {
         )
         settingsVC.delegate = self
         present(settingsVC, animated: false)
+    }
+
+    @objc private func recordsTapped() {
+        let recordsVC = RecordsViewController(history: viewModel.loadHistory())
+        recordsVC.onClearHistory = { [weak self] in
+            self?.viewModel.clearHistory()
+        }
+        navigationController?.pushViewController(recordsVC, animated: true)
     }
 
     @objc private func newGameTapped() {

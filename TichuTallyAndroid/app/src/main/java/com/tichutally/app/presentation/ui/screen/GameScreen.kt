@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
@@ -25,7 +26,8 @@ import com.tichutally.app.presentation.viewmodel.GameViewModel
 
 @Composable
 fun GameScreen(
-    viewModel: GameViewModel = viewModel()
+    viewModel: GameViewModel = viewModel(),
+    onOpenRecords: () -> Unit = {}
 ) {
     val state by viewModel.state.collectAsState()
     val colors = AppTheme.colors
@@ -47,13 +49,22 @@ fun GameScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // 설정 버튼 (좌측)
-            IconButton(onClick = { showSettingsDialog = true }) {
-                Icon(
-                    imageVector = Icons.Default.Settings,
-                    contentDescription = stringResource(R.string.settings),
-                    tint = colors.textSecondary
-                )
+            // 설정 / 기록 버튼 (좌측)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                IconButton(onClick = { showSettingsDialog = true }) {
+                    Icon(
+                        imageVector = Icons.Default.Settings,
+                        contentDescription = stringResource(R.string.settings),
+                        tint = colors.textSecondary
+                    )
+                }
+                IconButton(onClick = onOpenRecords) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.List,
+                        contentDescription = stringResource(R.string.records),
+                        tint = colors.textSecondary
+                    )
+                }
             }
 
             // 라운드 표시 (중앙)

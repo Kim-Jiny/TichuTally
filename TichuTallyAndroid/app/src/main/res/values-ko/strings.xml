@@ -28,4 +28,22 @@
     <string name="confirm">확인</string>
     <string name="cancel">취소</string>
     <string name="new_game_confirm">현재 게임을 초기화하고 새 게임을 시작할까요?</string>
+
+    <!-- Records / Statistics -->
+    <string name="records">기록</string>
+    <string name="tab_history">경기 기록</string>
+    <string name="tab_stats">통계</string>
+    <string name="no_history">아직 저장된 게임이 없습니다</string>
+    <string name="clear_history">기록 삭제</string>
+    <string name="clear_history_confirm">모든 게임 기록을 삭제할까요?</string>
+    <string name="rounds_count">%d라운드</string>
+    <string name="stat_total_games">총 게임 수</string>
+    <string name="stat_win_rate">승률</string>
+    <string name="stat_avg_rounds">평균 라운드</string>
+    <string name="stat_small_tichu">스몰 티추</string>
+    <string name="stat_large_tichu">라지 티추</string>
+    <string name="stat_one_two">원투 피니시</string>
+    <string name="stat_highest_score">최고 점수</string>
+    <string name="stat_success">성공</string>
+    <string name="draw">무승부</string>
 </resources>

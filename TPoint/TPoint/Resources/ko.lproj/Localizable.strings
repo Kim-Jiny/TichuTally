@@ -59,3 +59,20 @@
 "vs" = "VS";
 "details" = "상세";
 "current_score" = "현재 점수";
+
+// Records / Statistics
+"records" = "기록";
+"tab_history" = "경기 기록";
+"tab_stats" = "통계";
+"no_history" = "아직 저장된 게임이 없습니다";
+"clear_history" = "기록 삭제";
+"clear_history_confirm" = "모든 게임 기록을 삭제할까요?";
+"rounds_count" = "%d라운드";
+"stat_total_games" = "총 게임 수";
+"stat_win_rate" = "승률";
+"stat_avg_rounds" = "평균 라운드";
+"stat_small_tichu" = "스몰 티추";
+"stat_large_tichu" = "라지 티추";
+"stat_one_two" = "원투 피니시";
+"stat_highest_score" = "최고 점수";
+"draw" = "무승부";

@@ -32,6 +32,7 @@ final class GameViewModel {
     private(set) var game: Game
     private let calculateScoreUseCase: CalculateScoreUseCaseProtocol
     private let storage = GameStorage()
+    private let historyStorage = HistoryStorage()
 
     // 현재 라운드 입력 상태
     var currentTeamACardScore: Int = 50
@@ -186,10 +187,22 @@ final class GameViewModel {
     }
 
     func newGame() {
+        // 라운드가 있는 현재 게임은 새 게임 시작 시 기록에 보관
+        if !game.rounds.isEmpty {
+            historyStorage.append(GameHistoryEntry(completedAt: Date(), game: game))
+        }
         game.reset()
         resetCurrentRoundInput()
         persist()
         delegate?.gameDidUpdate()
+    }
+
+    func loadHistory() -> [GameHistoryEntry] {
+        historyStorage.load()
+    }
+
+    func clearHistory() {
+        historyStorage.clear()
     }
 
     func deleteRound(at index: Int) {
