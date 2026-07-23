@@ -12,11 +12,15 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import android.content.Intent
+import android.view.HapticFeedbackConstants
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.tichutally.app.R
 import com.tichutally.app.domain.model.TeamType
@@ -36,6 +40,30 @@ fun GameScreen(
 
     val teamADisplayName = state.teamAName.ifBlank { stringResource(R.string.team_a) }
     val teamBDisplayName = state.teamBName.ifBlank { stringResource(R.string.team_b) }
+
+    val context = LocalContext.current
+    val view = LocalView.current
+
+    // 게임 종료 시 햅틱 피드백
+    LaunchedEffect(state.showWinnerDialog) {
+        if (state.showWinnerDialog) {
+            view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+        }
+    }
+
+    val shareResult: () -> Unit = {
+        val winnerName = if (state.winner == TeamType.TEAM_A) teamADisplayName else teamBDisplayName
+        val text = buildString {
+            appendLine("🏆 " + context.getString(R.string.winner_message, winnerName))
+            appendLine("$teamADisplayName ${state.teamAScore} : ${state.teamBScore} $teamBDisplayName")
+            append(context.getString(R.string.rounds_count, state.rounds.size))
+        }
+        val intent = Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            putExtra(Intent.EXTRA_TEXT, text)
+        }
+        context.startActivity(Intent.createChooser(intent, context.getString(R.string.share)))
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
     Column(
@@ -140,14 +168,20 @@ fun GameScreen(
                 onTichuCallChanged = { player, type, success ->
                     viewModel.setTichuCall(player, type, success)
                 },
-                onAddRound = { viewModel.addRound() }
+                onAddRound = {
+                    view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+                    viewModel.addRound()
+                }
             )
 
             // Score History Card
             ScoreHistoryCard(
                 rounds = state.rounds,
                 scores = state.roundScores,
-                onDeleteRound = { viewModel.deleteRound(it) }
+                onDeleteRound = {
+                    view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+                    viewModel.deleteRound(it)
+                }
             )
 
             // Bottom spacing
@@ -217,6 +251,7 @@ fun GameScreen(
         WinnerDialog(
             winner = state.winner!!,
             winnerName = if (state.winner == TeamType.TEAM_A) teamADisplayName else teamBDisplayName,
+            onShare = shareResult,
             teamAScore = state.teamAScore,
             teamBScore = state.teamBScore,
             onNewGame = {

@@ -5,6 +5,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -31,7 +33,8 @@ fun WinnerDialog(
     teamBScore: Int,
     onNewGame: () -> Unit,
     onDismiss: () -> Unit,
-    winnerName: String? = null
+    winnerName: String? = null,
+    onShare: (() -> Unit)? = null
 ) {
     val colors = AppTheme.colors
     val winnerColor = if (winner == TeamType.TEAM_A) colors.teamAColor else colors.teamBColor
@@ -147,6 +150,28 @@ fun WinnerDialog(
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
+
+                // 공유 버튼
+                if (onShare != null) {
+                    OutlinedButton(
+                        onClick = onShare,
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = winnerColor)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Share,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = stringResource(R.string.share),
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(12.dp))
+                }
 
                 // 버튼들
                 Row(

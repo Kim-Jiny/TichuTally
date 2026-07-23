@@ -362,11 +362,17 @@ final class GameViewController: UIViewController {
     }
 
     private func showWinnerDialog(winner: TeamType) {
+        UINotificationFeedbackGenerator().notificationOccurred(.success)
+        let winnerName = winner == .teamA ? viewModel.teamADisplayName : viewModel.teamBDisplayName
+        let shareText = "🏆 \(L10n.winnerMessage(winnerName))\n"
+            + "\(viewModel.teamADisplayName) \(viewModel.teamAScore) : \(viewModel.teamBScore) \(viewModel.teamBDisplayName)\n"
+            + L10n.roundsCount(viewModel.roundCount)
         let winnerVC = WinnerViewController(
             winner: winner,
             teamAScore: viewModel.teamAScore,
             teamBScore: viewModel.teamBScore,
-            winnerName: winner == .teamA ? viewModel.teamADisplayName : viewModel.teamBDisplayName
+            winnerName: winnerName,
+            shareText: shareText
         )
         winnerVC.delegate = self
         present(winnerVC, animated: false)
@@ -422,6 +428,7 @@ extension GameViewController: RoundInputViewDelegate {
     }
 
     func roundInputViewDidTapAddRound(_ view: RoundInputView) {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
         viewModel.addRound()
         roundInputView.reset()
     }

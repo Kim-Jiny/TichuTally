@@ -80,4 +80,7 @@
     <!-- Undo -->
     <string name="undo">Undo</string>
     <string name="round_deleted">Round deleted</string>
+
+    <!-- Share -->
+    <string name="share">Share</string>
 </resources>

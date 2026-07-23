@@ -53,4 +53,7 @@
     <!-- Undo -->
     <string name="undo">실행취소</string>
     <string name="round_deleted">라운드를 삭제했습니다</string>
+
+    <!-- Share -->
+    <string name="share">공유</string>
 </resources>

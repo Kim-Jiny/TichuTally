@@ -106,6 +106,17 @@ final class WinnerViewController: UIViewController {
         return button
     }()
 
+    private let shareButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle(L10n.share, for: .normal)
+        button.setImage(UIImage(systemName: "square.and.arrow.up"), for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 15, weight: .medium)
+        button.layer.borderWidth = 1.5
+        button.layer.cornerRadius = 12
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+
     // MARK: - Properties
 
     weak var delegate: WinnerViewControllerDelegate?
@@ -113,14 +124,16 @@ final class WinnerViewController: UIViewController {
     private let teamAScore: Int
     private let teamBScore: Int
     private let winnerName: String?
+    private let shareText: String?
 
     // MARK: - Initialization
 
-    init(winner: TeamType, teamAScore: Int, teamBScore: Int, winnerName: String? = nil) {
+    init(winner: TeamType, teamAScore: Int, teamBScore: Int, winnerName: String? = nil, shareText: String? = nil) {
         self.winner = winner
         self.teamAScore = teamAScore
         self.teamBScore = teamBScore
         self.winnerName = winnerName
+        self.shareText = shareText
         super.init(nibName: nil, bundle: nil)
         modalPresentationStyle = .overFullScreen
         modalTransitionStyle = .crossDissolve
@@ -176,6 +189,7 @@ final class WinnerViewController: UIViewController {
         containerView.addSubview(teamNameLabel)
         containerView.addSubview(scoreContainer)
         scoreContainer.addSubview(scoreStack)
+        containerView.addSubview(shareButton)
         containerView.addSubview(buttonsStack)
 
         containerView.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
@@ -208,7 +222,12 @@ final class WinnerViewController: UIViewController {
             scoreStack.leadingAnchor.constraint(equalTo: scoreContainer.leadingAnchor, constant: 20),
             scoreStack.trailingAnchor.constraint(equalTo: scoreContainer.trailingAnchor, constant: -20),
 
-            buttonsStack.topAnchor.constraint(equalTo: scoreContainer.bottomAnchor, constant: 24),
+            shareButton.topAnchor.constraint(equalTo: scoreContainer.bottomAnchor, constant: 16),
+            shareButton.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 20),
+            shareButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -20),
+            shareButton.heightAnchor.constraint(equalToConstant: 44),
+
+            buttonsStack.topAnchor.constraint(equalTo: shareButton.bottomAnchor, constant: 12),
             buttonsStack.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 20),
             buttonsStack.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -20),
             buttonsStack.heightAnchor.constraint(equalToConstant: 48),
@@ -219,12 +238,26 @@ final class WinnerViewController: UIViewController {
     private func setupActions() {
         confirmButton.addTarget(self, action: #selector(confirmTapped), for: .touchUpInside)
         newGameButton.addTarget(self, action: #selector(newGameTapped), for: .touchUpInside)
+        shareButton.addTarget(self, action: #selector(shareTapped), for: .touchUpInside)
+    }
+
+    @objc private func shareTapped() {
+        guard let text = shareText else { return }
+        let activityVC = UIActivityViewController(activityItems: [text], applicationActivities: nil)
+        activityVC.popoverPresentationController?.sourceView = shareButton
+        activityVC.popoverPresentationController?.sourceRect = shareButton.bounds
+        present(activityVC, animated: true)
     }
 
     private func configureContent() {
         let winnerColor = AppColors.teamColor(for: winner)
         teamNameLabel.text = winnerName ?? winner.displayName
         teamNameLabel.textColor = winnerColor
+
+        shareButton.tintColor = winnerColor
+        shareButton.setTitleColor(winnerColor, for: .normal)
+        shareButton.layer.borderColor = winnerColor.cgColor
+        shareButton.isHidden = (shareText == nil)
 
         teamAScoreLabel.text = "\(teamAScore)"
         teamAScoreLabel.textColor = AppColors.teamAColor
