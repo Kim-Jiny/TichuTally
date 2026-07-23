@@ -184,29 +184,16 @@ final class RoundInputView: UIView {
         scoreLabel.text = L10n.cardScore
         addRoundButton.setTitle(L10n.addRound, for: .normal)
 
-        // Create per-player tichu call views (2 players per team: A1/A2, B1/B2)
-        func makeCallView(_ player: Player) -> TichuCallView {
-            let callView = TichuCallView(player: player)
+        // Create team-based tichu call views (2 teams instead of 4 players)
+        for team in TeamType.allCases {
+            let callView = TichuCallView(team: team)
             callView.delegate = self
             callView.translatesAutoresizingMaskIntoConstraints = false
             tichuCallViews.append(callView)
-            return callView
         }
-        let teamAPlayers = Player.allPlayers.filter { $0.team == .teamA }
-        let teamBPlayers = Player.allPlayers.filter { $0.team == .teamB }
-
-        let teamAColumn = UIStackView(arrangedSubviews: teamAPlayers.map { makeCallView($0) })
-        teamAColumn.axis = .vertical
-        teamAColumn.distribution = .fillEqually
-        teamAColumn.spacing = 6
-
-        let teamBColumn = UIStackView(arrangedSubviews: teamBPlayers.map { makeCallView($0) })
-        teamBColumn.axis = .vertical
-        teamBColumn.distribution = .fillEqually
-        teamBColumn.spacing = 6
 
         // Tichu section
-        let tichuStack = UIStackView(arrangedSubviews: [teamAColumn, teamBColumn])
+        let tichuStack = UIStackView(arrangedSubviews: tichuCallViews)
         tichuStack.axis = .horizontal
         tichuStack.distribution = .fillEqually
         tichuStack.spacing = 8

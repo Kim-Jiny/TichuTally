@@ -61,7 +61,7 @@ fun RoundInputCard(
 
             Spacer(modifier = Modifier.height(2.dp))
 
-            // Tichu Call Rows with card background — 팀당 2명(A1/A2, B1/B2) 개별 콜
+            // Tichu Call Rows with card background
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -69,34 +69,28 @@ fun RoundInputCard(
                     .background(colors.surfaceLight)
                     .padding(6.dp)
             ) {
-                val teamAPlayers = Player.allPlayers.filter { it.team == TeamType.TEAM_A }
-                val teamBPlayers = Player.allPlayers.filter { it.team == TeamType.TEAM_B }
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        teamAPlayers.forEach { player ->
-                            TichuCallRow(
-                                player = player,
-                                callInput = tichuCalls[player],
-                                onCallChanged = { type, success ->
-                                    onTichuCallChanged(player, type, success)
-                                }
-                            )
+                    // Team A
+                    val teamAPlayer = Player.allPlayers.first { it.team == TeamType.TEAM_A }
+                    TeamTichuCallRow(
+                        teamType = TeamType.TEAM_A,
+                        callInput = tichuCalls[teamAPlayer],
+                        onCallChanged = { type, success ->
+                            onTichuCallChanged(teamAPlayer, type, success)
                         }
-                    }
-                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        teamBPlayers.forEach { player ->
-                            TichuCallRow(
-                                player = player,
-                                callInput = tichuCalls[player],
-                                onCallChanged = { type, success ->
-                                    onTichuCallChanged(player, type, success)
-                                }
-                            )
+                    )
+                    // Team B
+                    val teamBPlayer = Player.allPlayers.first { it.team == TeamType.TEAM_B }
+                    TeamTichuCallRow(
+                        teamType = TeamType.TEAM_B,
+                        callInput = tichuCalls[teamBPlayer],
+                        onCallChanged = { type, success ->
+                            onTichuCallChanged(teamBPlayer, type, success)
                         }
-                    }
+                    )
                 }
             }
 
