@@ -124,16 +124,16 @@ final class WinnerViewController: UIViewController {
     private let teamAScore: Int
     private let teamBScore: Int
     private let winnerName: String?
-    private let shareText: String?
+    private let shareImage: UIImage?
 
     // MARK: - Initialization
 
-    init(winner: TeamType, teamAScore: Int, teamBScore: Int, winnerName: String? = nil, shareText: String? = nil) {
+    init(winner: TeamType, teamAScore: Int, teamBScore: Int, winnerName: String? = nil, shareImage: UIImage? = nil) {
         self.winner = winner
         self.teamAScore = teamAScore
         self.teamBScore = teamBScore
         self.winnerName = winnerName
-        self.shareText = shareText
+        self.shareImage = shareImage
         super.init(nibName: nil, bundle: nil)
         modalPresentationStyle = .overFullScreen
         modalTransitionStyle = .crossDissolve
@@ -242,8 +242,8 @@ final class WinnerViewController: UIViewController {
     }
 
     @objc private func shareTapped() {
-        guard let text = shareText else { return }
-        let activityVC = UIActivityViewController(activityItems: [text], applicationActivities: nil)
+        guard let image = shareImage else { return }
+        let activityVC = UIActivityViewController(activityItems: [image], applicationActivities: nil)
         activityVC.popoverPresentationController?.sourceView = shareButton
         activityVC.popoverPresentationController?.sourceRect = shareButton.bounds
         present(activityVC, animated: true)
@@ -257,7 +257,7 @@ final class WinnerViewController: UIViewController {
         shareButton.tintColor = winnerColor
         shareButton.setTitleColor(winnerColor, for: .normal)
         shareButton.layer.borderColor = winnerColor.cgColor
-        shareButton.isHidden = (shareText == nil)
+        shareButton.isHidden = (shareImage == nil)
 
         teamAScoreLabel.text = "\(teamAScore)"
         teamAScoreLabel.textColor = AppColors.teamAColor

@@ -19,10 +19,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import android.content.Intent
 import android.view.HapticFeedbackConstants
+import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.tichutally.app.R
+import com.tichutally.app.presentation.util.ResultImageShare
 import com.tichutally.app.domain.model.TeamType
 import com.tichutally.app.presentation.ui.components.*
 import com.tichutally.app.presentation.ui.theme.AppTheme
@@ -52,17 +53,21 @@ fun GameScreen(
     }
 
     val shareResult: () -> Unit = {
-        val winnerName = if (state.winner == TeamType.TEAM_A) teamADisplayName else teamBDisplayName
-        val text = buildString {
-            appendLine("🏆 " + context.getString(R.string.winner_message, winnerName))
-            appendLine("$teamADisplayName ${state.teamAScore} : ${state.teamBScore} $teamBDisplayName")
-            append(context.getString(R.string.rounds_count, state.rounds.size))
-        }
-        val intent = Intent(Intent.ACTION_SEND).apply {
-            type = "text/plain"
-            putExtra(Intent.EXTRA_TEXT, text)
-        }
-        context.startActivity(Intent.createChooser(intent, context.getString(R.string.share)))
+        val winnerIsA = state.winner == TeamType.TEAM_A
+        ResultImageShare.share(
+            context = context,
+            winnerName = if (winnerIsA) teamADisplayName else teamBDisplayName,
+            teamAName = teamADisplayName,
+            teamAScore = state.teamAScore,
+            teamAColor = colors.teamAColor.toArgb(),
+            teamBName = teamBDisplayName,
+            teamBScore = state.teamBScore,
+            teamBColor = colors.teamBColor.toArgb(),
+            winnerColor = (if (winnerIsA) colors.teamAColor else colors.teamBColor).toArgb(),
+            winsText = context.getString(R.string.wins),
+            roundsText = context.getString(R.string.rounds_count, state.rounds.size),
+            appName = context.getString(R.string.app_name)
+        )
     }
 
     Box(modifier = Modifier.fillMaxSize()) {

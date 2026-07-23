@@ -364,15 +364,26 @@ final class GameViewController: UIViewController {
     private func showWinnerDialog(winner: TeamType) {
         UINotificationFeedbackGenerator().notificationOccurred(.success)
         let winnerName = winner == .teamA ? viewModel.teamADisplayName : viewModel.teamBDisplayName
-        let shareText = "🏆 \(L10n.winnerMessage(winnerName))\n"
-            + "\(viewModel.teamADisplayName) \(viewModel.teamAScore) : \(viewModel.teamBScore) \(viewModel.teamBDisplayName)\n"
-            + L10n.roundsCount(viewModel.roundCount)
+        let appName = (Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String)
+            ?? (Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String) ?? "Tichu Tally"
+        let shareImage = ResultImageRenderer.render(
+            winnerLine: L10n.winnerMessage(winnerName),
+            teamAName: viewModel.teamADisplayName,
+            teamAScore: viewModel.teamAScore,
+            teamAColor: AppColors.teamAColor,
+            teamBName: viewModel.teamBDisplayName,
+            teamBScore: viewModel.teamBScore,
+            teamBColor: AppColors.teamBColor,
+            winnerColor: AppColors.teamColor(for: winner),
+            roundsText: L10n.roundsCount(viewModel.roundCount),
+            appName: appName
+        )
         let winnerVC = WinnerViewController(
             winner: winner,
             teamAScore: viewModel.teamAScore,
             teamBScore: viewModel.teamBScore,
             winnerName: winnerName,
-            shareText: shareText
+            shareImage: shareImage
         )
         winnerVC.delegate = self
         present(winnerVC, animated: false)
