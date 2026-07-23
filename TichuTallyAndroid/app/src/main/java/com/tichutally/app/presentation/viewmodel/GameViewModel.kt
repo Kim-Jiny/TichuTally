@@ -169,36 +169,41 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch(Dispatchers.IO) { historyStorage.clear() }
     }
 
+    // 삭제 직전 상태 (실행취소용)
+    private var undoSnapshot: GameState? = null
+
     fun deleteRound(index: Int) {
-        _state.update { currentState ->
-            val rounds = currentState.game.rounds
-            if (index < 0 || index >= rounds.size) return@update currentState
+        val pre = _state.value
+        val rounds = pre.game.rounds
+        if (index < 0 || index >= rounds.size) return
+        val deletedScore = pre.roundScores.getOrNull(index) ?: return
 
-            val deletedScore = currentState.roundScores.getOrNull(index) ?: return@update currentState
+        // 실행취소를 위해 삭제 직전 상태 보관 (플래그는 제외)
+        undoSnapshot = pre.copy(showUndoDelete = false)
 
-            // 점수 차감
-            val newTeamA = currentState.game.teamA.copy(
-                totalScore = currentState.game.teamA.totalScore - deletedScore.teamAScore
-            )
-            val newTeamB = currentState.game.teamB.copy(
-                totalScore = currentState.game.teamB.totalScore - deletedScore.teamBScore
-            )
+        val newTeamA = pre.game.teamA.copy(totalScore = pre.game.teamA.totalScore - deletedScore.teamAScore)
+        val newTeamB = pre.game.teamB.copy(totalScore = pre.game.teamB.totalScore - deletedScore.teamBScore)
 
-            // 라운드 삭제 및 번호 재정렬
-            val newRounds = rounds.toMutableList().apply { removeAt(index) }
-                .mapIndexed { i, round -> round.copy(roundNumber = i + 1) }
+        // 라운드 삭제 및 번호 재정렬
+        val newRounds = rounds.toMutableList().apply { removeAt(index) }
+            .mapIndexed { i, round -> round.copy(roundNumber = i + 1) }
+        val newRoundScores = pre.roundScores.toMutableList().apply { removeAt(index) }
 
-            val newRoundScores = currentState.roundScores.toMutableList().apply { removeAt(index) }
+        _state.value = pre.copy(
+            game = pre.game.copy(teamA = newTeamA, teamB = newTeamB, rounds = newRounds),
+            roundScores = newRoundScores,
+            showWinnerDialog = false,
+            showUndoDelete = true
+        )
+    }
 
-            currentState.copy(
-                game = currentState.game.copy(
-                    teamA = newTeamA,
-                    teamB = newTeamB,
-                    rounds = newRounds
-                ),
-                roundScores = newRoundScores,
-                showWinnerDialog = false
-            )
-        }
+    fun undoDelete() {
+        undoSnapshot?.let { _state.value = it }
+        undoSnapshot = null
+    }
+
+    fun dismissUndo() {
+        undoSnapshot = null
+        _state.update { it.copy(showUndoDelete = false) }
     }
 }

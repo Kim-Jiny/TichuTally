@@ -272,6 +272,68 @@ final class GameViewController: UIViewController {
         present(newGameVC, animated: false)
     }
 
+    // MARK: - Undo Toast
+
+    private weak var undoToast: UIView?
+
+    private func showUndoToast() {
+        undoToast?.removeFromSuperview()
+
+        let toast = UIView()
+        toast.backgroundColor = AppColors.cardBackgroundElevated
+        toast.layer.cornerRadius = 12
+        toast.layer.shadowColor = UIColor.black.cgColor
+        toast.layer.shadowOpacity = 0.2
+        toast.layer.shadowRadius = 8
+        toast.layer.shadowOffset = CGSize(width: 0, height: 2)
+        toast.translatesAutoresizingMaskIntoConstraints = false
+
+        let label = UILabel()
+        label.text = L10n.roundDeleted
+        label.textColor = AppColors.textPrimary
+        label.font = .systemFont(ofSize: 14)
+        label.translatesAutoresizingMaskIntoConstraints = false
+
+        let undoButton = UIButton(type: .system)
+        undoButton.setTitle(L10n.undo, for: .normal)
+        undoButton.titleLabel?.font = .systemFont(ofSize: 14, weight: .bold)
+        undoButton.setTitleColor(AppColors.teamAColor, for: .normal)
+        undoButton.translatesAutoresizingMaskIntoConstraints = false
+        undoButton.addTarget(self, action: #selector(undoDeleteTapped), for: .touchUpInside)
+
+        toast.addSubview(label)
+        toast.addSubview(undoButton)
+        view.addSubview(toast)
+        undoToast = toast
+
+        NSLayoutConstraint.activate([
+            toast.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            toast.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            toast.bottomAnchor.constraint(equalTo: bannerAdView.topAnchor, constant: -8),
+            toast.heightAnchor.constraint(equalToConstant: 48),
+
+            label.leadingAnchor.constraint(equalTo: toast.leadingAnchor, constant: 16),
+            label.centerYAnchor.constraint(equalTo: toast.centerYAnchor),
+
+            undoButton.trailingAnchor.constraint(equalTo: toast.trailingAnchor, constant: -16),
+            undoButton.centerYAnchor.constraint(equalTo: toast.centerYAnchor)
+        ])
+
+        toast.alpha = 0
+        UIView.animate(withDuration: 0.2) { toast.alpha = 1 }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 4) { [weak toast] in
+            UIView.animate(withDuration: 0.2, animations: { toast?.alpha = 0 }) { _ in
+                toast?.removeFromSuperview()
+            }
+        }
+    }
+
+    @objc private func undoDeleteTapped() {
+        viewModel.undoDelete()
+        undoToast?.removeFromSuperview()
+        undoToast = nil
+    }
+
     // MARK: - Private Methods
 
     private func updateUI() {
@@ -425,5 +487,6 @@ extension GameViewController: NewGameViewControllerDelegate {
 extension GameViewController: DeleteRoundViewControllerDelegate {
     func deleteRoundViewControllerDidConfirm(_ controller: DeleteRoundViewController, roundIndex: Int) {
         viewModel.deleteRound(at: roundIndex)
+        showUndoToast()
     }
 }

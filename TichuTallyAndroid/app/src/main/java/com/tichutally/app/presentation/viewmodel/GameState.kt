@@ -24,6 +24,7 @@ data class GameState(
     val currentTichuCalls: Map<Player, TichuCallInput> = emptyMap(),
     val roundScores: List<RoundScore> = emptyList(),
     @Transient val showWinnerDialog: Boolean = false,
+    @Transient val showUndoDelete: Boolean = false,
     val targetScore: Int = 1000,
     val themeMode: ThemeMode = ThemeMode.SYSTEM,
     // 사용자 지정 팀 이름 (빈 문자열이면 기본 리소스 이름 사용)

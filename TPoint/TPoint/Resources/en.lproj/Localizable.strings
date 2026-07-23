@@ -78,3 +78,5 @@
 "draw" = "Draw";
 
 "team_names" = "Team Names";
+"undo" = "Undo";
+"round_deleted" = "Round deleted";

@@ -37,6 +37,7 @@ fun GameScreen(
     val teamADisplayName = state.teamAName.ifBlank { stringResource(R.string.team_a) }
     val teamBDisplayName = state.teamBName.ifBlank { stringResource(R.string.team_b) }
 
+    Box(modifier = Modifier.fillMaxSize()) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -159,6 +160,28 @@ fun GameScreen(
                 .fillMaxWidth()
                 .navigationBarsPadding()
         )
+    }
+
+        // 라운드 삭제 실행취소 스낵바
+        if (state.showUndoDelete) {
+            Snackbar(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .navigationBarsPadding()
+                    .padding(16.dp),
+                action = {
+                    TextButton(onClick = { viewModel.undoDelete() }) {
+                        Text(stringResource(R.string.undo))
+                    }
+                }
+            ) {
+                Text(stringResource(R.string.round_deleted))
+            }
+            LaunchedEffect(state.showUndoDelete) {
+                kotlinx.coroutines.delay(4000)
+                viewModel.dismissUndo()
+            }
+        }
     }
 
     // Settings Dialog

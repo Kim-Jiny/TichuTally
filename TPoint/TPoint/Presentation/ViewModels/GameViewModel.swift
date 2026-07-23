@@ -35,6 +35,7 @@ final class GameViewModel {
     private let calculateScoreUseCase: CalculateScoreUseCaseProtocol
     private let storage = GameStorage()
     private let historyStorage = HistoryStorage()
+    private var undoGame: Game?  // 마지막 삭제 실행취소용 스냅샷
 
     // 현재 라운드 입력 상태
     var currentTeamACardScore: Int = 50
@@ -222,6 +223,9 @@ final class GameViewModel {
     func deleteRound(at index: Int) {
         guard index >= 0 && index < game.rounds.count else { return }
 
+        // 실행취소를 위해 삭제 직전 게임 상태 보관
+        undoGame = game
+
         let round = game.rounds[index]
         let score = calculateScoreUseCase.calculate(round: round)
 
@@ -243,6 +247,15 @@ final class GameViewModel {
             )
         }
 
+        persist()
+        delegate?.gameDidUpdate()
+    }
+
+    /// 마지막 삭제를 되돌린다.
+    func undoDelete() {
+        guard let snapshot = undoGame else { return }
+        game = snapshot
+        undoGame = nil
         persist()
         delegate?.gameDidUpdate()
     }

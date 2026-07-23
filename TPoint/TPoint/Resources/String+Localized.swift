@@ -87,6 +87,8 @@ enum L10n {
     static let statHighestScore = "stat_highest_score".localized
     static let draw = "draw".localized
     static let teamNames = "team_names".localized
+    static let undo = "undo".localized
+    static let roundDeleted = "round_deleted".localized
 
     static func roundsCount(_ n: Int) -> String {
         "rounds_count".localized(with: n)

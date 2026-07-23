@@ -76,4 +76,8 @@
 
     <!-- Team names -->
     <string name="team_names">Team Names</string>
+
+    <!-- Undo -->
+    <string name="undo">Undo</string>
+    <string name="round_deleted">Round deleted</string>
 </resources>
