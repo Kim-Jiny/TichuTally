@@ -5,7 +5,7 @@
 
 import Foundation
 
-enum TeamType: String, CaseIterable {
+enum TeamType: String, CaseIterable, Codable {
     case teamA = "A"
     case teamB = "B"
 
@@ -28,7 +28,7 @@ enum TeamType: String, CaseIterable {
     }
 }
 
-struct Team {
+struct Team: Codable {
     let type: TeamType
     var totalScore: Int = 0
 

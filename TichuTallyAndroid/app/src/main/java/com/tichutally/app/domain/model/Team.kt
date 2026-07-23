@@ -1,5 +1,8 @@
 package com.tichutally.app.domain.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 enum class TeamType(val shortName: String) {
     TEAM_A("A"),
     TEAM_B("B");
@@ -11,6 +14,7 @@ enum class TeamType(val shortName: String) {
         }
 }
 
+@Serializable
 data class Team(
     val type: TeamType,
     val totalScore: Int = 0

@@ -1,5 +1,8 @@
 package com.tichutally.app.domain.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Player(
     val team: TeamType,
     val position: Int  // 0 or 1

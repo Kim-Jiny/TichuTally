@@ -5,7 +5,7 @@
 
 import Foundation
 
-struct TichuCall: Hashable {
+struct TichuCall: Hashable, Codable {
     let player: Player
     let isLarge: Bool  // true: 라지티츄(200), false: 스몰티츄(100)
     var isSuccess: Bool
@@ -20,7 +20,7 @@ struct TichuCall: Hashable {
     }
 }
 
-struct Round {
+struct Round: Codable {
     let roundNumber: Int
     var teamACardScore: Int
     var isOneTwoFinish: Bool

@@ -1,5 +1,8 @@
 package com.tichutally.app.domain.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Game(
     val teamA: Team = Team(TeamType.TEAM_A),
     val teamB: Team = Team(TeamType.TEAM_B),

@@ -5,7 +5,7 @@
 
 import Foundation
 
-struct Player: Hashable {
+struct Player: Hashable, Codable {
     let team: TeamType
     let position: Int  // 0 or 1 (팀 내 순서)
 

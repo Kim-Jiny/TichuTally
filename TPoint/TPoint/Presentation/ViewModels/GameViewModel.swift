@@ -31,6 +31,7 @@ final class GameViewModel {
 
     private(set) var game: Game
     private let calculateScoreUseCase: CalculateScoreUseCaseProtocol
+    private let storage = GameStorage()
 
     // 현재 라운드 입력 상태
     var currentTeamACardScore: Int = 50
@@ -47,6 +48,7 @@ final class GameViewModel {
         set {
             UserDefaults.standard.set(newValue, forKey: Keys.targetScore)
             game.targetScore = newValue
+            persist()
             delegate?.gameDidUpdate()
         }
     }
@@ -87,6 +89,29 @@ final class GameViewModel {
             self.game.targetScore = savedTargetScore
         }
         resetCurrentRoundInput()
+        // 저장된 진행 중 게임이 있으면 복원
+        restoreIfAvailable()
+    }
+
+    // MARK: - Persistence
+
+    private func restoreIfAvailable() {
+        guard let snapshot = storage.load() else { return }
+        game = snapshot.game
+        currentTeamACardScore = snapshot.currentTeamACardScore
+        currentOneTwoFinish = snapshot.currentOneTwoFinish
+        currentOneTwoFinishTeam = snapshot.currentOneTwoFinishTeam
+        currentTichuCalls = snapshot.currentTichuCalls
+    }
+
+    private func persist() {
+        storage.save(GameSnapshot(
+            game: game,
+            currentTeamACardScore: currentTeamACardScore,
+            currentOneTwoFinish: currentOneTwoFinish,
+            currentOneTwoFinishTeam: currentOneTwoFinishTeam,
+            currentTichuCalls: currentTichuCalls
+        ))
     }
 
     // MARK: - Public Methods
@@ -94,12 +119,14 @@ final class GameViewModel {
     func setTeamACardScore(_ score: Int) {
         // 카드 점수는 -25~125 범위 (슬라이더 및 Android와 동일). 상대팀은 100 - 값.
         currentTeamACardScore = max(-25, min(125, score))
+        persist()
         delegate?.gameDidUpdate()
     }
 
     func setOneTwoFinish(enabled: Bool, team: TeamType?) {
         currentOneTwoFinish = enabled
         currentOneTwoFinishTeam = team
+        persist()
         delegate?.gameDidUpdate()
     }
 
@@ -109,6 +136,7 @@ final class GameViewModel {
         } else {
             currentTichuCalls.removeValue(forKey: player)
         }
+        persist()
         delegate?.gameDidUpdate()
     }
 
@@ -143,6 +171,7 @@ final class GameViewModel {
         game.teamB.totalScore += score.teamBScore
 
         resetCurrentRoundInput()
+        persist()
 
         if let winner = game.winner {
             delegate?.gameDidEnd(winner: winner)
@@ -159,6 +188,7 @@ final class GameViewModel {
     func newGame() {
         game.reset()
         resetCurrentRoundInput()
+        persist()
         delegate?.gameDidUpdate()
     }
 
@@ -186,6 +216,7 @@ final class GameViewModel {
             )
         }
 
+        persist()
         delegate?.gameDidUpdate()
     }
 
@@ -201,12 +232,12 @@ final class GameViewModel {
 
 // MARK: - Supporting Types
 
-enum TichuType {
+enum TichuType: String, Codable {
     case small  // 100점
     case large  // 200점
 }
 
-struct TichuCallInput {
+struct TichuCallInput: Codable {
     var type: TichuType
     var isSuccess: Bool
 }

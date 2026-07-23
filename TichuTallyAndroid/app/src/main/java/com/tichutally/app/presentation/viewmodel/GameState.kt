@@ -1,16 +1,21 @@
 package com.tichutally.app.presentation.viewmodel
 
 import com.tichutally.app.domain.model.*
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
+@Serializable
 enum class ThemeMode {
     SYSTEM, LIGHT, DARK
 }
 
+@Serializable
 data class TichuCallInput(
     val type: TichuType?,
     val isSuccess: Boolean = false
 )
 
+@Serializable
 data class GameState(
     val game: Game = Game(),
     val currentTeamACardScore: Int = 50,
@@ -18,7 +23,7 @@ data class GameState(
     val currentOneTwoFinishTeam: TeamType? = null,
     val currentTichuCalls: Map<Player, TichuCallInput> = emptyMap(),
     val roundScores: List<RoundScore> = emptyList(),
-    val showWinnerDialog: Boolean = false,
+    @Transient val showWinnerDialog: Boolean = false,
     val targetScore: Int = 1000,
     val themeMode: ThemeMode = ThemeMode.SYSTEM
 ) {

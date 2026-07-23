@@ -5,7 +5,7 @@
 
 import Foundation
 
-struct Game {
+struct Game: Codable {
     var teamA: Team
     var teamB: Team
     var rounds: [Round]

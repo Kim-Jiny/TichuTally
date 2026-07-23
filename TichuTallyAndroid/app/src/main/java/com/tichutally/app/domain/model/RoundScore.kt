@@ -1,5 +1,8 @@
 package com.tichutally.app.domain.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class RoundScore(
     val teamAScore: Int,
     val teamBScore: Int

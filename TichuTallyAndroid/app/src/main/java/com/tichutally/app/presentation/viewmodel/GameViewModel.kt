@@ -1,19 +1,35 @@
 package com.tichutally.app.presentation.viewmodel
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
+import com.tichutally.app.data.GameStorage
 import com.tichutally.app.domain.model.*
 import com.tichutally.app.domain.usecase.CalculateScoreUseCase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
-class GameViewModel(
-    private val calculateScoreUseCase: CalculateScoreUseCase = CalculateScoreUseCase()
-) : ViewModel() {
+class GameViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val _state = MutableStateFlow(GameState())
+    private val calculateScoreUseCase = CalculateScoreUseCase()
+    private val storage = GameStorage(application)
+
+    // 저장된 진행 중 게임이 있으면 복원, 없으면 새 게임으로 시작
+    private val _state = MutableStateFlow(storage.load() ?: GameState())
     val state: StateFlow<GameState> = _state.asStateFlow()
+
+    @OptIn(FlowPreview::class)
+    private val autoSave = viewModelScope.launch(Dispatchers.IO) {
+        // 상태 변경 시 자동 저장 (연속 슬라이더 입력은 디바운스로 합침)
+        state.drop(1).debounce(250).collect { storage.save(it) }
+    }
 
     fun setTeamACardScore(score: Int) {
         _state.update { it.copy(currentTeamACardScore = score.coerceIn(-25, 125)) }
