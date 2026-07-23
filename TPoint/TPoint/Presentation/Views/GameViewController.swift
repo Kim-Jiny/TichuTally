@@ -353,7 +353,13 @@ extension GameViewController: ScoreHistoryViewDelegate {
 
 extension GameViewController: SettingsViewControllerDelegate {
     func settingsDidChangeTargetScore(_ score: Int) {
+        let wasOver = viewModel.isGameOver
         viewModel.targetScore = score
+        // 이 델리게이트는 설정 화면이 완전히 닫힌 뒤 호출되므로 바로 present 가능.
+        // 목표 점수 변경으로 게임이 "새로" 종료된 경우에만 승자 다이얼로그 표시.
+        if !wasOver, let winner = viewModel.winner {
+            showWinnerDialog(winner: winner)
+        }
     }
 
     func settingsDidChangeTheme(_ mode: ThemeMode) {

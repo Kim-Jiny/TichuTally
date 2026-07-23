@@ -92,7 +92,8 @@ final class GameViewModel {
     // MARK: - Public Methods
 
     func setTeamACardScore(_ score: Int) {
-        currentTeamACardScore = max(0, min(100, score))
+        // 카드 점수는 -25~125 범위 (슬라이더 및 Android와 동일). 상대팀은 100 - 값.
+        currentTeamACardScore = max(-25, min(125, score))
         delegate?.gameDidUpdate()
     }
 
@@ -116,11 +117,14 @@ final class GameViewModel {
     }
 
     func addRound() {
+        // 원투피니시 시 상대팀은 1등이 불가능하므로 티추 성공을 강제로 실패 처리
+        let oneTwoOpponent = currentOneTwoFinish ? currentOneTwoFinishTeam?.opponent : nil
         let tichuCalls = currentTichuCalls.compactMap { (player, input) -> TichuCall? in
+            let isSuccess = (player.team == oneTwoOpponent) ? false : input.isSuccess
             return TichuCall(
                 player: player,
                 isLarge: input.type == .large,
-                isSuccess: input.isSuccess
+                isSuccess: isSuccess
             )
         }
 

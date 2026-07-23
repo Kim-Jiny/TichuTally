@@ -21,8 +21,19 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let gameViewController = GameViewController()
         let navigationController = UINavigationController(rootViewController: gameViewController)
         window.rootViewController = navigationController
+        // 저장된 라이트/다크 테마를 윈도우 생성 시점에 적용 (콜드 런치 시 잘못된 테마 방지)
+        applyStoredTheme(to: window)
         window.makeKeyAndVisible()
         self.window = window
+    }
+
+    private func applyStoredTheme(to window: UIWindow) {
+        let mode = ThemeMode(rawValue: UserDefaults.standard.integer(forKey: "themeMode")) ?? .system
+        switch mode {
+        case .system: window.overrideUserInterfaceStyle = .unspecified
+        case .light: window.overrideUserInterfaceStyle = .light
+        case .dark: window.overrideUserInterfaceStyle = .dark
+        }
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

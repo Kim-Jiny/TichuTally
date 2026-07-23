@@ -316,10 +316,13 @@ final class SettingsViewController: UIViewController {
     }
 
     @objc private func saveTapped() {
-        delegate?.settingsDidChangeTargetScore(currentTargetScore)
-        delegate?.settingsDidChangeTheme(currentThemeMode)
+        // 설정 화면을 먼저 닫은 뒤 델리게이트를 호출해야, 목표 점수 변경으로 게임이 종료된 경우
+        // 승자 다이얼로그를 present-while-presented 없이 띄울 수 있음 (다른 다이얼로그와 동일 패턴)
         animateOut {
-            self.dismiss(animated: false)
+            self.dismiss(animated: false) {
+                self.delegate?.settingsDidChangeTargetScore(self.currentTargetScore)
+                self.delegate?.settingsDidChangeTheme(self.currentThemeMode)
+            }
         }
     }
 }

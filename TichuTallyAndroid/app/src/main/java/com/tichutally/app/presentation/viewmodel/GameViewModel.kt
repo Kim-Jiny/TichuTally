@@ -55,9 +55,13 @@ class GameViewModel(
 
     fun addRound() {
         _state.update { currentState ->
+            // 원투피니시 시 상대팀은 1등이 불가능하므로 티추 성공을 강제로 실패 처리
+            val oneTwoOpponent = if (currentState.currentOneTwoFinish)
+                currentState.currentOneTwoFinishTeam?.opponent else null
             val tichuCalls = currentState.currentTichuCalls.mapNotNull { (player, input) ->
                 input.type?.let { type ->
-                    TichuCall(player, type, input.isSuccess)
+                    val success = if (player.team == oneTwoOpponent) false else input.isSuccess
+                    TichuCall(player, type, success)
                 }
             }
 
@@ -101,9 +105,15 @@ class GameViewModel(
 
     fun setTargetScore(score: Int) {
         _state.update { currentState ->
+            val wasOver = currentState.game.isGameOver
+            val newGame = currentState.game.copy(targetScore = score)
+            // 게임이 새로 종료된 경우에만 승자 다이얼로그 노출.
+            // 이미 종료돼 있었다면 기존 노출 상태 유지(닫아둔 걸 다시 띄우지 않음), 해제되면 숨김.
+            val showWinner = newGame.isGameOver && (currentState.showWinnerDialog || !wasOver)
             currentState.copy(
                 targetScore = score,
-                game = currentState.game.copy(targetScore = score)
+                game = newGame,
+                showWinnerDialog = showWinner
             )
         }
     }
@@ -116,6 +126,7 @@ class GameViewModel(
         _state.update { currentState ->
             GameState(
                 targetScore = currentState.targetScore,
+                themeMode = currentState.themeMode,
                 game = Game(targetScore = currentState.targetScore)
             )
         }
