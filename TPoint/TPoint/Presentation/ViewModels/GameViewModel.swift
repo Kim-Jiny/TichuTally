@@ -134,15 +134,14 @@ final class GameViewModel {
 
     func setTeamACardScore(_ score: Int) {
         // 카드 점수는 -25~125 범위 (슬라이더 및 Android와 동일). 상대팀은 100 - 값.
+        // 현재 입력은 라운드 추가 시 커밋되므로 매 틱 저장하지 않음 (메인 스레드 잦은 파일 쓰기 방지)
         currentTeamACardScore = max(-25, min(125, score))
-        persist()
         delegate?.gameDidUpdate()
     }
 
     func setOneTwoFinish(enabled: Bool, team: TeamType?) {
         currentOneTwoFinish = enabled
         currentOneTwoFinishTeam = team
-        persist()
         delegate?.gameDidUpdate()
     }
 
@@ -152,7 +151,6 @@ final class GameViewModel {
         } else {
             currentTichuCalls.removeValue(forKey: player)
         }
-        persist()
         delegate?.gameDidUpdate()
     }
 
@@ -161,6 +159,7 @@ final class GameViewModel {
     }
 
     func addRound() {
+        undoGame = nil  // 다른 조작이 일어나면 이전 삭제 실행취소 무효화
         // 원투피니시 시 상대팀은 1등이 불가능하므로 티추 성공을 강제로 실패 처리
         let oneTwoOpponent = currentOneTwoFinish ? currentOneTwoFinishTeam?.opponent : nil
         let tichuCalls = currentTichuCalls.compactMap { (player, input) -> TichuCall? in
@@ -202,8 +201,9 @@ final class GameViewModel {
     }
 
     func newGame() {
-        // 라운드가 있는 현재 게임은 새 게임 시작 시 기록에 보관
-        if !game.rounds.isEmpty {
+        undoGame = nil  // 다른 조작이 일어나면 이전 삭제 실행취소 무효화
+        // 완료된 게임(승자 확정)만 기록에 보관 — 미완료 게임이 통계를 왜곡하지 않도록
+        if game.isGameOver {
             historyStorage.append(GameHistoryEntry(completedAt: Date(), game: game))
         }
         game.reset()
@@ -259,6 +259,7 @@ final class GameViewModel {
         tichuCalls: [Player: TichuCallInput]
     ) {
         guard index >= 0 && index < game.rounds.count else { return }
+        undoGame = nil  // 다른 조작이 일어나면 이전 삭제 실행취소 무효화
 
         // 원투피니시 시 상대팀 티추 성공 강제 실패
         let oneTwoOpponent = isOneTwoFinish ? oneTwoFinishTeam?.opponent : nil

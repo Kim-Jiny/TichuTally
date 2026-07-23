@@ -183,6 +183,8 @@ final class TeamScoreView: UIView {
     }
 
     func setWinner(_ winner: Bool) {
+        // 상태가 바뀔 때만 처리 (매 업데이트마다 반복 애니메이션 재적용 방지)
+        guard winner != isWinner else { return }
         isWinner = winner
         winBadge.isHidden = !winner
 

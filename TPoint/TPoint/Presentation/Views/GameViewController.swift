@@ -330,6 +330,10 @@ final class GameViewController: UIViewController {
 
     @objc private func undoDeleteTapped() {
         viewModel.undoDelete()
+        dismissUndoToast()
+    }
+
+    private func dismissUndoToast() {
         undoToast?.removeFromSuperview()
         undoToast = nil
     }
@@ -440,6 +444,7 @@ extension GameViewController: RoundInputViewDelegate {
 
     func roundInputViewDidTapAddRound(_ view: RoundInputView) {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        dismissUndoToast()
         viewModel.addRound()
         roundInputView.reset()
     }
@@ -477,6 +482,7 @@ extension GameViewController: EditRoundViewControllerDelegate {
         oneTwoFinishTeam: TeamType?,
         tichuCalls: [Player: TichuCallInput]
     ) {
+        dismissUndoToast()
         let wasOver = viewModel.isGameOver
         viewModel.updateRound(
             at: index,
@@ -521,6 +527,7 @@ extension GameViewController: SettingsViewControllerDelegate {
 
 extension GameViewController: WinnerViewControllerDelegate {
     func winnerViewControllerDidTapNewGame(_ controller: WinnerViewController) {
+        dismissUndoToast()
         viewModel.newGame()
     }
 }
@@ -529,6 +536,7 @@ extension GameViewController: WinnerViewControllerDelegate {
 
 extension GameViewController: NewGameViewControllerDelegate {
     func newGameViewControllerDidConfirm(_ controller: NewGameViewController) {
+        dismissUndoToast()
         viewModel.newGame()
     }
 }

@@ -73,6 +73,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun addRound() {
+        undoSnapshot = null  // 다른 조작이 일어나면 이전 삭제 실행취소 무효화
         _state.update { currentState ->
             // 원투피니시 시 상대팀은 1등이 불가능하므로 티추 성공을 강제로 실패 처리
             val oneTwoOpponent = if (currentState.currentOneTwoFinish)
@@ -113,7 +114,8 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
                 currentOneTwoFinish = false,
                 currentOneTwoFinishTeam = null,
                 currentTichuCalls = emptyMap(),
-                showWinnerDialog = newGame.isGameOver
+                showWinnerDialog = newGame.isGameOver,
+                showUndoDelete = false
             )
         }
     }
@@ -146,9 +148,10 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun newGame() {
-        // 라운드가 있는 현재 게임은 새 게임 시작 시 기록에 보관
+        undoSnapshot = null  // 다른 조작이 일어나면 이전 삭제 실행취소 무효화
+        // 완료된 게임(승자 확정)만 기록에 보관 — 미완료 게임이 통계를 왜곡하지 않도록
         val current = _state.value
-        if (current.game.rounds.isNotEmpty()) {
+        if (current.game.isGameOver) {
             val entry = GameHistoryEntry(System.currentTimeMillis(), current.game)
             viewModelScope.launch(Dispatchers.IO) { historyStorage.append(entry) }
         }
@@ -161,6 +164,11 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
                 game = Game(targetScore = currentState.targetScore)
             )
         }
+    }
+
+    /** 앱이 백그라운드로 갈 때 현재 상태를 즉시 저장 (디바운스 대기 없이 유실 방지). */
+    fun flush() {
+        storage.save(_state.value)
     }
 
     fun loadHistory(): List<GameHistoryEntry> = historyStorage.load()
@@ -176,6 +184,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         oneTwoFinishTeam: TeamType?,
         tichuCalls: Map<Player, TichuCallInput>
     ) {
+        undoSnapshot = null  // 다른 조작이 일어나면 이전 삭제 실행취소 무효화
         _state.update { currentState ->
             val rounds = currentState.game.rounds
             if (index < 0 || index >= rounds.size) return@update currentState
@@ -210,7 +219,8 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             currentState.copy(
                 game = newGame,
                 roundScores = newRoundScores,
-                showWinnerDialog = newGame.isGameOver && (currentState.showWinnerDialog || !wasOver)
+                showWinnerDialog = newGame.isGameOver && (currentState.showWinnerDialog || !wasOver),
+                showUndoDelete = false
             )
         }
     }
@@ -239,7 +249,8 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             game = pre.game.copy(teamA = newTeamA, teamB = newTeamB, rounds = newRounds),
             roundScores = newRoundScores,
             showWinnerDialog = false,
-            showUndoDelete = true
+            showUndoDelete = true,
+            undoNonce = pre.undoNonce + 1
         )
     }
 

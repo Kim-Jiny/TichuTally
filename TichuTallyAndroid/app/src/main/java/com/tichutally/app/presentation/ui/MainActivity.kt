@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -28,6 +29,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class MainActivity : ComponentActivity() {
+
+    // Compose의 viewModel()과 동일한 인스턴스 (액티비티 ViewModelStore 공유)
+    private val gameViewModel: GameViewModel by viewModels()
+
+    override fun onStop() {
+        super.onStop()
+        gameViewModel.flush()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         // 모든 API 레벨에서 일관된 edge-to-edge 처리 (targetSdk 35+ 강제 대응)
         enableEdgeToEdge()

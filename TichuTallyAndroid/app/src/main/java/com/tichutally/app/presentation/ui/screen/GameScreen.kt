@@ -218,7 +218,7 @@ fun GameScreen(
             ) {
                 Text(stringResource(R.string.round_deleted))
             }
-            LaunchedEffect(state.showUndoDelete) {
+            LaunchedEffect(state.undoNonce) {
                 kotlinx.coroutines.delay(4000)
                 viewModel.dismissUndo()
             }

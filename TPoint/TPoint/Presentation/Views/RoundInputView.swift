@@ -401,11 +401,12 @@ final class RoundInputView: UIView {
         scoreSlider.value = Float(teamACardScore)
         teamAScoreValueLabel.text = "\(teamACardScore)"
         teamBScoreValueLabel.text = "\(100 - teamACardScore)"
-        if oneTwoFinish, let team = oneTwoFinishTeam {
-            oneTwoSegment.selectedSegmentIndex = (team == .teamA) ? 1 : 2
-        } else {
-            oneTwoSegment.selectedSegmentIndex = 0
-        }
+        let isOneTwo = oneTwoFinish && oneTwoFinishTeam != nil
+        oneTwoSegment.selectedSegmentIndex = isOneTwo ? (oneTwoFinishTeam == .teamA ? 1 : 2) : 0
+        // 원투피니시면 카드 점수 슬라이더 비활성/디밍 (oneTwoSegmentChanged와 동일)
+        scoreSlider.isEnabled = !isOneTwo
+        scoreSlider.alpha = isOneTwo ? 0.5 : 1.0
+        scoreDisplayContainer.alpha = isOneTwo ? 0.5 : 1.0
         for callView in tichuCallViews {
             let input = tichuCalls[callView.player]
             callView.configure(type: input?.type, isSuccess: input?.isSuccess ?? false)

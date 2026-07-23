@@ -380,12 +380,14 @@ final class SettingsViewController: UIViewController {
         // 승자 다이얼로그를 present-while-presented 없이 띄울 수 있음 (다른 다이얼로그와 동일 패턴)
         animateOut {
             self.dismiss(animated: false) {
-                self.delegate?.settingsDidChangeTargetScore(self.currentTargetScore)
-                self.delegate?.settingsDidChangeTheme(self.currentThemeMode)
+                // 팀 이름을 먼저 적용해야, 목표 점수 변경으로 게임이 종료될 때
+                // 승자 다이얼로그/공유 이미지에 새 이름이 반영됨
                 self.delegate?.settingsDidChangeTeamNames(
                     self.teamANameField.text ?? "",
                     self.teamBNameField.text ?? ""
                 )
+                self.delegate?.settingsDidChangeTargetScore(self.currentTargetScore)
+                self.delegate?.settingsDidChangeTheme(self.currentThemeMode)
             }
         }
     }
