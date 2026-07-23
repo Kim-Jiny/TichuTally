@@ -59,3 +59,24 @@
 "vs" = "VS";
 "details" = "Detalles";
 "current_score" = "Puntuación Actual";
+
+// Records / Statistics / Team names / Undo / Share (v2)
+"records" = "Registros";
+"tab_history" = "Historial";
+"tab_stats" = "Estadísticas";
+"no_history" = "Aún no hay partidas registradas";
+"clear_history" = "Borrar historial";
+"clear_history_confirm" = "¿Eliminar todos los registros de partidas?";
+"rounds_count" = "%d rondas";
+"stat_total_games" = "Partidas totales";
+"stat_win_rate" = "Tasa de victorias";
+"stat_avg_rounds" = "Rondas promedio";
+"stat_small_tichu" = "Tichu Pequeño";
+"stat_large_tichu" = "Tichu Grande";
+"stat_one_two" = "Uno-Dos";
+"stat_highest_score" = "Puntuación máxima";
+"draw" = "Empate";
+"team_names" = "Nombres de equipo";
+"undo" = "Deshacer";
+"round_deleted" = "Ronda eliminada";
+"share" = "Compartir";

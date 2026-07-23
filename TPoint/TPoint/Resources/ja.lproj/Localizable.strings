@@ -59,3 +59,24 @@
 "vs" = "VS";
 "details" = "詳細";
 "current_score" = "現在のスコア";
+
+// Records / Statistics / Team names / Undo / Share (v2)
+"records" = "記録";
+"tab_history" = "対戦履歴";
+"tab_stats" = "統計";
+"no_history" = "まだ保存されたゲームがありません";
+"clear_history" = "記録を削除";
+"clear_history_confirm" = "すべてのゲーム記録を削除しますか？";
+"rounds_count" = "%dラウンド";
+"stat_total_games" = "総ゲーム数";
+"stat_win_rate" = "勝率";
+"stat_avg_rounds" = "平均ラウンド";
+"stat_small_tichu" = "スモールティチュー";
+"stat_large_tichu" = "ラージティチュー";
+"stat_one_two" = "ワンツーフィニッシュ";
+"stat_highest_score" = "最高得点";
+"draw" = "引き分け";
+"team_names" = "チーム名";
+"undo" = "元に戻す";
+"round_deleted" = "ラウンドを削除しました";
+"share" = "共有";

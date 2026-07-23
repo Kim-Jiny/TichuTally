@@ -28,4 +28,25 @@
     <string name="confirm">OK</string>
     <string name="cancel">Kanselahin</string>
     <string name="new_game_confirm">I-reset ang kasalukuyang laro at magsimula ng bago?</string>
+
+    <!-- Records / Statistics / Team names / Undo / Share (v2) -->
+    <string name="records">Mga Record</string>
+    <string name="tab_history">Kasaysayan</string>
+    <string name="tab_stats">Estadistika</string>
+    <string name="no_history">Wala pang naitalang laro</string>
+    <string name="clear_history">I-clear ang History</string>
+    <string name="clear_history_confirm">Burahin ang lahat ng record ng laro?</string>
+    <string name="rounds_count">%d na round</string>
+    <string name="stat_total_games">Kabuuang Laro</string>
+    <string name="stat_win_rate">Win Rate</string>
+    <string name="stat_avg_rounds">Avg. na Round</string>
+    <string name="stat_small_tichu">Small Tichu</string>
+    <string name="stat_large_tichu">Large Tichu</string>
+    <string name="stat_one_two">One-Two Finish</string>
+    <string name="stat_highest_score">Pinakamataas na Score</string>
+    <string name="draw">Tabla</string>
+    <string name="team_names">Pangalan ng Team</string>
+    <string name="undo">I-undo</string>
+    <string name="round_deleted">Nabura ang round</string>
+    <string name="share">Ibahagi</string>
 </resources>

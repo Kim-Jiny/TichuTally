@@ -28,4 +28,25 @@
     <string name="confirm">Aceptar</string>
     <string name="cancel">Cancelar</string>
     <string name="new_game_confirm">¿Reiniciar el juego actual y comenzar uno nuevo?</string>
+
+    <!-- Records / Statistics / Team names / Undo / Share (v2) -->
+    <string name="records">Registros</string>
+    <string name="tab_history">Historial</string>
+    <string name="tab_stats">Estadísticas</string>
+    <string name="no_history">Aún no hay partidas registradas</string>
+    <string name="clear_history">Borrar historial</string>
+    <string name="clear_history_confirm">¿Eliminar todos los registros de partidas?</string>
+    <string name="rounds_count">%d rondas</string>
+    <string name="stat_total_games">Partidas totales</string>
+    <string name="stat_win_rate">Tasa de victorias</string>
+    <string name="stat_avg_rounds">Rondas promedio</string>
+    <string name="stat_small_tichu">Tichu Pequeño</string>
+    <string name="stat_large_tichu">Tichu Grande</string>
+    <string name="stat_one_two">Uno-Dos</string>
+    <string name="stat_highest_score">Puntuación máxima</string>
+    <string name="draw">Empate</string>
+    <string name="team_names">Nombres de equipo</string>
+    <string name="undo">Deshacer</string>
+    <string name="round_deleted">Ronda eliminada</string>
+    <string name="share">Compartir</string>
 </resources>

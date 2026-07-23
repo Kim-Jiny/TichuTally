@@ -59,3 +59,24 @@
 "vs" = "VS";
 "details" = "Details";
 "current_score" = "Kasalukuyang Score";
+
+// Records / Statistics / Team names / Undo / Share (v2)
+"records" = "Mga Record";
+"tab_history" = "Kasaysayan";
+"tab_stats" = "Estadistika";
+"no_history" = "Wala pang naitalang laro";
+"clear_history" = "I-clear ang History";
+"clear_history_confirm" = "Burahin ang lahat ng record ng laro?";
+"rounds_count" = "%d na round";
+"stat_total_games" = "Kabuuang Laro";
+"stat_win_rate" = "Win Rate";
+"stat_avg_rounds" = "Avg. na Round";
+"stat_small_tichu" = "Small Tichu";
+"stat_large_tichu" = "Large Tichu";
+"stat_one_two" = "One-Two Finish";
+"stat_highest_score" = "Pinakamataas na Score";
+"draw" = "Tabla";
+"team_names" = "Pangalan ng Team";
+"undo" = "I-undo";
+"round_deleted" = "Nabura ang round";
+"share" = "Ibahagi";

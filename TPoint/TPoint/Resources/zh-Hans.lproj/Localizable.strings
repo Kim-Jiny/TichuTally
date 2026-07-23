@@ -59,3 +59,24 @@
 "vs" = "VS";
 "details" = "详情";
 "current_score" = "当前分数";
+
+// Records / Statistics / Team names / Undo / Share (v2)
+"records" = "记录";
+"tab_history" = "对局记录";
+"tab_stats" = "统计";
+"no_history" = "还没有保存的对局";
+"clear_history" = "清除记录";
+"clear_history_confirm" = "删除所有对局记录？";
+"rounds_count" = "%d 轮";
+"stat_total_games" = "总对局数";
+"stat_win_rate" = "胜率";
+"stat_avg_rounds" = "平均轮数";
+"stat_small_tichu" = "小地主";
+"stat_large_tichu" = "大地主";
+"stat_one_two" = "一二名";
+"stat_highest_score" = "最高分";
+"draw" = "平局";
+"team_names" = "队伍名称";
+"undo" = "撤销";
+"round_deleted" = "已删除该轮";
+"share" = "分享";

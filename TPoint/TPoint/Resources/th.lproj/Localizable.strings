@@ -59,3 +59,24 @@
 "vs" = "VS";
 "details" = "รายละเอียด";
 "current_score" = "คะแนนปัจจุบัน";
+
+// Records / Statistics / Team names / Undo / Share (v2)
+"records" = "บันทึก";
+"tab_history" = "ประวัติเกม";
+"tab_stats" = "สถิติ";
+"no_history" = "ยังไม่มีเกมที่บันทึกไว้";
+"clear_history" = "ล้างบันทึก";
+"clear_history_confirm" = "ลบบันทึกเกมทั้งหมดหรือไม่?";
+"rounds_count" = "%d รอบ";
+"stat_total_games" = "จำนวนเกมทั้งหมด";
+"stat_win_rate" = "อัตราชนะ";
+"stat_avg_rounds" = "รอบเฉลี่ย";
+"stat_small_tichu" = "ทิชูเล็ก";
+"stat_large_tichu" = "ทิชูใหญ่";
+"stat_one_two" = "หนึ่ง-สอง";
+"stat_highest_score" = "คะแนนสูงสุด";
+"draw" = "เสมอ";
+"team_names" = "ชื่อทีม";
+"undo" = "เลิกทำ";
+"round_deleted" = "ลบรอบแล้ว";
+"share" = "แชร์";

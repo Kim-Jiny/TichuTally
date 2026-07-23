@@ -28,4 +28,25 @@
     <string name="confirm">ตกลง</string>
     <string name="cancel">ยกเลิก</string>
     <string name="new_game_confirm">รีเซ็ตเกมปัจจุบันและเริ่มเกมใหม่?</string>
+
+    <!-- Records / Statistics / Team names / Undo / Share (v2) -->
+    <string name="records">บันทึก</string>
+    <string name="tab_history">ประวัติเกม</string>
+    <string name="tab_stats">สถิติ</string>
+    <string name="no_history">ยังไม่มีเกมที่บันทึกไว้</string>
+    <string name="clear_history">ล้างบันทึก</string>
+    <string name="clear_history_confirm">ลบบันทึกเกมทั้งหมดหรือไม่?</string>
+    <string name="rounds_count">%d รอบ</string>
+    <string name="stat_total_games">จำนวนเกมทั้งหมด</string>
+    <string name="stat_win_rate">อัตราชนะ</string>
+    <string name="stat_avg_rounds">รอบเฉลี่ย</string>
+    <string name="stat_small_tichu">ทิชูเล็ก</string>
+    <string name="stat_large_tichu">ทิชูใหญ่</string>
+    <string name="stat_one_two">หนึ่ง-สอง</string>
+    <string name="stat_highest_score">คะแนนสูงสุด</string>
+    <string name="draw">เสมอ</string>
+    <string name="team_names">ชื่อทีม</string>
+    <string name="undo">เลิกทำ</string>
+    <string name="round_deleted">ลบรอบแล้ว</string>
+    <string name="share">แชร์</string>
 </resources>

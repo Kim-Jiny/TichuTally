@@ -28,4 +28,25 @@
     <string name="confirm">確認</string>
     <string name="cancel">キャンセル</string>
     <string name="new_game_confirm">現在のゲームをリセットして新しいゲームを始めますか？</string>
+
+    <!-- Records / Statistics / Team names / Undo / Share (v2) -->
+    <string name="records">記録</string>
+    <string name="tab_history">対戦履歴</string>
+    <string name="tab_stats">統計</string>
+    <string name="no_history">まだ保存されたゲームがありません</string>
+    <string name="clear_history">記録を削除</string>
+    <string name="clear_history_confirm">すべてのゲーム記録を削除しますか？</string>
+    <string name="rounds_count">%dラウンド</string>
+    <string name="stat_total_games">総ゲーム数</string>
+    <string name="stat_win_rate">勝率</string>
+    <string name="stat_avg_rounds">平均ラウンド</string>
+    <string name="stat_small_tichu">スモールティチュー</string>
+    <string name="stat_large_tichu">ラージティチュー</string>
+    <string name="stat_one_two">ワンツーフィニッシュ</string>
+    <string name="stat_highest_score">最高得点</string>
+    <string name="draw">引き分け</string>
+    <string name="team_names">チーム名</string>
+    <string name="undo">元に戻す</string>
+    <string name="round_deleted">ラウンドを削除しました</string>
+    <string name="share">共有</string>
 </resources>
